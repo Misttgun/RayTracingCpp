@@ -2,34 +2,20 @@
 #ifndef POINT_H
 #define POINT_H
 
-class Vector;
+#include "Vector.h"
 
-class Point
+class Point: public Vector
 {
 public:
-	Point();
+	Point() = default;
 	Point(float vx, float vy, float vz);
-	Point(const Point &vec);
-	Point& operator=(const Point &vec);
+	Point(const Point& p) = default;
+	Point& operator=(const Point& vec);
 	~Point() = default;
 
-	Point operator+(const Point &vec);
-	Point& operator+=(const Point &vec);
-	Point operator-(const Point &vec);
-	Point& operator-=(const Point &vec);
-	Point operator*(float value);
-	Point& operator*=(float value);
-	Point operator/(float value);
-	Point& operator/=(float value);
-
-	operator Vector() const;
-
-	float dot(const Point &vec);
-	void swap(Point& first, Point& second);
-
-	float x;
-	float y;
-	float z;
+private:
+	using Vector::norm;
+	using Vector::normalized;
 };
 
 #endif

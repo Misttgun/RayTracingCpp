@@ -2,6 +2,7 @@
 #define RAY_H
 
 #include "Vector.h"
+#include "Point.h"
 
 class Ray
 {
@@ -16,7 +17,7 @@ public:
 	Vector direction;
 
 private:
-	void swap(Ray& first, Ray& second);
+	void swap(Ray& first, Ray& second) const noexcept;
 };
 
 #endif 

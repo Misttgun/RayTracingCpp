@@ -15,6 +15,9 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 include_directories(include)
 
 #Add the sources
+file(GLOB HEADERS "include/*.h")
+
+#Add the sources
 file(GLOB SOURCES "src/*.cpp")
 
-add_executable(RayTracing ${SOURCES})
+add_executable(RayTracing ${SOURCES} ${HEADERS})
