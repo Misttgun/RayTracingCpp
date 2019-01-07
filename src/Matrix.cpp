@@ -25,7 +25,7 @@ Matrix & Matrix::operator=(const Matrix& other)
 	return *this;
 }
 
-float& Matrix::operator()(int i, int j)
+float& Matrix::operator()(const int i, const int j)
 {
 	if (i >= 4 || j >= 4)
 		return m_tab[0][0];
@@ -33,7 +33,7 @@ float& Matrix::operator()(int i, int j)
 	return m_tab[i][j];
 }
 
-float Matrix::operator()(int i, int j) const
+float Matrix::operator()(const int i, const int j) const
 {
 	if (i >= 4 || j >= 4)
 		return m_tab[0][0];
@@ -74,12 +74,12 @@ HVector Matrix::operator*(const HVector& vec) const
 	return product;
 }
 
-void Matrix::set(int i, int j, float val)
+void Matrix::set(const int i, const int j, const float val)
 {
 	m_tab[i][j] = val;
 }
 
-void Matrix::get_cofactor(const Matrix& mat, Matrix& temp, int p, int q, int n)
+void Matrix::get_cofactor(const Matrix& mat, Matrix& temp, const int p, const int q, const int n)
 {
 	int i = 0, j = 0;
 
@@ -101,7 +101,7 @@ void Matrix::get_cofactor(const Matrix& mat, Matrix& temp, int p, int q, int n)
 	}
 }
 
-float Matrix::determinant(const Matrix& mat, int n)
+float Matrix::determinant(const Matrix& mat, const int n)
 {
 	float res = 0;
 

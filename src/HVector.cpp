@@ -8,7 +8,7 @@ HVector::HVector()
 	:x(0.0f), y(0.0f), z(0.0f), w(0.0f)
 {}
 
-HVector::HVector(float vx, float vy, float vz, float vw)
+HVector::HVector(const float vx, const float vy, const float vz, const float vw)
 	: x(vx), y(vy), z(vz), w(vw)
 {}
 
@@ -55,12 +55,12 @@ HVector& HVector::operator-=(const HVector & vec)
 	return *this;
 }
 
-HVector HVector::operator*(float value) const
+HVector HVector::operator*(const float value) const
 {
 	return HVector(x * value, y * value, z * value, w * value);
 }
 
-HVector& HVector::operator*=(float value)
+HVector& HVector::operator*=(const float value)
 {
 	x *= value;
 	y *= value;
@@ -69,13 +69,13 @@ HVector& HVector::operator*=(float value)
 	return *this;
 }
 
-HVector HVector::operator/(float value) const
+HVector HVector::operator/(const float value) const
 {
 	assert(value != 0);
 	return HVector(x / value, y / value, z / value, w / value);
 }
 
-HVector& HVector::operator/=(float value)
+HVector& HVector::operator/=(const float value)
 {
 	assert(value != 0);
 	x /= value;
@@ -85,7 +85,7 @@ HVector& HVector::operator/=(float value)
 	return *this;
 }
 
-float HVector::operator[](int i) const
+float HVector::operator[](const int i) const
 {
 	assert(i < 4);
 	if (i == 0)
@@ -98,7 +98,7 @@ float HVector::operator[](int i) const
 	return w;
 }
 
-float& HVector::operator[](int i)
+float& HVector::operator[](const int i)
 {
 	assert(i < 4);
 	if (i == 0)

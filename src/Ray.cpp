@@ -6,7 +6,7 @@ Ray::Ray(const Point& p, const Vector& d)
 	:origin(p), direction(d)
 {}
 
-Ray::Ray(float ox, float oy, float oz, float dx, float dy, float dz)
+Ray::Ray(const float ox, const float oy, const float oz, const float dx, const float dy, const float dz)
 	: origin(ox, oy, oz), direction(dx, dy, dz)
 {}
 

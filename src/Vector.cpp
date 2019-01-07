@@ -7,7 +7,7 @@ Vector::Vector()
 	:x(0.0f), y(0.0f), z(0.0f)
 {}
 
-Vector::Vector(float vx, float vy, float vz)
+Vector::Vector(const float vx, const float vy, const float vz)
 	: x(vx), y(vy), z(vz)
 {}
 
@@ -51,12 +51,12 @@ Vector& Vector::operator-=(const Vector & vec)
 	return *this;
 }
 
-Vector Vector::operator*(float value) const
+Vector Vector::operator*(const float value) const
 {
 	return Vector(x * value, y * value, z * value);
 }
 
-Vector& Vector::operator*=(float value)
+Vector& Vector::operator*=(const float value)
 {
 	x *= value;
 	y *= value;
@@ -64,13 +64,13 @@ Vector& Vector::operator*=(float value)
 	return *this;
 }
 
-Vector Vector::operator/(float value) const
+Vector Vector::operator/(const float value) const
 {
 	assert(value != 0);
 	return Vector(x / value, y / value, z / value);
 }
 
-Vector& Vector::operator/=(float value)
+Vector& Vector::operator/=(const float value)
 {
 	assert(value != 0);
 	x /= value;
@@ -79,7 +79,7 @@ Vector& Vector::operator/=(float value)
 	return *this;
 }
 
-float Vector::operator[](int i) const
+float Vector::operator[](const int i) const
 {
 	assert(i < 3);
 	if (i == 0)
@@ -90,7 +90,7 @@ float Vector::operator[](int i) const
 	return z;
 }
 
-float& Vector::operator[](int i)
+float& Vector::operator[](const int i)
 {
 	assert(i < 3);
 	if (i == 0)

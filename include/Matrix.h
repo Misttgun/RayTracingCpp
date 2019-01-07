@@ -25,7 +25,7 @@ public:
 	}
 
 	void set(int i, int j, float val);
-	float get(int i, int j) const { return m_tab[i][j]; }
+	float get(const int i, const int j) const { return m_tab[i][j]; }
 
 	static void get_cofactor(const Matrix& mat, Matrix& temp, int p, int q, int n);
 	static float determinant(const Matrix& mat, int n);

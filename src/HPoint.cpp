@@ -1,6 +1,6 @@
 #include "HPoint.h"
 
-HPoint::HPoint(float vx, float vy, float vz, float vw)
+HPoint::HPoint(const float vx, const float vy, const float vz, const float vw)
 	: HVector(vx, vy, vz, vw)
 {}
 

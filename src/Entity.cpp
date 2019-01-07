@@ -4,7 +4,7 @@
 
 #include <cmath>
 
-Entity::Entity(float x, float y, float z)
+Entity::Entity(const float x, const float y, const float z)
 	:position(x, y, z)
 {}
 
@@ -22,7 +22,7 @@ Entity & Entity::operator=(const Entity & other)
 	return *this;
 }
 
-void Entity::translate(float x, float y, float z)
+void Entity::translate(const float x, const float y, const float z)
 {
 	Matrix mat;
 	mat(0, 3) = x;
@@ -33,7 +33,7 @@ void Entity::translate(float x, float y, float z)
 	transInv = trans.inverse();
 }
 
-void Entity::rotate_x(float deg)
+void Entity::rotate_x(const float deg)
 {
 	Matrix mat;
 	mat(1, 1) = cos(deg);
@@ -45,7 +45,7 @@ void Entity::rotate_x(float deg)
 	transInv = trans.inverse();
 }
 
-void Entity::rotate_y(float deg)
+void Entity::rotate_y(const float deg)
 {
 	Matrix mat;
 	mat(0, 0) = cos(deg);
@@ -57,7 +57,7 @@ void Entity::rotate_y(float deg)
 	transInv = trans.inverse();
 }
 
-void Entity::rotate_z(float deg)
+void Entity::rotate_z(const float deg)
 {
 	Matrix mat;
 	mat(0, 0) = cos(deg);
@@ -69,7 +69,7 @@ void Entity::rotate_z(float deg)
 	transInv = trans.inverse();
 }
 
-void Entity::scale(float factor)
+void Entity::scale(const float factor)
 {
 	Matrix mat;
 	mat(0, 0) = factor;

@@ -1,6 +1,6 @@
 #include "Point.h"
 
-Point::Point(float vx, float vy, float vz)
+Point::Point(const float vx, const float vy, const float vz)
 	: Vector(vx, vy, vz)
 {}
 
