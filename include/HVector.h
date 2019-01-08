@@ -34,10 +34,11 @@ public:
 	HVector normalized();
 	friend void swap(HVector& first, HVector& second) noexcept
 	{
-		std::swap(first.x, second.x);
-		std::swap(first.y, second.y);
-		std::swap(first.z, second.z);
-		std::swap(first.w, second.w);
+		using std::swap;
+		swap(first.x, second.x);
+		swap(first.y, second.y);
+		swap(first.z, second.z);
+		swap(first.w, second.w);
 	}
 
 	float x;

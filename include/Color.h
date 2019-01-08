@@ -25,9 +25,10 @@ public:
 
 	friend void swap(Color& first, Color& second) noexcept
 	{
-		std::swap(first.r, second.r);
-		std::swap(first.g, second.g);
-		std::swap(first.b, second.b);
+		using std::swap;
+		swap(first.r, second.r);
+		swap(first.g, second.g);
+		swap(first.b, second.b);
 	}
 
 	float r;

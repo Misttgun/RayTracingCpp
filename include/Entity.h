@@ -20,9 +20,10 @@ public:
 
 	friend void swap(Entity& first, Entity& second) noexcept
 	{
-		std::swap(first.position, second.position);
-		std::swap(first.trans, second.trans);
-		std::swap(first.transInv, second.transInv);
+		using std::swap;
+		swap(first.position, second.position);
+		swap(first.trans, second.trans);
+		swap(first.transInv, second.transInv);
 	}
 
 	void translate(float x, float y, float z);
@@ -38,7 +39,7 @@ public:
 	Vector global_to_local(const Vector& v) const;
 	Ray global_to_local(const Ray& r) const;
 
-private:
+protected:
 	Point position;
 	Matrix trans;
 	Matrix transInv;

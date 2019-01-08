@@ -22,9 +22,3 @@ Ray& Ray::operator=(const Ray& ray)
 	swap(*this, temp);
 	return *this;
 }
-
-void Ray::swap(Ray& first, Ray& second) const noexcept
-{
-	std::swap(first.origin, second.origin);
-	std::swap(first.origin, second.origin);
-}

@@ -13,11 +13,15 @@ public:
 	Ray& operator=(const Ray &ray);
 	~Ray() = default;
 
+	friend void swap(Ray& first, Ray& second) noexcept
+	{
+		using std::swap;
+		swap(first.origin, second.origin);
+		swap(first.origin, second.origin);
+	}
+
 	Point origin;
 	Vector direction;
-
-private:
-	void swap(Ray& first, Ray& second) const noexcept;
 };
 
 #endif 

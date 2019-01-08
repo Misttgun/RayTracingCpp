@@ -21,7 +21,8 @@ public:
 
 	friend void swap(Matrix& first, Matrix& second) noexcept
 	{
-		std::swap(first.m_tab, second.m_tab);
+		using std::swap;
+		swap(first.m_tab, second.m_tab);
 	}
 
 	void set(int i, int j, float val);
@@ -33,8 +34,6 @@ public:
 	Matrix inverse() const;
 
 	void display();
-
-	//TODO  Ajouter l'operateur * et la méthode inverse
 
 private:
 	float m_tab[4][4]{};

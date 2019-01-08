@@ -30,9 +30,10 @@ public:
 	Vector normalized();
 	friend void swap(Vector& first, Vector& second) noexcept
 	{
-		std::swap(first.x, second.x);
-		std::swap(first.y, second.y);
-		std::swap(first.z, second.z);
+		using std::swap;
+		swap(first.x, second.x);
+		swap(first.y, second.y);
+		swap(first.z, second.z);
 	}
 
 	float x;

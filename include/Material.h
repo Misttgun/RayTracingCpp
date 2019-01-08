@@ -17,9 +17,10 @@ public:
 
 	friend void swap(Material& first, Material& second) noexcept
 	{
-		std::swap(first.ka, second.ka);
-		std::swap(first.kd, second.kd);
-		std::swap(first.ks, second.ks);
+		using std::swap;
+		swap(first.ka, second.ka);
+		swap(first.kd, second.kd);
+		swap(first.ks, second.ks);
 	}
 
 	Color ka;
