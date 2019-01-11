@@ -41,4 +41,6 @@ public:
 	float z;
 };
 
+Vector operator*(float a, const Vector& v);
+
 #endif 

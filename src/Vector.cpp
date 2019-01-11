@@ -117,3 +117,8 @@ Vector Vector::normalized()
 	*this /= norm();
 	return *this;
 }
+
+Vector operator*(float a, const Vector& v)
+{
+    return v * a;
+}

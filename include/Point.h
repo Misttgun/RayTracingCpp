@@ -10,7 +10,9 @@ public:
 	Point() = default;
 	Point(float vx, float vy, float vz);
 	Point(const Point& p) = default;
+    Point(const Vector& p);
 	Point& operator=(const Point& vec);
+    Point& operator=(const Vector& vec);
 	~Point() = default;
 
 private:
