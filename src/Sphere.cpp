@@ -1,7 +1,5 @@
 #include "Sphere.h"
 
-Sphere::Sphere(float x, float y, float z) : Entity(x, y, z) {}
-
 bool Sphere::intersect(const Ray& ray, Point& impact) const
 {
     Ray local_ray = global_to_local(ray);

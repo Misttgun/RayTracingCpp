@@ -1,7 +1,5 @@
 #include "Cone.h"
 
-Cone::Cone(float x, float y, float z) : Entity(x, y, z) {}
-
 bool Cone::intersect(const Ray& ray, Point& impact) const
 {
     float y_min = 0;

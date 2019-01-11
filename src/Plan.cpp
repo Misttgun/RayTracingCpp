@@ -1,7 +1,5 @@
 #include "Plan.h"
 
-Plan::Plan(float x, float y, float z) : Entity(x, y, z) { }
-
 bool Plan::intersect (const Ray& ray, Point& impact) const
 {
     Ray local_ray = global_to_local(ray);

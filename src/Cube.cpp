@@ -1,7 +1,5 @@
 #include "Cube.h"
 
-Cube::Cube(float x, float y, float z) : Entity(x, y, z) {}
-
 bool Cube::intersect(const Ray& ray, Point &impact) const
 {
     Ray local_ray = local_to_global(ray);

@@ -1,3 +1,4 @@
+#include "Scene.h"
 #include "Vector.h"
 #include "Point.h"
 #include "HVector.h"

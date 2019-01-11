@@ -1,7 +1,5 @@
 #include "Cylinder.h"
 
-Cylinder::Cylinder(float x, float y, float z) : Entity(x, y, z) {}
-
 bool Cylinder::intersect(const Ray& ray, Point& impact) const
 {
     Ray local_ray = global_to_local(ray);
