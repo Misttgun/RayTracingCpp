@@ -32,6 +32,9 @@ public:
 	void rotate_z(float deg);
 	void scale(float factor);
 
+    bool solve_polynomial_2(float a, float b, float c, float& t) const;
+    bool is_epsilon(float value, float test, float delta) const;
+
 	Point local_to_global(const Point& p) const;
 	Vector local_to_global(const Vector& v) const;
 	Ray local_to_global(const Ray& r) const;

@@ -123,3 +123,50 @@ Ray Entity::global_to_local(const Ray& r) const
 
 	return Ray(trans * point, trans * vector);
 }
+
+bool Entity::solve_polynomial_2(float a, float b, float c, float& t) const
+{
+    float delta = b * b - 4 * a * c;
+    t = -1;
+
+    // - pas de solution réelle
+    if (delta < 0)
+        return false;
+
+    // 1 solution réelle
+    if (delta == 0)
+        t = -b / (2 * a);
+
+    // - deux solutions réelles
+    else
+    {
+        float t1 = (-b - sqrt(delta)) / (2 * a);
+        float t2 = (-b + sqrt(delta)) / (2 * a);
+
+        // - le rayon est dirigé à l'opposé du cylindre
+        if (t1 < 0 && t2 < 0)
+            return false;
+
+        // - le rayon est dirigé vers le cylindre et a deux intersections
+        if (t1 > 0 && t2 > 0)
+            t = t1 < t2 ? t1 : t2;
+
+        // - origine du rayon dans le cylindre et seul t1 visible
+        else if (t1 > 0)
+            t = t1;
+
+        // - origine du rayon dans le cylindre et seul t2 visible
+        else
+            t = t2;
+    }
+
+    if (t < 0)
+        return false;
+
+    return true;
+}
+
+bool Entity::is_epsilon(float value, float test, float delta) const
+{
+    return (test > value - delta && test < value + delta);
+}
