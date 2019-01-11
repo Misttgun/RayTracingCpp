@@ -13,9 +13,7 @@ class Plan : public Entity
         Plan() = default;
         Plan(float x, float y, float z);
         bool intersect(const Ray& ray, Point& impact) const;
-
-    private:
-
+        Ray get_normal(const Point& impact, const Point& observator) const;
 };
 
 #endif

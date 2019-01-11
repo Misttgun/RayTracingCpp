@@ -48,3 +48,19 @@ bool Sphere::intersect(const Ray& ray, Point& impact) const
     return true;
 
 }
+
+Ray Sphere::get_normal(const Point& impact, const Point& observator) const
+{
+    Point local_obs = global_to_local(observator);
+    Point local_impact = global_to_local(impact);
+
+    Vector local_ray_direction(local_impact - local_obs);
+    Vector local_normal(local_impact);
+    
+    local_normal = local_normal.normalized();
+
+    if (local_ray_direction.dot(local_normal) < 0)
+        return Ray(impact, local_to_global(local_normal).normalized());
+
+    return Ray(impact, local_to_global((local_normal * -1)).normalized());
+}

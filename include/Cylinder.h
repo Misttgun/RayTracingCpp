@@ -11,6 +11,7 @@ class Cylinder : public Entity
         Cylinder() = default;
         Cylinder(float x, float y, float z);
         bool intersect(const Ray& ray, Point& impact) const;
+        Ray get_normal(const Point& impact, const Point& observator) const;
 };
 
 #endif
