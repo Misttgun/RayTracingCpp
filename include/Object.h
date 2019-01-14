@@ -14,7 +14,8 @@ class Object : public Entity
 
         virtual bool intersect(const Ray& ray, Point& impact) const = 0;
         virtual Ray get_normal(const Point& impact, const Point& observator) const = 0;
-        void set_material(Material m);
+        inline void set_material(Material m) { _material = m; }
+        inline Material get_material() const { return _material;  }
     
     private:
         Material _material;

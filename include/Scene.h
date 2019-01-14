@@ -33,6 +33,8 @@ class Scene
         inline std::shared_ptr<Object> get_object(int index) const { return _objects[index]; }
         inline void add_light(std::shared_ptr<Light> light) { _lights.push_back(light); }
         inline void add_object(std::shared_ptr<Object> object) { _objects.push_back(object); }
+        inline Camera get_camera() const { return _camera; }
+        
 
         float compute_distance(const Point& a, const Point& b) const;
 

@@ -4,6 +4,7 @@
 #include "HVector.h"
 #include "HPoint.h"
 #include "Matrix.h"
+#include "Renderer.h"
 
 #include <iostream>
 
@@ -66,7 +67,39 @@ int main() {
     std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "
         << scene.nb_lights() << " lights\n";
 
+    
+    Renderer renderer;
+    Camera cam = scene.get_camera();
+    int width = 200, height = 200;
+    Color render[200][200];
+
+    
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            float x = (float)j / width, y = (float)i / height;
+
+            Ray ray = cam.get_ray(x, y);
+            Point impact;
+            std::shared_ptr<Object> intersected = scene.closer_intersected(ray, impact);
+
+            
+            std::cout << ray.origin.x << "," << ray.origin.y << "," << ray.origin.z << " -> ";
+            std::cout << ray.direction.x << "," << ray.direction.y << "," << ray.direction.z << std::endl;
+            
+
+            if (intersected == nullptr)
+                continue;
+
+            render[i][j] = renderer.get_impact_color(ray, *intersected, impact, scene);
+
+            std::cout << render[i][j].r << "," << render[i][j].g << "," << render[i][j].b << std::endl;
+        }
+    }
+
  	//std::cout << "Res = " << res << std::endl;
+    std::cout << "DONE !\n";
 	getchar();
 	return 0;
 }

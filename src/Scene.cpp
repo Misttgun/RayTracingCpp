@@ -41,7 +41,14 @@ void Scene::load(const std::string& file)
 
 void Scene::load_globals(std::istringstream& params, int& nb_obj)
 {
-    float r, g, b;
+    float r, g, b, tr_x, tr_y, tr_z, focal;
+
+    params >> tr_x;
+    params >> tr_y;
+    params >> tr_z;
+    params >> focal;
+
+    _camera = Camera(tr_x, tr_y, tr_z, focal);
 
     params >> r;
     params >> g;
