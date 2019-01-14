@@ -106,50 +106,34 @@ void Scene::load_object(std::istringstream& params)
     switch(object)
     {
         case 'P':
-            std::cout << "A plan is created\n";
-            o = std::make_shared<Plan>(Plan(tr_x, tr_y, tr_z));
+            o = std::make_shared<Plan>(Plan());
             break;
         case 'Q':
-            std::cout << "A sQuare is created\n";
-            o = std::make_shared<Square>(Square(tr_x, tr_y, tr_z));
+            o = std::make_shared<Square>(Square());
             break;
         case 'S':
-            std::cout << "A Sphere is created\n";
-            o = std::make_shared<Sphere>(Sphere(tr_x, tr_y, tr_z));
+            o = std::make_shared<Sphere>(Sphere());
             break;
         case 'C':
-            std::cout << "A Cone is created\n";
-            o = std::make_shared<Cone>(Cone(tr_x, tr_y, tr_z));
+            o = std::make_shared<Cone>(Cone());
             break;
         case 'U':
-            std::cout << "A cUbe is created\n";
-            o = std::make_shared<Cube>(Cube(tr_x, tr_y, tr_z));
+            o = std::make_shared<Cube>(Cube());
             break;
         case 'Y':
-            std::cout << "A cYlinder is created\n";
-            o = std::make_shared<Cylinder>(Cylinder(tr_x, tr_y, tr_z));
+            o = std::make_shared<Cylinder>(Cylinder());
             break;
         default:
             return;
     }
 
-    //o->translate(tr_x, tr_y, tr_z);
-    
-    if (r_x > 0.0001f)
-        o->rotate_x(r_x);
-    
-    if (r_y > 0.0001f)
-        o->rotate_y(r_y);
-    
-    if (r_z > 0.0001f)
-        o->rotate_z(r_z);
-
-    
-    //o->scale(s);
-    //o->set_material(mat);
-
-    //add_object(o);
-    std::cout << "DONE\n";
+    o->translate(tr_x, tr_y, tr_z);
+    o->rotate_x(r_x);
+    o->rotate_y(r_y);
+    o->rotate_z(r_z);
+    o->scale(s);
+    o->set_material(mat);
+    add_object(o);
 }
 
 void Scene::load_light(std::istringstream& params)

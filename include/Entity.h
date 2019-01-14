@@ -11,7 +11,7 @@
 class Entity
 {
 public:
-	Entity() = default;
+	Entity();
 	Entity(float x, float y, float z);
 	Entity(const Entity& entity);
 	~Entity() = default;

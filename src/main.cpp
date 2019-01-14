@@ -63,6 +63,9 @@ int main() {
 
     scene.load("config.txt");
 
+    std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "
+        << scene.nb_lights() << " lights\n";
+
  	//std::cout << "Res = " << res << std::endl;
 	getchar();
 	return 0;

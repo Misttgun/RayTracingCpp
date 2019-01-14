@@ -28,6 +28,7 @@ class Scene
         inline Color get_background() const { return _background; }
         inline Color get_ambiant() const { return _ambiant; }
         inline int nb_lights() const { return _lights.size(); }
+        inline int nb_objects() const { return _objects.size(); }
         inline std::shared_ptr<Light> get_light(int index) const { return _lights[index]; }
         inline std::shared_ptr<Object> get_object(int index) const { return _objects[index]; }
         inline void add_light(std::shared_ptr<Light> light) { _lights.push_back(light); }

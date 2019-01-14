@@ -4,6 +4,20 @@
 
 #include <cmath>
 
+
+Entity::Entity ()
+{
+    Matrix mat;
+
+    mat(0, 0) = 1;
+    mat(1, 1) = 1;
+    mat(2, 2) = 1;
+    mat(3, 3) = 1;
+
+    trans = mat;
+    transInv = trans.inverse();
+}
+
 Entity::Entity(const float x, const float y, const float z)
 	:position(x, y, z)
 {}
@@ -25,23 +39,33 @@ Entity & Entity::operator=(const Entity & other)
 void Entity::translate(const float x, const float y, const float z)
 {
 	Matrix mat;
+    mat(0, 0) = 1;
 	mat(0, 3) = x;
+    mat(1, 1) = 1;
 	mat(1, 3) = y;
+    mat(2, 2) = 1;
 	mat(2, 3) = z;
+    mat(3, 3) = 1;
 
-	trans = mat * trans;
+	//trans = mat * trans;
+    trans = trans * mat;
+
 	transInv = trans.inverse();
 }
 
 void Entity::rotate_x(const float deg)
 {
 	Matrix mat;
+    mat(0, 0) = 1;
 	mat(1, 1) = cos(deg);
 	mat(1, 2) = -sin(deg);
 	mat(2, 1) = sin(deg);
 	mat(2, 2) = cos(deg);
+    mat(3, 3) = 1;
+	
+    //trans = mat * trans;
+    trans = trans * mat;
 
-	trans = mat * trans;
 	transInv = trans.inverse();
 }
 
@@ -50,10 +74,13 @@ void Entity::rotate_y(const float deg)
 	Matrix mat;
 	mat(0, 0) = cos(deg);
 	mat(0, 2) = sin(deg);
+    mat(1, 1) = 1;
 	mat(2, 0) = -sin(deg);
 	mat(2, 2) = cos(deg);
+    mat(3, 3) = 1;
 
 	trans = mat * trans;
+
 	transInv = trans.inverse();
 }
 
@@ -64,6 +91,8 @@ void Entity::rotate_z(const float deg)
 	mat(0, 1) = -sin(deg);
 	mat(1, 0) = sin(deg);
 	mat(1, 1) = cos(deg);
+    mat(2, 2) = 1;
+    mat(3, 3) = 1;
 
 	trans = mat * trans;
 	transInv = trans.inverse();
@@ -75,6 +104,7 @@ void Entity::scale(const float factor)
 	mat(0, 0) = factor;
 	mat(1, 1) = factor;
 	mat(2, 2) = factor;
+    mat(3, 3) = 1;
 
 	trans = mat * trans;
 	transInv = trans.inverse();
