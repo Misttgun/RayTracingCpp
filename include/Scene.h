@@ -5,6 +5,8 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
 
 #include "Object.h"
 #include "Camera.h"
@@ -20,7 +22,7 @@ class Scene
         Scene() = default;
 
         void render();
-        void load(std::string file);
+        void load(const std::string& file);
         std::shared_ptr<Object> closer_intersected(const Ray& ray, Point& impact) const;
 
         inline Color get_background() const { return _background; }
@@ -34,6 +36,10 @@ class Scene
         float compute_distance(const Point& a, const Point& b) const;
 
     private:
+        void load_globals(std::istringstream& params, int& nb_obj);
+        void load_object(std::istringstream& params);
+        void load_light(std::istringstream& params);
+
         Camera _camera;
         Color _background;
         Color _ambiant;

@@ -4,10 +4,6 @@
 #include "HVector.h"
 #include "HPoint.h"
 #include "Matrix.h"
-#include "Square.h"
-#include "Sphere.h"
-#include "Cube.h"
-#include "Cylinder.h"
 
 #include <iostream>
 
@@ -63,15 +59,9 @@ int main() {
 	std::cout << "-----------------------------------" << std::endl;
 	inverse.display();
 
-    std::cout << "A plan is created\n";
-    Plan(1, 0, 0);
-    std::cout << "A square is created\n";
-    Square(0, 1, 0);
-    std::cout << "A sphere is created\n";
-    Cube(0, 0, 0);
-    std::cout << "A cube is created\n";
-    Cylinder(0, 0, 0);
-    std::cout << "A cylinder is created\n";
+    Scene scene;
+
+    scene.load("config.txt");
 
  	//std::cout << "Res = " << res << std::endl;
 	getchar();
