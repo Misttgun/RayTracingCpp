@@ -71,8 +71,8 @@ int main() {
 
 	//scene.load("config.txt");
 
-	Material mat(Color(1, 0, 0), Color(1, 0, 0), Color(1, 0, 0), 1);
-	Material mat2(Color(0, 0, 1), Color(0, 0, 1), Color(0, 0, 1), 1);
+	Material mat(Color(1, 0, 0), Color(0.5, 0, 0), Color(0.2, 0, 0), 1);
+	Material mat2(Color(0, 0, 1), Color(0.5f, 0.5f, 0.5f), Color(0.2f, 0.2f, 0.2f), 0.9f);
 
 	//std::shared_ptr<Sphere> p = std::make_shared<Sphere>(Sphere());
 	//std::shared_ptr<Plan> p = std::make_shared<Plan>(Plan());
@@ -99,13 +99,13 @@ int main() {
 
 
 	std::shared_ptr<Light> l = std::make_shared<Light>(Light(0, 2, 0));
-	l->id = Color(0.0f, 0.0f, 0.5f);
-	l->is = Color(0.0f, 0.0f, 0.7f);
+	l->id = Color(0.2f, 0.2f, 0.2f);
+	l->is = Color(0.9f, 0.9f, 0.9f);
 	scene.add_light(l);
 
 	scene.set_camera(Camera(0, 0, 0, 3));
-	scene.set_bg(Color(1, 1, 1));
-	scene.set_ambiant(Color(0.5, 0.5, 0.5));
+	scene.set_bg(Color(0, 0, 0));
+	scene.set_ambiant(Color(0.6f, 0.6f, 0.6f));
 
 	std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "
 		<< scene.nb_lights() << " lights\n";

@@ -22,6 +22,7 @@ public:
 	Color& operator/= (const float a);
 	Color operator* (const Color& c) const;
 	bool operator== (const Color& c) const;
+	inline void clamp();
 
 	friend void swap(Color& first, Color& second) noexcept
 	{
@@ -34,5 +35,6 @@ public:
 	float r;
 	float g;
 	float b;
+	
 };
 #endif

@@ -1,5 +1,6 @@
-
 #include "Color.h"
+#include <iostream>
+#include <algorithm>
 
 Color::Color()
 	:r(0.0f), g(0.0f), b(0.0f)
@@ -30,7 +31,9 @@ Color& Color::operator=(const Color& rhs)
 
 Color Color::operator+(const Color& c) const
 {
-	return Color(r + c.r, g + c.g, b + c.b);
+	Color res(r + c.r, g + c.g, b + c.b);
+	res.clamp();
+	return res;
 }
 
 Color& Color::operator+=(const Color& c)
@@ -38,6 +41,8 @@ Color& Color::operator+=(const Color& c)
 	r += c.r;
 	g += c.g;
 	b += c.b;
+
+	clamp();
 	return *this;
 }
 
@@ -75,4 +80,11 @@ Color Color::operator*(const Color& c) const
 bool Color::operator==(const Color& c) const
 {
 	return (r == c.r && g == c.g && b == c.b);
+}
+
+inline void Color::clamp()
+{
+	const float max_val = std::max(r, std::max(g, b));
+	if (max_val > 1.0f)
+		*this /= max_val;
 }

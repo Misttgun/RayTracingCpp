@@ -198,9 +198,8 @@ std::shared_ptr<Object> Scene::closer_intersected(const Ray& ray, Point& impact)
         // - on met à jour le pointeur et la distance
         current_distance = impact_distance;
         tmp_obj = object;
+		impact = tmp_impact;
     }
-
-    impact = tmp_impact;
 
     return tmp_obj;
 }
