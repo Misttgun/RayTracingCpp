@@ -32,49 +32,51 @@ bool Sphere::intersect(const Ray& ray, Point& impact) const
 
 	impact = local_to_global(ori + t * dir);
 	return true;
-    //Ray local_ray = global_to_local(ray);
 
-    //float origin_squared = local_ray.origin.dot(local_ray.origin);
-    //float direction_squared = local_ray.direction.dot(local_ray.direction);
-    //float d = local_ray.direction.dot(local_ray.origin);
-    //float t = -1;
+    /*
+    Ray local_ray = global_to_local(ray);
 
-    //float delta = (d * d) - direction_squared * (origin_squared - 1);
+    float origin_squared = local_ray.origin.dot(local_ray.origin);
+    float direction_squared = local_ray.direction.dot(local_ray.direction);
+    float d = local_ray.direction.dot(local_ray.origin);
+    float t = -1;
 
-    //// - pas d'intersection
-    //if (delta < 0)
-    //    return false;
+    float delta = (d * d) - direction_squared * (origin_squared - 1);
 
-    //// - un seul point d'intersection
-    //if (origin_squared < 1)
-    //    t = (-d + sqrt(delta)) / direction_squared;
+    // - pas d'intersection
+    if (delta < 0)
+        return false;
 
-    //else
-    //{
-    //    if (d >= 0)
-    //        return false;
+    // - un seul point d'intersection
+    if (origin_squared < 1)
+        t = (-d + sqrt(delta)) / direction_squared;
 
-    //    float t1 = (-d - sqrt(delta)) / direction_squared;
-    //    float t2 = (-d + sqrt(delta)) / direction_squared;
+    else
+    {
+        if (d >= 0)
+            return false;
 
-    //    // - deux points d'intersection en direction de la sphère, on prend
-    //    // le plus proche
-    //    if (t1 > 0 && t2 > 0)
-    //        t = t1 < t2 ? t1 : t2;
+        float t1 = (-d - sqrt(delta)) / direction_squared;
+        float t2 = (-d + sqrt(delta)) / direction_squared;
 
-    //    // - t2 est le seul point d'intersection en direction de la sphère
-    //    else if (t2 > 0)
-    //        t = t2;
+        // - deux points d'intersection en direction de la sphère, on prend
+        // le plus proche
+        if (t1 > 0 && t2 > 0)
+            t = t1 < t2 ? t1 : t2;
 
-    //    // - t1 est le seul point d'intersection en direction de la sphère
-    //    else
-    //        t = t1;
-    //}
+        // - t2 est le seul point d'intersection en direction de la sphère
+        else if (t2 > 0)
+            t = t2;
 
-    //impact = local_to_global(local_ray.origin + t * local_ray.direction);
+        // - t1 est le seul point d'intersection en direction de la sphère
+        else
+            t = t1;
+    }
 
-    //return true;
+    impact = local_to_global(local_ray.origin + t * local_ray.direction);
 
+    return true;
+    */
 }
 
 Ray Sphere::get_normal(const Point& impact, const Point& observator) const

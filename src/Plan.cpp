@@ -2,6 +2,7 @@
 
 bool Plan::intersect(const Ray& ray, Point& impact) const
 {
+    
 	Point pOri(0, 0, 0);
 	Vector pDir(0, 0, -1);
 
@@ -14,7 +15,9 @@ bool Plan::intersect(const Ray& ray, Point& impact) const
 	{
 		Vector res = pOri - ori;
 		float t = res.dot(pDir) / denom;
-		impact = local_to_global(ori + t * dire);
+
+        
+		impact = local_to_global(static_cast<Point>(ori + t * dire.normalized()));
 		return t >= 0;
 	}
 

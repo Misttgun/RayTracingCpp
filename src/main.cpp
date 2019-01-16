@@ -12,6 +12,8 @@
 #include "Plan.h"
 #include "Sphere.h"
 #include "Square.h"
+#include "Cylinder.h"
+#include <algorithm>
 
 int main() {
 	/*
@@ -71,15 +73,15 @@ int main() {
 
 	//scene.load("config.txt");
 
-	Material mat(Color(1, 0, 0), Color(0.5, 0, 0), Color(0.2, 0, 0), 1);
-	Material mat2(Color(0, 0, 1), Color(0.5f, 0.5f, 0.5f), Color(0.2f, 0.2f, 0.2f), 0.9f);
+	Material mat(Color(1, 0, 0), Color(1, 0, 0), Color(1, 0, 0), 1);
+	Material mat2(Color(0, 0, 1), Color(0, 0, 1), Color(0, 0, 1), 1);
+    Material mat3(Color(0.2, 0.5, 0.7), Color(0.8, 0.8, 0.8), Color(0.2, 0.2, 0.2), 0.9);
 
 	//std::shared_ptr<Sphere> p = std::make_shared<Sphere>(Sphere());
-	//std::shared_ptr<Plan> p = std::make_shared<Plan>(Plan());
-	//p->translate(0, 0, 2);
-	////p->rotate_y(-45);
-	//p->set_material(mat);
-	//scene.add_object(p);
+	std::shared_ptr<Plan> p = std::make_shared<Plan>(Plan());
+	p->translate(0, 0, 2);
+	p->set_material(mat);
+	scene.add_object(p);
 
 	std::shared_ptr<Sphere> p2 = std::make_shared<Sphere>(Sphere());
 	//std::shared_ptr<Square> p2 = std::make_shared<Square>(Square());
@@ -97,15 +99,21 @@ int main() {
 	p4->set_material(mat2);
 	scene.add_object(p4);
 
+    std::shared_ptr<Cylinder> p5 = std::make_shared<Cylinder>(Cylinder());
+    p5->translate(-1, 1, 3);
+    //p5->rotate_x(45);
+    p5->set_material(mat3);
+    scene.add_object(p5);
+
 
 	std::shared_ptr<Light> l = std::make_shared<Light>(Light(0, 2, 0));
-	l->id = Color(0.2f, 0.2f, 0.2f);
-	l->is = Color(0.9f, 0.9f, 0.9f);
+	l->id = Color(0.0f, 0.0f, 0.5f);
+	l->is = Color(0.0f, 0.0f, 0.7f);
 	scene.add_light(l);
 
 	scene.set_camera(Camera(0, 0, 0, 3));
-	scene.set_bg(Color(0, 0, 0));
-	scene.set_ambiant(Color(0.6f, 0.6f, 0.6f));
+	scene.set_bg(Color(1, 1, 1));
+	scene.set_ambiant(Color(0.5, 0.5, 0.5));
 
 	std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "
 		<< scene.nb_lights() << " lights\n";
@@ -113,15 +121,24 @@ int main() {
 
 	Renderer renderer;
 	Camera cam = scene.get_camera();
-	const int width = 200, height = 200;
-	Color render[width][height];
-	bool has_impact;
+	//const int width = 200, height = 200;
+	//Color render[width][height];
 
-	for (int i = 0; i < height; i++)
+
+    const int size = 800;
+
+    Color** render_2 = new Color*[size];
+    for (int i = 0; i < size; i++)
+        render_2[i] = new Color[size];
+
+	bool has_impact;
+    float max = -INFINITY;
+
+	for (int i = 0; i < size; i++)
 	{
-		for (int j = 0; j < width; j++)
+		for (int j = 0; j < size; j++)
 		{
-			float x = static_cast<float>(j) / width, y = static_cast<float>(i) / height;
+			float x = static_cast<float>(j) / size, y = static_cast<float>(i) / size;
 
 			Ray ray = cam.get_ray(x, y);
 			Point impact;
@@ -129,31 +146,45 @@ int main() {
 
 			if (intersected == nullptr)
 			{
-				render[i][j] = scene.get_background();
+				render_2[i][j] = scene.get_background();
 				continue;
 			}
 
-			render[i][j] = renderer.get_impact_color(ray, *intersected, impact, scene);
-
+			render_2[i][j] = renderer.get_impact_color(ray, *intersected, impact, scene);
+            max = std::max(std::max(std::max(render_2[i][j].r, render_2[i][j].g), render_2[i][j].b), max);
 		}
 	}
 
 	std::ofstream file_ppm;
 	file_ppm.open("render.ppm");
 
-	file_ppm << "P3\n" << width << " " << height << "\n255\n";
+	//file_ppm << "P3\n" << width << " " << height << "\n255\n";
+    file_ppm << "P3\n" << size << " " << size << "\n255\n";
 
-	for (int i = 0; i < height; i++)
+	for (int i = 0; i < size; i++)
 	{
-		for (int j = 0; j < width; j++)
+		for (int j = 0; j < size; j++)
 		{
-			file_ppm << render[i][j].r * 255 << " " << render[i][j].g * 255 << " " << render[i][j].b * 255 << " ";
+            if (render_2[i][j].r > 1.f || render_2[i][j].g > 1.f || render_2[i][j].b > 1.f)
+            {
+                render_2[i][j].r /= max;
+                render_2[i][j].g /= max;
+                render_2[i][j].b /= max;
+            }
+
+			file_ppm << render_2[i][j].r * 255 << " " << render_2[i][j].g * 255 << " " << render_2[i][j].b * 255 << " ";
 		}
 
 		file_ppm << "\n";
 	}
 	//std::cout << "Res = " << res << std::endl;
 	std::cout << "DONE !\n";
+
+    for (auto i = 0; i < size; i++)
+        delete render_2[i];
+
+    delete[] render_2;
+
 	getchar();
 	return 0;
 }

@@ -32,7 +32,7 @@ Color& Color::operator=(const Color& rhs)
 Color Color::operator+(const Color& c) const
 {
 	Color res(r + c.r, g + c.g, b + c.b);
-	res.clamp();
+
 	return res;
 }
 
@@ -42,7 +42,6 @@ Color& Color::operator+=(const Color& c)
 	g += c.g;
 	b += c.b;
 
-	clamp();
 	return *this;
 }
 
