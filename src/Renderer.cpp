@@ -2,6 +2,30 @@
 
 Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Point& impact, const Scene& scene) const
 {
+
+	int nLight = scene.nb_lights();
+	Material mat = obj.get_material();
+	Ray N = obj.get_normal(impact, ray.origin);
+	Color color = mat.ka * (scene.get_ambiant());
+
+	for (int i = 0; i < nLight; i++)
+	{
+		auto light = scene.get_light(i);
+		Vector L = light->get_vector_to_light(impact);
+		Vector R = (L.dot(N.direction) * 2 * N.direction) - L;
+		Vector V = ray.origin - impact;
+		V = V.normalized();
+		float beta = std::pow(R.dot(V), mat.shininess);
+		float alpha = L.dot(N.direction);
+		if (alpha > 0)
+			color += mat.kd * (light->id) * alpha;
+		if (beta > 0)
+			color += mat.ks * (light->is) * beta;
+	}
+
+	return color;
+
+
     int nb_light = scene.nb_lights();
     Ray normal = obj.get_normal(impact, ray.origin);
     Material current_material = obj.get_material();

@@ -10,9 +10,7 @@ class Square : public Plan
     public:
         Square() = default;
         Square(float x, float y, float z);
-        bool intersect(const Ray& ray, Point& impact) const;
-
-    private:
+        bool intersect(const Ray& ray, Point& impact) const override;
 };
 
 #endif

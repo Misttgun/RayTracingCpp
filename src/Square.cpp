@@ -4,15 +4,20 @@ Square::Square(float x, float y, float z) : Plan(x, y, z) {}
 
 bool Square::intersect(const Ray& ray, Point &impact) const
 {
-    // - test d'intersection
-    bool is_intesecting = Plan::intersect(ray, impact);
+	Point ori = global_to_local(ray.origin);
+	Vector dire = global_to_local(ray.direction);
 
-    impact = global_to_local(impact);
+	if (dire[2] < 0)
+	{
+		float t = -ori[2] / dire[2];
+		impact = ori + t * dire;
 
-    // - test d'appartenance
-    is_intesecting &= (impact[0] >= -1 && impact[0] <= 1 && impact[1] >= -1 && impact[1] <= 1);
+		if (impact[0] <= 1 && impact[0] >= -1 && impact[1] <= 1 && impact[1] >= -1)
+		{
+			impact = local_to_global(impact);
+			return t >= 0;
+		}
+	}
 
-    impact = local_to_global(impact);
-
-    return is_intesecting;
+	return false;
 }

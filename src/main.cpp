@@ -14,7 +14,7 @@
 #include "Square.h"
 
 int main() {
-    /*
+	/*
 	HPoint vec(1, 2, 3, 2);
 	HPoint vac(4, 5, 6, 3);
 
@@ -54,7 +54,7 @@ int main() {
 
 	HVector product = mat * vec;
 
-    
+
 	std::cout << "(" << product[0] << ", " << product[1] << ", " << product[2] << ", " << product[3] << ")" << std::endl;
 	std::cout << "-----------------------------------" << std::endl;
 	std::cout << "(" << res.x << ", " << res.y << ", " << res.z << ", " << res.w << ")" << std::endl;
@@ -66,84 +66,94 @@ int main() {
 	adj.display();
 	std::cout << "-----------------------------------" << std::endl;
 	inverse.display();
-    */
-    Scene scene;
+	*/
+	Scene scene;
 
-    //scene.load("config.txt");
+	//scene.load("config.txt");
 
-    Material mat(Color(1, 0, 0), Color(1, 0, 0), Color(1, 0, 0), 1);
-    Material mat2(Color(1, 1, 0), Color(1, 1, 0), Color(1, 1, 0), 1);
+	Material mat(Color(1, 0, 0), Color(1, 0, 0), Color(1, 0, 0), 1);
+	Material mat2(Color(0, 0, 1), Color(0, 0, 1), Color(0, 0, 1), 1);
 
-    /*std::shared_ptr<Sphere> p = std::make_shared<Sphere>(Sphere());*/
-    std::shared_ptr<Square> p = std::make_shared<Square>(Square());
-    p->translate(0, 0, 1);
-    p->rotate_y(-45);
-    p->set_material(mat);
-    scene.add_object(p);
+	//std::shared_ptr<Sphere> p = std::make_shared<Sphere>(Sphere());
+	//std::shared_ptr<Plan> p = std::make_shared<Plan>(Plan());
+	//p->translate(0, 0, 2);
+	////p->rotate_y(-45);
+	//p->set_material(mat);
+	//scene.add_object(p);
 
-    
-    std::shared_ptr<Square> p2 = std::make_shared<Square>(Square());
-    p2->translate(0, 0, 1);
-    p2->set_material(mat2);
-    scene.add_object(p2);
-    
+	std::shared_ptr<Sphere> p2 = std::make_shared<Sphere>(Sphere());
+	//std::shared_ptr<Square> p2 = std::make_shared<Square>(Square());
+	p2->translate(0, 0, 1);
+	p2->set_material(mat2);
+	scene.add_object(p2);
 
-    std::shared_ptr<Light> l = std::make_shared<Light>(Light(0, 0, 10));
-    l->id = Color(0.5, 0.5, 0.5);
-    l->is = Color(0.7, 0.7, 0.7);
-    scene.add_light(l);
+	std::shared_ptr<Sphere> p3 = std::make_shared<Sphere>(Sphere());
+	p3->translate(1, 1, 4);
+	p3->set_material(mat2);
+	scene.add_object(p3);
 
-    scene.set_camera(Camera(0, 0, -10, 5));
-    scene.set_bg(Color(1, 1, 1));
-    scene.set_ambiant(Color(0.5, 0.5, 0.5));
+	std::shared_ptr<Sphere> p4 = std::make_shared<Sphere>(Sphere());
+	p4->translate(-1, 1, 4);
+	p4->set_material(mat2);
+	scene.add_object(p4);
 
-    std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "
-        << scene.nb_lights() << " lights\n";
 
-    
-    Renderer renderer;
-    Camera cam = scene.get_camera();
-    const int width = 200, height = 200;
-    Color render[width][height];
-    bool has_impact;
-    
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
-            float x = (float)j/width , y = (float)i/height ;
+	std::shared_ptr<Light> l = std::make_shared<Light>(Light(0, 2, 0));
+	l->id = Color(0.0f, 0.0f, 0.5f);
+	l->is = Color(0.0f, 0.0f, 0.7f);
+	scene.add_light(l);
 
-            Ray ray = cam.get_ray(x, y);
-            Point impact;
-            std::shared_ptr<Object> intersected = scene.closer_intersected(ray, impact);
+	scene.set_camera(Camera(0, 0, 0, 3));
+	scene.set_bg(Color(1, 1, 1));
+	scene.set_ambiant(Color(0.5, 0.5, 0.5));
 
-            if (intersected == nullptr)
-            {
-                render[i][j] = scene.get_background();
-                continue;
-            }
+	std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "
+		<< scene.nb_lights() << " lights\n";
 
-            render[i][j] = renderer.get_impact_color(ray, *intersected, impact, scene);
-            
-        }
-    }
 
-    std::ofstream file_ppm;
-    file_ppm.open("render.ppm");
+	Renderer renderer;
+	Camera cam = scene.get_camera();
+	const int width = 200, height = 200;
+	Color render[width][height];
+	bool has_impact;
 
-    file_ppm << "P3\n" << width << " " << height << "\n255\n";
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			float x = static_cast<float>(j) / width, y = static_cast<float>(i) / height;
 
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
-            file_ppm << render[i][j].r * 255 << " " << render[i][j].g * 255 << " " << render[i][j].b * 255 << " ";
-        }
+			Ray ray = cam.get_ray(x, y);
+			Point impact;
+			std::shared_ptr<Object> intersected = scene.closer_intersected(ray, impact);
 
-        file_ppm << "\n";
-    }
- 	//std::cout << "Res = " << res << std::endl;
-    std::cout << "DONE !\n";
+			if (intersected == nullptr)
+			{
+				render[i][j] = scene.get_background();
+				continue;
+			}
+
+			render[i][j] = renderer.get_impact_color(ray, *intersected, impact, scene);
+
+		}
+	}
+
+	std::ofstream file_ppm;
+	file_ppm.open("render.ppm");
+
+	file_ppm << "P3\n" << width << " " << height << "\n255\n";
+
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			file_ppm << render[i][j].r * 255 << " " << render[i][j].g * 255 << " " << render[i][j].b * 255 << " ";
+		}
+
+		file_ppm << "\n";
+	}
+	//std::cout << "Res = " << res << std::endl;
+	std::cout << "DONE !\n";
 	getchar();
 	return 0;
 }

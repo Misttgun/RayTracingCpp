@@ -7,12 +7,12 @@
 
 class Plan : public Object
 {
-    public:
-        Plan() = default;
-        Plan(float x, float y, float z) : Object(x, y, z) {};
+public:
+	Plan() = default;
+	Plan(float x, float y, float z) : Object(x, y, z) {};
 
-        bool intersect(const Ray& ray, Point& impact) const;
-        virtual Ray get_normal(const Point& impact, const Point& observator) const;
+	bool intersect(const Ray& ray, Point& impact) const override;
+	Ray get_normal(const Point& impact, const Point& observator) const override;
 };
 
 #endif
