@@ -10,6 +10,7 @@ class Matrix
 {
 public:
 	Matrix();
+    Matrix(float diag);
 	Matrix(const Matrix& mat);
 	~Matrix()=default;
 

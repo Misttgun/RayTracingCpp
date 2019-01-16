@@ -34,6 +34,9 @@ class Scene
         inline void add_light(std::shared_ptr<Light> light) { _lights.push_back(light); }
         inline void add_object(std::shared_ptr<Object> object) { _objects.push_back(object); }
         inline Camera get_camera() const { return _camera; }
+        inline void set_camera(const Camera& c) { _camera = c; }
+        inline void set_ambiant(const Color& c) { _ambiant = c; }
+        inline void set_bg(const Color& c) { _background = c; }
         
 
         float compute_distance(const Point& a, const Point& b) const;

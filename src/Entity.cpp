@@ -3,24 +3,28 @@
 #include "HVector.h"
 
 #include <cmath>
+#include <iostream>
+#define M_PI 3.14159265
 
 
 Entity::Entity ()
 {
-    Matrix mat;
-
-    mat(0, 0) = 1;
-    mat(1, 1) = 1;
-    mat(2, 2) = 1;
-    mat(3, 3) = 1;
+    Matrix mat(1.0f);
 
     trans = mat;
-    transInv = trans.inverse();
+    transInv = mat;
 }
 
 Entity::Entity(const float x, const float y, const float z)
 	:position(x, y, z)
-{}
+{
+    Matrix mat(1.f);
+    trans = mat;
+    transInv = mat;
+
+    translate(x, y, z);
+
+}
 
 Entity::Entity(const Entity & entity)
 {
@@ -38,38 +42,44 @@ Entity & Entity::operator=(const Entity & other)
 
 void Entity::translate(const float x, const float y, const float z)
 {
-	Matrix mat;
+    std::cout << "Translate " << x << "," << y << "," << z << std::endl;
+
+	Matrix mat(1.0f);
 	mat(0, 3) = x;
 	mat(1, 3) = y;
 	mat(2, 3) = z;
 
-	//trans = mat * trans;
-    trans = trans * mat;
+	trans = mat * trans;
 
 	transInv = trans.inverse();
 }
 
 void Entity::rotate_x(const float deg)
 {
-	Matrix mat;
-	mat(1, 1) = cos(deg);
-	mat(1, 2) = -sin(deg);
-	mat(2, 1) = sin(deg);
-	mat(2, 2) = cos(deg);
+    std::cout << "Rotate x " << deg << std::endl;
+    float rad = deg * M_PI / 180;
+
+	Matrix mat(1.0f);
+	mat(1, 1) = cos(rad);
+	mat(1, 2) = -sin(rad);
+	mat(2, 1) = sin(rad);
+	mat(2, 2) = cos(rad);
 	
-    //trans = mat * trans;
-    trans = trans * mat;
+    trans = mat * trans;
 
 	transInv = trans.inverse();
 }
 
 void Entity::rotate_y(const float deg)
 {
-	Matrix mat;
-	mat(0, 0) = cos(deg);
-	mat(0, 2) = sin(deg);
-	mat(2, 0) = -sin(deg);
-	mat(2, 2) = cos(deg);
+    std::cout << "Rotate y " << deg << std::endl;
+    float rad = deg * M_PI / 180/*deg*/;
+	Matrix mat(1.0f);
+
+	mat(0, 0) = cos(rad);
+	mat(0, 2) = sin(rad);
+	mat(2, 0) = -sin(rad);
+	mat(2, 2) = cos(rad);
 
 	trans = mat * trans;
 
@@ -78,11 +88,14 @@ void Entity::rotate_y(const float deg)
 
 void Entity::rotate_z(const float deg)
 {
-	Matrix mat;
-	mat(0, 0) = cos(deg);
-	mat(0, 1) = -sin(deg);
-	mat(1, 0) = sin(deg);
-	mat(1, 1) = cos(deg);
+    std::cout << "Rotate z " << deg << std::endl;
+    float rad = deg * M_PI / 180;
+
+	Matrix mat(1.0f);
+	mat(0, 0) = cos(rad);
+	mat(0, 1) = -sin(rad);
+	mat(1, 0) = sin(rad);
+	mat(1, 1) = cos(rad);
 
 	trans = mat * trans;
 	transInv = trans.inverse();
@@ -90,13 +103,26 @@ void Entity::rotate_z(const float deg)
 
 void Entity::scale(const float factor)
 {
-	Matrix mat;
+    std::cout << "Scale " << factor << std::endl;
+
+	Matrix mat(1.0f);
 	mat(0, 0) = factor;
 	mat(1, 1) = factor;
 	mat(2, 2) = factor;
 
-	trans = mat * trans;
+    trans.display();
+
+    std::cout << "--- scale factor << " << factor << std::endl;
+
+    trans = mat * trans;
+
+    trans.display();
+
 	transInv = trans.inverse();
+
+
+    std::cout << " --- \n";
+    transInv.display();
 }
 
 Point Entity::local_to_global(const Point & p) const

@@ -113,8 +113,13 @@ float Vector::norm() const
 
 Vector Vector::normalized()
 {
-	assert(norm() != 0.0f);
-	*this /= norm();
+	//assert(norm() != 0.0f);
+
+    float norm_val = norm();
+
+    if (norm_val > 0.f)
+	    *this /= norm_val;
+
 	return *this;
 }
 

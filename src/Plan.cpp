@@ -1,4 +1,5 @@
 #include "Plan.h"
+#include <iostream>
 
 bool Plan::intersect (const Ray& ray, Point& impact) const
 {
@@ -9,11 +10,11 @@ bool Plan::intersect (const Ray& ray, Point& impact) const
     float dot_product = normal_local_plan.dot(local_ray.direction);
 
     // - rayon parallèle au plan
-    if (dot_product == 0)
+    if (dot_product > 0.f)
         return false;
 
     // - calcul du point d'impact
-    float d = normal_local_plan.dot(local_ray.origin);
+    float d = normal_local_plan.dot(local_ray.origin - origin_local_plan);
     float t = -d / dot_product;
 
     // - vecteur dirigé plan
@@ -38,6 +39,8 @@ Ray Plan::get_normal(const Point& impact, const Point& observator) const
     // - dirige la normale du bon côté
     if (local_direction.dot(local_ray_direction) > 0)
         local_direction.z = -1;
+
+
 
     return Ray(impact, local_to_global(local_direction));
 }

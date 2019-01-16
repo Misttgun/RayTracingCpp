@@ -134,10 +134,17 @@ void Scene::load_object(std::istringstream& params)
             return;
     }
 
-    o->translate(tr_x, tr_y, tr_z);
-    o->rotate_x(r_x);
-    o->rotate_y(r_y);
-    o->rotate_z(r_z);
+    if (tr_x > 0.00001f || tr_x < -0.00001f && tr_y > 0.00001f || tr_y < -0.00001f && tr_z > 0.00001f || tr_z < -0.00001f)
+        o->translate(tr_x, tr_y, tr_z);
+    
+    if (r_x > 0.00001f || r_x < -0.00001f)
+        o->rotate_x(r_x);
+
+    if (r_y > 0.00001f || r_y < -0.00001f)
+        o->rotate_y(r_y);
+
+    if (r_z > 0.00001f || r_z < -0.00001f)
+        o->rotate_z(r_z);
     o->scale(s);
     o->set_material(mat);
     add_object(o);

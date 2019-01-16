@@ -44,5 +44,9 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Point&
     }
 
     return res;
+}
 
+void Renderer::save_ppm(std::string file, Color** pixel_map, int width, int height) const
+{
+    
 }

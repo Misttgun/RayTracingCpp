@@ -8,7 +8,14 @@ Matrix::Matrix()
 {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
-            m_tab[i][j] = i == j ? 1.0f : 0.0f;
+            m_tab[i][j] = 0.0f;
+}
+
+Matrix::Matrix(float diag)
+{
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            m_tab[i][j] = i == j ? diag : 0.0f;
 }
 
 Matrix::Matrix(const Matrix & mat)
