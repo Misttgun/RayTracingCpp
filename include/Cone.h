@@ -11,8 +11,8 @@ class Cone : public Object
         Cone() = default;
         Cone(float x, float y, float z) : Object(x, y, z) {};
 
-        bool intersect(const Ray& ray, Point& impact) const;
-        Ray get_normal(const Point& impact, const Point& observator) const;
+        bool intersect(const Ray& ray, Vector& impact) const override;
+        Ray get_normal(const Vector& impact, const Vector& observator) const override;
 };
 
 #endif

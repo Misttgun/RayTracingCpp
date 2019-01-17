@@ -1,8 +1,6 @@
 #include "Scene.h"
 #include "Vector.h"
-#include "Point.h"
 #include "HVector.h"
-#include "HPoint.h"
 #include "Matrix.h"
 #include "Renderer.h"
 
@@ -14,6 +12,7 @@
 #include "Square.h"
 #include "Cylinder.h"
 #include <algorithm>
+#include "Cube.h"
 
 int main() {
 	/*
@@ -79,7 +78,7 @@ int main() {
 
 	//std::shared_ptr<Sphere> p = std::make_shared<Sphere>(Sphere());
 	std::shared_ptr<Plan> p = std::make_shared<Plan>(Plan());
-	p->translate(0, 0, 2);
+	p->translate(0, 0, 6);
 	p->set_material(mat);
 	scene.add_object(p);
 
@@ -91,7 +90,7 @@ int main() {
 
 	std::shared_ptr<Sphere> p3 = std::make_shared<Sphere>(Sphere());
 	p3->translate(1, 1, 4);
-	p3->set_material(mat2);
+	p3->set_material(mat3);
 	scene.add_object(p3);
 
 	std::shared_ptr<Sphere> p4 = std::make_shared<Sphere>(Sphere());
@@ -99,14 +98,14 @@ int main() {
 	p4->set_material(mat2);
 	scene.add_object(p4);
 
-    std::shared_ptr<Cylinder> p5 = std::make_shared<Cylinder>(Cylinder());
+    std::shared_ptr<Cube> p5 = std::make_shared<Cube>(Cube());
     p5->translate(-1, 1, 3);
     //p5->rotate_x(45);
     p5->set_material(mat3);
     scene.add_object(p5);
 
 
-	std::shared_ptr<Light> l = std::make_shared<Light>(Light(0, 2, 0));
+	std::shared_ptr<Light> l = std::make_shared<Light>(Light(2, 2, 0));
 	l->id = Color(0.0f, 0.0f, 0.5f);
 	l->is = Color(0.0f, 0.0f, 0.7f);
 	scene.add_light(l);
@@ -141,7 +140,7 @@ int main() {
 			float x = static_cast<float>(j) / size, y = static_cast<float>(i) / size;
 
 			Ray ray = cam.get_ray(x, y);
-			Point impact;
+            Vector impact;
 			std::shared_ptr<Object> intersected = scene.closer_intersected(ray, impact);
 
 			if (intersected == nullptr)

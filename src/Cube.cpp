@@ -1,6 +1,6 @@
 #include "Cube.h"
 
-bool Cube::intersect(const Ray& ray, Point &impact) const
+bool Cube::intersect(const Ray& ray, Vector &impact) const
 {
     Ray local_ray = local_to_global(ray);
 
@@ -18,6 +18,7 @@ bool Cube::intersect(const Ray& ray, Point &impact) const
         if (t1 > t2)
             std::swap(t1, t2);
 
+        
         if (t1 > tnear)
             tnear = t1;
 
@@ -33,22 +34,22 @@ bool Cube::intersect(const Ray& ray, Point &impact) const
 
     t = tnear;
 
-    impact = local_to_global(local_ray.origin + t * local_ray.direction);
+    impact = local_to_global_point(local_ray.origin + t * local_ray.direction);
     
     return true;
 }
 
-Ray Cube::get_normal(const Point& impact, const Point& observator) const
+Ray Cube::get_normal(const Vector& impact, const Vector& observator) const
 {
-    Point local_obs = global_to_local(observator);
-    Point local_impact = global_to_local(impact);
+    Vector local_obs = global_to_local_point(observator);
+    Vector local_impact = global_to_local_point(impact);
 
     Vector local_ray_direction(local_impact - local_obs);
     local_ray_direction = local_ray_direction.normalized();
 
     // - l'origine se trouve au centre 
     Vector normal_origin(0, local_impact[1], 0);
-    Point local_normal(local_impact);
+    Vector local_normal(local_impact);
 
     if (local_impact[0] < -0.9999 && local_impact[0] > -1.0001)
         local_normal[0] = 2;
@@ -72,7 +73,7 @@ Ray Cube::get_normal(const Point& impact, const Point& observator) const
     local_normal_direction = local_normal_direction.normalized();
 
     if (local_ray_direction.dot(local_normal_direction) < 0)
-        return Ray(impact, local_to_global(local_normal_direction).normalized());
+        return Ray(impact, local_to_global_vector(local_normal_direction).normalized());
 
-    return Ray(impact, local_to_global(local_normal_direction * -1).normalized());
+    return Ray(impact, local_to_global_vector(local_normal_direction * -1).normalized());
 }

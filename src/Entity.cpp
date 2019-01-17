@@ -1,5 +1,4 @@
 #include "Entity.h"
-#include "HPoint.h"
 #include "HVector.h"
 
 #include <cmath>
@@ -16,7 +15,6 @@ Entity::Entity ()
 }
 
 Entity::Entity(const float x, const float y, const float z)
-	:position(x, y, z)
 {
 	const Matrix mat(1.f);
     trans = mat;
@@ -73,7 +71,7 @@ void Entity::rotate_x(const float deg)
 void Entity::rotate_y(const float deg)
 {
     std::cout << "Rotate y " << deg << std::endl;
-	const float rad = deg * M_PI / 180/*deg*/;
+	const float rad = deg * M_PI / 180;
 	Matrix mat(1.0f);
 
 	mat(0, 0) = cos(rad);
@@ -125,6 +123,7 @@ void Entity::scale(const float factor)
     transInv.display();
 }
 
+/*
 Point Entity::local_to_global(const Point & p) const
 {
 	const HPoint point(p.x, p.y, p.z, 1);
@@ -137,15 +136,6 @@ Vector Entity::local_to_global(const Vector & v) const
 	return  transInv * vector;
 }
 
-Ray Entity::local_to_global(const Ray & r) const
-{
-	const Vector v = r.direction;
-	const Point p = r.origin;
-	const HPoint point(p.x, p.y, p.z, 1);
-	const HVector vector(v.x, v.y, v.z, 0);
-	
-	return Ray(transInv * point, transInv * vector);
-}
 
 Point Entity::global_to_local(const Point & p) const
 {
@@ -157,16 +147,63 @@ Vector Entity::global_to_local(const Vector & v) const
 {
 	const HVector vector(v.x, v.y, v.z, 0);
 	return  trans * vector;
+}*/
+
+// - point coordinates
+Vector Entity::local_to_global_point(const Vector& vec) const
+{
+    const HVector h_ori(vec.x, vec.y, vec.z, 1);
+    HVector res = transInv * h_ori;
+
+    return Vector(res.x, res.y, res.z);
+}
+
+Vector Entity::global_to_local_point(const Vector& vec) const
+{
+    const HVector h_ori(vec.x, vec.y, vec.z, 1);
+    HVector res = trans * h_ori;
+
+    return Vector(res.x, res.y, res.z);
+}
+
+// - vector coordinates
+Vector Entity::local_to_global_vector(const Vector& vec) const
+{
+    const HVector h_vec(vec.x, vec.y, vec.z, 0);
+    HVector res = transInv * h_vec;
+
+    return Vector(res.x, res.y, res.z);
+}
+
+Vector Entity::global_to_local_vector(const Vector& vec) const
+{
+    const HVector h_vec(vec.x, vec.y, vec.z, 0);
+    HVector res = trans * h_vec;
+
+    return Vector(res.x, res.y, res.z);
+}
+
+// - ray coordinates
+Ray Entity::local_to_global(const Ray & r) const
+{
+    const Vector dir = r.direction;
+    const Vector ori = r.origin;
+
+    const HVector h_ori(ori.x, ori.y, ori.z, 1);
+    const HVector h_dir(dir.x, dir.y, dir.z, 0);
+
+    return Ray(transInv * h_ori, transInv * h_dir);
 }
 
 Ray Entity::global_to_local(const Ray& r) const
 {
-	const Vector v = r.direction;
-	const Point p = r.origin;
-	const HPoint point(p.x, p.y, p.z, 1);
-	const HVector vector(v.x, v.y, v.z, 0);
+	const Vector dir = r.direction;
+	const Vector ori = r.origin;
 
-	return Ray(trans * point, trans * vector);
+	const HVector h_ori(ori.x, ori.y, ori.z, 1);
+	const HVector h_dir(dir.x, dir.y, dir.z, 0);
+
+	return Ray(trans * h_ori, trans * h_dir);
 }
 
 bool Entity::solve_polynomial_2(float a, float b, float c, float& t) const

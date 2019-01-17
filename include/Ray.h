@@ -2,12 +2,11 @@
 #define RAY_H
 
 #include "Vector.h"
-#include "Point.h"
 
 class Ray
 {
 public:
-	Ray(const Point& p, const Vector& d);
+	Ray(const Vector& p, const Vector& d);
 	Ray(float ox, float oy, float oz, float dx, float dy, float dz);
 	Ray(const Ray &ray);
 	Ray& operator=(const Ray &ray);
@@ -20,7 +19,7 @@ public:
 		swap(first.origin, second.origin);
 	}
 
-	Point origin;
+	Vector origin;
 	Vector direction;
 };
 

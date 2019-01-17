@@ -11,7 +11,6 @@
 #include "Object.h"
 #include "Camera.h"
 #include "Ray.h"
-#include "Point.h"
 #include "Color.h"
 #include "Matrix.h"
 #include "Light.h"
@@ -23,7 +22,7 @@ class Scene
 
         void render();
         void load(const std::string& file);
-        std::shared_ptr<Object> closer_intersected(const Ray& ray, Point& impact) const;
+        std::shared_ptr<Object> closer_intersected(const Ray& ray, Vector& impact) const;
 
         inline Color get_background() const { return _background; }
         inline Color get_ambiant() const { return _ambiant; }
@@ -39,7 +38,7 @@ class Scene
         inline void set_bg(const Color& c) { _background = c; }
         
 
-        float compute_distance(const Point& a, const Point& b) const;
+        float compute_distance(const Vector& a, const Vector& b) const;
 
     private:
         void load_globals(std::istringstream& params, int& nb_obj);

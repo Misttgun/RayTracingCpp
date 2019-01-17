@@ -1,6 +1,6 @@
 #include "Cylinder.h"
 
-bool Cylinder::intersect(const Ray& ray, Point& impact) const
+bool Cylinder::intersect(const Ray& ray, Vector& impact) const
 {
     Ray local_ray = global_to_local(ray);
 
@@ -14,15 +14,15 @@ bool Cylinder::intersect(const Ray& ray, Point& impact) const
     if (!Entity::solve_polynomial_2(a, b, c, t))
         return false;
 
-    impact = local_to_global(local_ray.origin + t * local_ray.direction);
+    impact = local_to_global_point(local_ray.origin + t * local_ray.direction);
 
     return true;
 }
 
-Ray Cylinder::get_normal(const Point& impact, const Point& observator) const
+Ray Cylinder::get_normal(const Vector& impact, const Vector& observator) const
 {
-    Point local_obs = global_to_local(observator);
-    Point local_impact = global_to_local(impact);
+    Vector local_obs = global_to_local_point(observator);
+    Vector local_impact = global_to_local_point(impact);
 
     Vector local_ray_direction(local_impact - local_obs);
     local_ray_direction = local_ray_direction.normalized();
@@ -32,7 +32,7 @@ Ray Cylinder::get_normal(const Point& impact, const Point& observator) const
     local_normal = local_normal.normalized();
 
     if (local_ray_direction.dot(local_normal) < 0)
-        return Ray(impact, local_to_global(local_normal));
+        return Ray(impact, local_to_global_vector(local_normal));
 
-    return Ray(impact, local_to_global(local_normal * -1));
+    return Ray(impact, local_to_global_vector(local_normal * -1));
 }

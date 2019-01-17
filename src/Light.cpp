@@ -22,24 +22,32 @@ Light& Light::operator=(const Light& rhs)
 	return *this;
 }
 
-Ray Light::get_ray_to_light(const Point& p) const
+Ray Light::get_ray_to_light(const Vector& p) const
 {
-	Vector dir = position - p;
-	return Ray(p, dir);
+    Vector local_p = global_to_local_point(p);
+
+	Vector dir = -1 * p;
+	return local_to_global(Ray(local_p, dir));
 }
 
-Ray Light::get_ray_from_light(const Point& p) const
+Ray Light::get_ray_from_light(const Vector& p) const
 {
-	Vector dir = p - position;
-	return Ray(position, dir);
+    Vector local_p = global_to_local_point(p);
+	Vector dir = local_p;
+
+	return local_to_global(Ray(Vector(0,0,0), dir));
 }
 
-Vector Light::get_vector_to_light(const Point& p) const
+Vector Light::get_vector_to_light(const Vector& p) const
 {
-	return position - p;
+    Vector local_p = global_to_local_point(p);
+
+	return local_to_global_vector(-1 * local_p);
 }
 
-Vector Light::get_vector_from_light(const Point& p) const
+Vector Light::get_vector_from_light(const Vector& p) const
 {
-	return p - position;
+    Vector local_p = global_to_local_vector(p);
+
+	return local_to_global_vector(p);
 }

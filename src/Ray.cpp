@@ -2,7 +2,7 @@
 
 #include <utility>
 
-Ray::Ray(const Point& p, const Vector& d)
+Ray::Ray(const Vector& p, const Vector& d)
 	:origin(p), direction(d)
 {}
 

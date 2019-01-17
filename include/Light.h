@@ -18,10 +18,10 @@ public:
 
 	Light& operator= (const Light& rhs);
 
-	Ray get_ray_to_light(const Point& p) const;
-	Ray get_ray_from_light(const Point& p) const;
-	Vector get_vector_to_light(const Point& p) const;
-	Vector get_vector_from_light(const Point& p) const;
+	Ray get_ray_to_light(const Vector& p) const;
+	Ray get_ray_from_light(const Vector& p) const;
+	Vector get_vector_to_light(const Vector& p) const;
+	Vector get_vector_from_light(const Vector& p) const;
 
 	friend void swap(Light& first, Light& second) noexcept
 	{

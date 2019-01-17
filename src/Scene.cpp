@@ -175,12 +175,12 @@ void Scene::load_light(std::istringstream& params)
     add_light(light);
 }
 
-std::shared_ptr<Object> Scene::closer_intersected(const Ray& ray, Point& impact) const
+std::shared_ptr<Object> Scene::closer_intersected(const Ray& ray, Vector& impact) const
 {
     float t = -1.f;
     float current_distance = INFINITY;
 
-    Point tmp_impact;
+    Vector tmp_impact;
     std::shared_ptr<Object> tmp_obj = nullptr;
 
     for (auto object : _objects)
@@ -204,7 +204,7 @@ std::shared_ptr<Object> Scene::closer_intersected(const Ray& ray, Point& impact)
     return tmp_obj;
 }
 
-float Scene::compute_distance(const Point& a, const Point& b) const
+float Scene::compute_distance(const Vector& a, const Vector& b) const
 {
     return sqrt(pow(b[0] - a[0], 2) + pow(b[1] - a[1], 2) + pow(b[2] - a[2], 2));
 }

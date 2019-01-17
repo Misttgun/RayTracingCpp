@@ -2,8 +2,8 @@
 #ifndef HVECTOR_H
 #define HVECTOR_H
 
-#include "Point.h"
 #include <utility>
+#include "Vector.h"
 
 class HVector
 {
@@ -26,7 +26,6 @@ public:
 	float operator[](int i) const;
 	float& operator[](int i);
 
-	operator Point() const;
 	operator Vector() const;
 
 	float dot(const HVector &vec) const;

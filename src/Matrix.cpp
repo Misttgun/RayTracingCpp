@@ -1,8 +1,8 @@
 #include "Matrix.h"
-#include "HPoint.h"
 
 #include <iostream>
 #include <cassert>
+#include "HVector.h"
 
 Matrix::Matrix()
 {

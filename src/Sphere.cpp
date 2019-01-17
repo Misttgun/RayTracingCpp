@@ -1,15 +1,15 @@
 #include "Sphere.h"
 
-bool Sphere::intersect(const Ray& ray, Point& impact) const
+bool Sphere::intersect(const Ray& ray, Vector& impact) const
 {
-	Point ori = global_to_local(ray.origin);
-	Vector dir = global_to_local(ray.direction).normalized();
+	Vector ori = global_to_local_point(ray.origin);
+	Vector dir = global_to_local_vector(ray.direction).normalized();
 
 	float t0;
 	float t1;
 	float t;
 
-	Point center(0, 0, 0);
+	Vector center(0, 0, 0);
 	Vector L = center - ori;
 
 	float tca = L.dot(dir);
@@ -30,7 +30,7 @@ bool Sphere::intersect(const Ray& ray, Point& impact) const
 
 	t = t0;
 
-	impact = local_to_global(ori + t * dir);
+	impact = local_to_global_point(ori + t * dir);
 	return true;
 
     /*
@@ -79,18 +79,19 @@ bool Sphere::intersect(const Ray& ray, Point& impact) const
     */
 }
 
-Ray Sphere::get_normal(const Point& impact, const Point& observator) const
+Ray Sphere::get_normal(const Vector& impact, const Vector& observator) const
 {
-    Point local_obs = global_to_local(observator);
-    Point local_impact = global_to_local(impact);
+    Vector local_obs = global_to_local_point(observator);
+    Vector local_impact = global_to_local_point(impact);
+    Vector local_origin(0, 0, 0);
 
     Vector local_ray_direction(local_impact - local_obs);
-    Vector local_normal(local_impact);
+    Vector local_normal(local_impact - local_origin);
     
     local_normal = local_normal.normalized();
 
     if (local_ray_direction.dot(local_normal) < 0)
-        return Ray(impact, local_to_global(local_normal).normalized());
+        return Ray(impact, local_to_global_vector(local_normal).normalized());
 
-    return Ray(impact, local_to_global((local_normal * -1)).normalized());
+    return Ray(impact, local_to_global_vector((local_normal * -1)).normalized());
 }

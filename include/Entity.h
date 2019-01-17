@@ -4,7 +4,6 @@
 
 #include "Matrix.h"
 #include "Ray.h"
-#include "Point.h"
 
 #include <utility>
 
@@ -35,15 +34,20 @@ public:
     bool solve_polynomial_2(float a, float b, float c, float& t) const;
     bool is_epsilon(float value, float test, float delta) const;
 
-	Point local_to_global(const Point& p) const;
-	Vector local_to_global(const Vector& v) const;
-	Ray local_to_global(const Ray& r) const;
-	Point global_to_local(const Point& p) const;
-	Vector global_to_local(const Vector& v) const;
+    // - ray coordinates
+    Ray local_to_global(const Ray& r) const;
 	Ray global_to_local(const Ray& r) const;
 
+    // - point coordinates
+    Vector local_to_global_point(const Vector& vec) const;
+    Vector global_to_local_point(const Vector& vec) const;
+
+    // - vector coordinates
+    Vector local_to_global_vector(const Vector& vec) const;
+    Vector global_to_local_vector(const Vector& vec) const;
+
 protected:
-	Point position;
+	Vector position;
 	Matrix trans;
 	Matrix transInv;
 };

@@ -1,13 +1,13 @@
 #include "Plan.h"
 
-bool Plan::intersect(const Ray& ray, Point& impact) const
+bool Plan::intersect(const Ray& ray, Vector& impact) const
 {
     
-	Point pOri(0, 0, 0);
+    Vector pOri(0, 0, 0);
 	Vector pDir(0, 0, -1);
 
-	Point ori = global_to_local(ray.origin);
-	Vector dire = global_to_local(ray.direction);
+    Vector ori = global_to_local_point(ray.origin);
+	Vector dire = global_to_local_vector(ray.direction);
 
 	float denom = dire.dot(pDir);
 
@@ -17,17 +17,17 @@ bool Plan::intersect(const Ray& ray, Point& impact) const
 		float t = res.dot(pDir) / denom;
 
         
-		impact = local_to_global(static_cast<Point>(ori + t * dire.normalized()));
+		impact = local_to_global_point(ori + t * dire.normalized());
 		return t >= 0;
 	}
 
 	return false;
 }
 
-Ray Plan::get_normal(const Point& impact, const Point& observator) const
+Ray Plan::get_normal(const Vector& impact, const Vector& observator) const
 {
-	Point local_impact = global_to_local(impact);
-	Point local_obs = global_to_local(observator);
+    Vector local_impact = global_to_local_point(impact);
+    Vector local_obs = global_to_local_point(observator);
 
 	Vector local_direction(0, 0, 1);
 	Vector local_ray_direction = (local_impact - local_obs);
@@ -38,5 +38,5 @@ Ray Plan::get_normal(const Point& impact, const Point& observator) const
 
 
 
-	return Ray(impact, local_to_global(local_direction));
+	return Ray(impact, local_to_global_vector(local_direction));
 }

@@ -111,11 +111,6 @@ float& HVector::operator[](const int i)
 	return w;
 }
 
-HVector::operator Point() const
-{
-	return Point(x, y, z);
-}
-
 HVector::operator Vector() const
 {
 	return Vector(x, y, z);

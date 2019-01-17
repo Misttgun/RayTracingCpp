@@ -1,8 +1,8 @@
 #include "Renderer.h"
 
-Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Point& impact, const Scene& scene) const
+Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene) const
 {
-    
+    /*
 	int nLight = scene.nb_lights();
 	Material mat = obj.get_material();
 	Ray N = obj.get_normal(impact, ray.origin);
@@ -25,8 +25,8 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Point&
 
 	return color;
     
-
-    /*
+    */
+    
     int nb_light = scene.nb_lights();
     Ray normal = obj.get_normal(impact, ray.origin);
     Material current_material = obj.get_material();
@@ -69,7 +69,7 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Point&
     }
 
     return res;
-    */
+    
     
 }
 

@@ -1,6 +1,6 @@
 #include "Cone.h"
 
-bool Cone::intersect(const Ray& ray, Point& impact) const
+bool Cone::intersect(const Ray& ray, Vector& impact) const
 {
     float y_min = 0;
     float y_max = 1;
@@ -15,25 +15,25 @@ bool Cone::intersect(const Ray& ray, Point& impact) const
     if (!Entity::solve_polynomial_2(a, b, c, t))
         return false;
 
-    Point local_impact = local_ray.origin + t * local_ray.direction;
+    Vector local_impact = local_ray.origin + t * local_ray.direction;
 
     // - on teste que le point d'impact se trouve dans le cone simple
     // fini et ouvert
     if (local_impact[1] < y_min || local_impact[1] > y_max)
         return false;
 
-    impact = local_to_global(local_impact);
+    impact = local_to_global_point(local_impact);
 
     return true;
 }
 
-Ray Cone::get_normal(const Point& impact, const Point& observator) const
+Ray Cone::get_normal(const Vector& impact, const Vector& observator) const
 {
     // - on dispose du point d'impact et du sommet du cone (0, 0, 0)
     // à partir de ces deux informations on peut calculer un vecteur normal
 
-    Point local_impact = global_to_local(impact);
-    Point local_obs = global_to_local(observator);
+    Vector local_impact = global_to_local_point(impact);
+    Vector local_obs = global_to_local_point(observator);
 
     Vector local_ray_direction = Vector(local_impact - local_obs);
     Vector plan = Vector(local_impact);
@@ -57,7 +57,7 @@ Ray Cone::get_normal(const Point& impact, const Point& observator) const
     local_normal = local_normal.normalized();
 
     if (local_ray_direction.dot(local_normal) < 0)
-        return Ray(impact, local_to_global(local_normal));
+        return Ray(impact, local_to_global_vector(local_normal));
 
-    return Ray(impact, local_to_global(local_normal * -1));
+    return Ray(impact, local_to_global_vector(local_normal * -1));
 }
