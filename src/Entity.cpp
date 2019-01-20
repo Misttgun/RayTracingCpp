@@ -3,7 +3,7 @@
 
 #include <cmath>
 #include <iostream>
-#define M_PI 3.14159265
+#define M_PI static_cast<float>(3.14159265)
 
 
 Entity::Entity ()
@@ -55,7 +55,7 @@ void Entity::translate(const float x, const float y, const float z)
 void Entity::rotate_x(const float deg)
 {
     std::cout << "Rotate x " << deg << std::endl;
-	const float rad = deg * M_PI / 180;
+	const float rad = deg * M_PI / 180.f;
 
 	Matrix mat(1.0f);
 	mat(1, 1) = cos(rad);
@@ -71,7 +71,7 @@ void Entity::rotate_x(const float deg)
 void Entity::rotate_y(const float deg)
 {
     std::cout << "Rotate y " << deg << std::endl;
-	const float rad = deg * M_PI / 180;
+	const float rad = deg * M_PI / 180.f;
 	Matrix mat(1.0f);
 
 	mat(0, 0) = cos(rad);
@@ -87,7 +87,7 @@ void Entity::rotate_y(const float deg)
 void Entity::rotate_z(const float deg)
 {
     std::cout << "Rotate z " << deg << std::endl;
-	const float rad = deg * M_PI / 180;
+	const float rad = deg * M_PI / 180.f;
 
 	Matrix mat(1.0f);
 	mat(0, 0) = cos(rad);
@@ -152,7 +152,7 @@ Vector Entity::global_to_local(const Vector & v) const
 // - point coordinates
 Vector Entity::local_to_global_point(const Vector& vec) const
 {
-    const HVector h_ori(vec.x, vec.y, vec.z, 1);
+    const HVector h_ori(vec.x, vec.y, vec.z, 1.f);
     HVector res = transInv * h_ori;
 
     return Vector(res.x, res.y, res.z);
@@ -160,7 +160,7 @@ Vector Entity::local_to_global_point(const Vector& vec) const
 
 Vector Entity::global_to_local_point(const Vector& vec) const
 {
-    const HVector h_ori(vec.x, vec.y, vec.z, 1);
+    const HVector h_ori(vec.x, vec.y, vec.z, 1.f);
     HVector res = trans * h_ori;
 
     return Vector(res.x, res.y, res.z);
@@ -169,7 +169,7 @@ Vector Entity::global_to_local_point(const Vector& vec) const
 // - vector coordinates
 Vector Entity::local_to_global_vector(const Vector& vec) const
 {
-    const HVector h_vec(vec.x, vec.y, vec.z, 0);
+    const HVector h_vec(vec.x, vec.y, vec.z, 0.f);
     HVector res = transInv * h_vec;
 
     return Vector(res.x, res.y, res.z);
@@ -177,7 +177,7 @@ Vector Entity::local_to_global_vector(const Vector& vec) const
 
 Vector Entity::global_to_local_vector(const Vector& vec) const
 {
-    const HVector h_vec(vec.x, vec.y, vec.z, 0);
+    const HVector h_vec(vec.x, vec.y, vec.z, 0.f);
     HVector res = trans * h_vec;
 
     return Vector(res.x, res.y, res.z);
@@ -189,8 +189,8 @@ Ray Entity::local_to_global(const Ray & r) const
     const Vector dir = r.direction;
     const Vector ori = r.origin;
 
-    const HVector h_ori(ori.x, ori.y, ori.z, 1);
-    const HVector h_dir(dir.x, dir.y, dir.z, 0);
+    const HVector h_ori(ori.x, ori.y, ori.z, 1.f);
+    const HVector h_dir(dir.x, dir.y, dir.z, 0.f);
 
     return Ray(transInv * h_ori, transInv * h_dir);
 }
@@ -200,8 +200,8 @@ Ray Entity::global_to_local(const Ray& r) const
 	const Vector dir = r.direction;
 	const Vector ori = r.origin;
 
-	const HVector h_ori(ori.x, ori.y, ori.z, 1);
-	const HVector h_dir(dir.x, dir.y, dir.z, 0);
+	const HVector h_ori(ori.x, ori.y, ori.z, 1.f);
+	const HVector h_dir(dir.x, dir.y, dir.z, 0.f);
 
 	return Ray(trans * h_ori, trans * h_dir);
 }
@@ -209,14 +209,14 @@ Ray Entity::global_to_local(const Ray& r) const
 bool Entity::solve_polynomial_2(float a, float b, float c, float& t) const
 {
 	const float delta = b * b - 4 * a * c;
-    t = -1;
+    t = -1.0f;
 
     // - pas de solution réelle
     if (delta < 0)
         return false;
 
     // 1 solution réelle
-    if (delta == 0)
+    if (delta <= 0.0001f  && delta >= -0.0001f)
         t = -b / (2 * a);
 
     // - deux solutions réelles
@@ -226,15 +226,15 @@ bool Entity::solve_polynomial_2(float a, float b, float c, float& t) const
         float t2 = (-b + sqrt(delta)) / (2 * a);
 
         // - le rayon est dirigé à l'opposé de l'objet
-        if (t1 < 0 && t2 < 0)
+        if (t1 < 0.f && t2 < 0.f)
             return false;
 
         // - le rayon est dirigé vers l'objet et a deux intersections
-        if (t1 > 0 && t2 > 0)
+        if (t1 > 0.f && t2 > 0.f)
             t = t1 < t2 ? t1 : t2;
 
         // - origine du rayon dans l'objet et seul t1 visible
-        else if (t1 > 0)
+        else if (t1 > 0.f)
             t = t1;
 
         // - origine du rayon dans l'objet t seul t2 visible
@@ -242,7 +242,7 @@ bool Entity::solve_polynomial_2(float a, float b, float c, float& t) const
             t = t2;
     }
 
-    if (t < 0)
+    if (t < 0.f)
         return false;
 
     return true;

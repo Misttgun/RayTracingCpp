@@ -9,7 +9,7 @@ bool Cone::intersect(const Ray& ray, Vector& impact) const
 
     float a = pow(local_ray.direction[0], 2) - pow(local_ray.direction[1], 2) + pow(local_ray.direction[2], 2);
     float b = 2 * (local_ray.origin[0] * local_ray.direction[0] - local_ray.origin[1] * local_ray.direction[1] + local_ray.origin[2] * local_ray.direction[2]);
-    float c = pow(local_ray.origin[0], 2) - pow(local_ray.origin[1], 2) - pow(local_ray.origin[2], 2);
+    float c = pow(local_ray.origin[0], 2) - pow(local_ray.origin[1], 2) + pow(local_ray.origin[2], 2);
     float t = -1;
 
     if (!Entity::solve_polynomial_2(a, b, c, t))

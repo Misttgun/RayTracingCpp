@@ -13,6 +13,7 @@
 #include "Cylinder.h"
 #include <algorithm>
 #include "Cube.h"
+#include "Cone.h"
 
 int main() {
 	/*
@@ -72,46 +73,63 @@ int main() {
 
 	//scene.load("config.txt");
 
-	Material mat(Color(1, 0, 0), Color(1, 0, 0), Color(1, 0, 0), 1);
-	Material mat2(Color(0, 0, 1), Color(0, 0, 1), Color(0, 0, 1), 1);
-    Material mat3(Color(0.2, 0.5, 0.7), Color(0.8, 0.8, 0.8), Color(0.2, 0.2, 0.2), 0.9);
+	Material mat_red(Color(1, 0, 0), Color(1, 0, 0), Color(1, 0, 0), 1);
+	Material mat_blue(Color(0, 0, 1), Color(0, 0, 1), Color(0, 0, 1), 1);
+    Material mat_green(Color(0, 1, 0), Color(0, 1, 0), Color(0, 1, 0), 1);
+    Material mat_grey(Color(0.5, 0.5, 0.5), Color(0.5, 0.5, 0.5), Color(0.5, 0.5, 0.5), 1);
 
 	//std::shared_ptr<Sphere> p = std::make_shared<Sphere>(Sphere());
 	std::shared_ptr<Plan> p = std::make_shared<Plan>(Plan());
 	p->translate(0, 0, 6);
-	p->set_material(mat);
+	p->set_material(mat_grey);
 	scene.add_object(p);
 
+    // FRONT IS BLUE
 	std::shared_ptr<Sphere> p2 = std::make_shared<Sphere>(Sphere());
 	//std::shared_ptr<Square> p2 = std::make_shared<Square>(Square());
-	p2->translate(0, 0, 1);
-	p2->set_material(mat2);
+	p2->translate(0, 1, 0);
+	p2->set_material(mat_blue);
 	scene.add_object(p2);
 
+    // RIGHT IS GREEN
 	std::shared_ptr<Sphere> p3 = std::make_shared<Sphere>(Sphere());
-	p3->translate(1, 1, 4);
-	p3->set_material(mat3);
+	p3->translate(1, 0, 2);
+	p3->set_material(mat_green);
 	scene.add_object(p3);
 
+    // LEFT IS RED
 	std::shared_ptr<Sphere> p4 = std::make_shared<Sphere>(Sphere());
-	p4->translate(-1, 1, 4);
-	p4->set_material(mat2);
+	p4->translate(-2, 1, 2);
+	p4->set_material(mat_red);
 	scene.add_object(p4);
 
-    std::shared_ptr<Cube> p5 = std::make_shared<Cube>(Cube());
-    p5->translate(-1, 1, 3);
+    
+    std::shared_ptr<Cylinder> p5 = std::make_shared<Cylinder>(Cylinder());
+    p5->translate(1, -1, 3);
     //p5->rotate_x(45);
-    p5->set_material(mat3);
+    p5->set_material(mat_green);
     scene.add_object(p5);
 
+    std::shared_ptr<Cone> p6 = std::make_shared<Cone>(Cone());
+    p6->translate(0, 0, 0);
+    //p5->rotate_x(45);
+    p6->set_material(mat_red);
+    scene.add_object(p6);
+    
 
 	std::shared_ptr<Light> l = std::make_shared<Light>(Light(2, 2, 0));
-	l->id = Color(0.0f, 0.0f, 0.5f);
-	l->is = Color(0.0f, 0.0f, 0.7f);
+	l->id = Color(0.5f, 0.5f, 0.5f);
+	l->is = Color(0.7f, 0.7f, 0.7f);
 	scene.add_light(l);
 
-	scene.set_camera(Camera(0, 0, 0, 3));
-	scene.set_bg(Color(1, 1, 1));
+    // SETTING CAMERA
+    Camera test(0, 0, -5, 3);
+    test.rotate_y(180);
+	scene.set_camera(test);
+	
+
+    // SET META DATA
+    scene.set_bg(Color(1, 1, 1));
 	scene.set_ambiant(Color(0.5, 0.5, 0.5));
 
 	std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "
@@ -120,9 +138,6 @@ int main() {
 
 	Renderer renderer;
 	Camera cam = scene.get_camera();
-	//const int width = 200, height = 200;
-	//Color render[width][height];
-
 
     const int size = 800;
 
@@ -130,7 +145,6 @@ int main() {
     for (int i = 0; i < size; i++)
         render_2[i] = new Color[size];
 
-	bool has_impact;
     float max = -INFINITY;
 
 	for (int i = 0; i < size; i++)
@@ -149,8 +163,12 @@ int main() {
 				continue;
 			}
 
-			render_2[i][j] = renderer.get_impact_color(ray, *intersected, impact, scene);
-            max = std::max(std::max(std::max(render_2[i][j].r, render_2[i][j].g), render_2[i][j].b), max);
+            else
+            {
+                //render_2[i][j] = intersected->get_material().ka;
+                render_2[i][j] = renderer.get_impact_color(ray, *intersected, impact, scene);
+                max = std::max(std::max(std::max(render_2[i][j].r, render_2[i][j].g), render_2[i][j].b), max);
+            }
 		}
 	}
 

@@ -23,13 +23,13 @@ Camera & Camera::operator=(const Camera & rhs)
 
 Ray Camera::get_ray(const float x, const float y) const
 {
-	float newX = (2 * x) - 1;
-	float newY = (2 * y) - 1;
+	float screen_x = (2 * x) - 1;
+	float screen_y = (2 * y) - 1;
 
-	Vector ori(newX, newY, 0);
-	Vector camPos(0, 0, focal);
+	Vector ori(screen_x, screen_y, focal);
+	Vector cam_pos(0, 0, 0);
 
-	Vector dir = ori - camPos;
+    Vector direction = local_to_global_vector(ori - cam_pos).normalized();
 
-	return Ray(local_to_global_point(ori), local_to_global_vector(dir).normalized());
+	return Ray(local_to_global_point(ori), direction);
 }
