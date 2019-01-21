@@ -13,12 +13,11 @@ bool Cube::intersect(const Ray& ray, Vector &impact) const
                 return false;
 
         t1 = (-1 - local_ray.origin[i]) / local_ray.direction[i];
-        t2 = (-1 - local_ray.origin[i]) / local_ray.direction[i];
+        t2 = (1 - local_ray.origin[i]) / local_ray.direction[i];
 
         if (t1 > t2)
             std::swap(t1, t2);
 
-        
         if (t1 > tnear)
             tnear = t1;
 

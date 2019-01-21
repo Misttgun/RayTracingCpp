@@ -100,6 +100,7 @@ int main() {
     // LEFT IS RED
 	std::shared_ptr<Sphere> p4 = std::make_shared<Sphere>(Sphere());
 	p4->translate(-2, 1, 2);
+    p4->scale(2);
 	p4->set_material(mat_red);
 	scene.add_object(p4);
 
@@ -107,14 +108,24 @@ int main() {
     std::shared_ptr<Cylinder> p5 = std::make_shared<Cylinder>(Cylinder());
     p5->translate(1, -1, 3);
     //p5->rotate_x(45);
+    p5->scale(2);
     p5->set_material(mat_green);
     scene.add_object(p5);
 
     std::shared_ptr<Cone> p6 = std::make_shared<Cone>(Cone());
     p6->translate(0, 0, 0);
+    p6->scale(2);
     //p5->rotate_x(45);
     p6->set_material(mat_red);
     scene.add_object(p6);
+
+    std::shared_ptr<Cube> p7 = std::make_shared<Cube>(Cube());
+    p7->translate(-1, 1, 0);
+    p7->scale(0.5);
+    p7->rotate_x(45);
+    p7->rotate_y(45);
+    p7->set_material(mat_red);
+    scene.add_object(p7);
     
 
 	std::shared_ptr<Light> l = std::make_shared<Light>(Light(2, 2, 0));
