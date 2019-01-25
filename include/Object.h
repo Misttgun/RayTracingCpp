@@ -5,6 +5,7 @@
 
 #include "Entity.h"
 #include "Material.h"
+#include <cmath>
 
 class Object : public Entity
 {

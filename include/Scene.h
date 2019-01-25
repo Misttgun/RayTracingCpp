@@ -7,6 +7,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <memory>
 
 #include "Object.h"
 #include "Camera.h"
