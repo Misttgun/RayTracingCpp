@@ -26,8 +26,8 @@ Ray Camera::get_ray(const float x, const float y) const
 	float screen_x = (2 * x) - 1;
 	float screen_y = (2 * y) - 1;
 
-	Vector ori(screen_x, screen_y, focal);
-	Vector cam_pos(0, 0, 0);
+	Vector ori(screen_x, screen_y, 0);
+	Vector cam_pos(0, 0, focal);
 
     Vector direction = local_to_global_vector(ori - cam_pos).normalized();
 

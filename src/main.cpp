@@ -81,7 +81,9 @@ int main()
 
     //std::shared_ptr<Sphere> p = std::make_shared<Sphere>(Sphere());
     std::shared_ptr<Plan> p = std::make_shared<Plan>(Plan());
-    p->translate(0, 0, 6);
+    p->rotate_x(-180);
+    p->translate(-3, 6, -6);
+    //p->scale(10.0f);
     p->set_material(mat_grey);
     scene.add_object(p);
 
@@ -100,18 +102,18 @@ int main()
 
     // LEFT IS RED
     std::shared_ptr<Sphere> p4 = std::make_shared<Sphere>(Sphere());
-    p4->translate(-1, 1, 2);
-    p4->scale(2);
+    p4->rotate_y(45);
+    p4->translate(2.5, 0, -2);
+    p4->scale(1.0f);
     p4->set_material(mat_blue);
     scene.add_object(p4);
 
-    //   
-    //   std::shared_ptr<Cylinder> p5 = std::make_shared<Cylinder>(Cylinder());
-    //   p5->translate(1, -1, 3);
-    //   //p5->rotate_x(45);
-    //   p5->scale(2);
-    //   p5->set_material(mat_green);
-    //   scene.add_object(p5);
+    std::shared_ptr<Cylinder> p5 = std::make_shared<Cylinder>(Cylinder());
+    //p5->rotate_x(45);
+    p5->translate(1, 0, -4);
+    p5->scale(1.0f);
+    p5->set_material(mat_green);
+    scene.add_object(p5);
 
     //   std::shared_ptr<Cone> p6 = std::make_shared<Cone>(Cone());
     //   p6->translate(0, 0, 0);
@@ -121,28 +123,29 @@ int main()
     //   scene.add_object(p6);
 
     std::shared_ptr<Cube> p7 = std::make_shared<Cube>(Cube());
-    p7->scale(2);
-    p7->translate(0, 1, 3);
-
-    p7->rotate_x(45);
     p7->rotate_y(45);
+    p7->rotate_x(45);
+    p7->translate(-2, 0, -2);
+    p7->scale(1.f);
     p7->set_material(mat_red);
     scene.add_object(p7);
 
 
-    std::shared_ptr<Light> l = std::make_shared<Light>(Light(2, 1.5, 0));
+    std::shared_ptr<Light> l = std::make_shared<Light>(Light(2, -1.5, 0));
     l->id = Color(0.4f, 0.4f, 0.4f);
     l->is = Color(0.8f, 0.8f, 0.8f);
     scene.add_light(l);
 
     // SETTING CAMERA
-    Camera test(0, 0, -5, 3);
-    test.rotate_y(180);
+    Camera test;
+    test.focal = 2;
+    test.translate(0, -2, 5);
+    test.rotate_x(-30);
     scene.set_camera(test);
 
 
     // SET META DATA
-    scene.set_bg(Color(1, 1, 1));
+    scene.set_bg(Color(0, 0, 0));
     scene.set_ambiant(Color(0.5, 0.5, 0.5));
 
     std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "
@@ -155,14 +158,14 @@ int main()
     const int size = 800;
 
     Color** render_2 = new Color*[size];
-    for(int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
         render_2[i] = new Color[size];
 
     float max = -INFINITY;
 
-    for(int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
     {
-        for(int j = 0; j < size; j++)
+        for (int j = 0; j < size; j++)
         {
             float x = static_cast<float>(j) / size, y = static_cast<float>(i) / size;
 
@@ -170,7 +173,7 @@ int main()
             Vector impact;
             std::shared_ptr<Object> intersected = scene.closer_intersected(ray, impact);
 
-            if(intersected == nullptr)
+            if (intersected == nullptr)
             {
                 render_2[i][j] = scene.get_background();
                 continue;
@@ -191,11 +194,11 @@ int main()
     //file_ppm << "P3\n" << width << " " << height << "\n255\n";
     file_ppm << "P3\n" << size << " " << size << "\n255\n";
 
-    for(int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
     {
-        for(int j = 0; j < size; j++)
+        for (int j = 0; j < size; j++)
         {
-            if(render_2[i][j].r > 1.f || render_2[i][j].g > 1.f || render_2[i][j].b > 1.f)
+            if (render_2[i][j].r > 1.f || render_2[i][j].g > 1.f || render_2[i][j].b > 1.f)
             {
                 render_2[i][j].r /= max;
                 render_2[i][j].g /= max;
@@ -210,7 +213,7 @@ int main()
     //std::cout << "Res = " << res << std::endl;
     std::cout << "DONE !\n";
 
-    for(auto i = 0; i < size; i++)
+    for (auto i = 0; i < size; i++)
         delete render_2[i];
 
     delete[] render_2;

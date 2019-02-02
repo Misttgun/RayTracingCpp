@@ -91,7 +91,7 @@ Ray Sphere::get_normal(const Vector& impact, const Vector& observator) const
     local_normal = local_normal.normalized();
 
     if (local_ray_direction.dot(local_normal) < 0)
-        return Ray(impact, local_to_global_vector(local_normal).normalized());
+        return Ray(impact, local_to_global_vector(local_normal));
 
-    return Ray(impact, local_to_global_vector((local_normal * -1)).normalized());
+    return Ray(impact, local_to_global_vector((local_normal * -1)));
 }
