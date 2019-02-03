@@ -1,24 +1,32 @@
 #include "Cone.h"
+#include <iostream>
 
 bool Cone::intersect(const Ray& ray, Vector& impact) const
 {
-    float y_min = 0;
-    float y_max = 1;
+    float y_min = -1.0f;
+    float y_max = 0.0f;
 
     Ray local_ray = global_to_local(ray);
 
-    float a = pow(local_ray.direction[0], 2) - pow(local_ray.direction[1], 2) + pow(local_ray.direction[2], 2);
-    float b = 2 * (local_ray.origin[0] * local_ray.direction[0] - local_ray.origin[1] * local_ray.direction[1] + local_ray.origin[2] * local_ray.direction[2]);
-    float c = pow(local_ray.origin[0], 2) - pow(local_ray.origin[1], 2) + pow(local_ray.origin[2], 2);
-    float t = -1;
+    float a = pow(local_ray.direction[0], 2) - 
+        pow(local_ray.direction[1], 2) + 
+        pow(local_ray.direction[2], 2);
+
+    float b = 2 * (local_ray.origin[0] * local_ray.direction[0] - 
+        local_ray.origin[1] * local_ray.direction[1] + 
+        local_ray.origin[2] * local_ray.direction[2]);
+
+    float c = pow(local_ray.origin[0], 2) - 
+        pow(local_ray.origin[1], 2) + 
+        pow(local_ray.origin[2], 2);
+
+    float t = -1.0f;
 
     if (!Entity::solve_polynomial_2(a, b, c, t))
         return false;
 
-    Vector local_impact = local_ray.origin + t * local_ray.direction;
+    const Vector local_impact = local_ray.origin + t * local_ray.direction;
 
-    // - on teste que le point d'impact se trouve dans le cone simple
-    // fini et ouvert
     if (local_impact[1] < y_min || local_impact[1] > y_max)
         return false;
 
@@ -29,35 +37,25 @@ bool Cone::intersect(const Ray& ray, Vector& impact) const
 
 Ray Cone::get_normal(const Vector& impact, const Vector& observator) const
 {
-    // - on dispose du point d'impact et du sommet du cone (0, 0, 0)
-    // à partir de ces deux informations on peut calculer un vecteur normal
-
     Vector local_impact = global_to_local_point(impact);
     Vector local_obs = global_to_local_point(observator);
+    Vector local_ray_direction = local_impact - local_obs;
 
-    Vector local_ray_direction = Vector(local_impact - local_obs);
-    Vector plan = Vector(local_impact);
-    Vector local_normal;
+    // cone formula : x² - y² + z² = 0
+    // gradient is the vector of partial derivative with respect to all variables
+    // Gradient of the unit cone surface = (2x, -2y, 2z);
+    // magnitude = sqrt (x² + y² + z²)
 
-    // - calcul un vecteur orthogonal a V(impact - origin)
-    if (Entity::is_epsilon(0.f, local_impact[0], 0.0001f) && Entity::is_epsilon(0.f, local_impact[1], 0.0001f))
-    {
-        // - présent dans l'algorithme original, mais redondant dans le cas du cone : 
-        // https://codereview.stackexchange.com/questions/43928/algorithm-to-get-an-arbitrary-perpendicular-vector
-        /*
-        if (Entity::is_epsilon(0.f, local_impact[2], 0.0001f))
-            local_normal = Vector(0, 1, 0);
-        */
+    float magnitude = sqrt(pow(local_impact[0], 2) +
+        pow(local_impact[1], 2) +
+        pow(local_impact[2], 2));
 
-        local_normal = Vector(0, 1, 0);
-    }
+    Vector local_normal((2 * local_impact[0]) / magnitude, 
+        (-2 * local_impact[1]) / magnitude, 
+        (2 * local_impact[2]) / magnitude);
+    
+    if (local_ray_direction.dot(local_normal.normalized()) > 0)
+        return Ray(impact, local_to_global_vector(local_normal).normalized());
 
-    local_normal = Vector(-local_impact[1], local_impact[0], 0);
-
-    local_normal = local_normal.normalized();
-
-    if (local_ray_direction.dot(local_normal) < 0)
-        return Ray(impact, local_to_global_vector(local_normal));
-
-    return Ray(impact, local_to_global_vector(local_normal * -1));
+    return Ray(impact, local_to_global_vector(local_normal * -1).normalized());
 }

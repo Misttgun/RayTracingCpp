@@ -2,81 +2,29 @@
 
 bool Sphere::intersect(const Ray& ray, Vector& impact) const
 {
-	Vector ori = global_to_local_point(ray.origin);
-	Vector dir = global_to_local_vector(ray.direction).normalized();
-
-	float t0;
-	float t1;
-	float t;
-
-	Vector center(0, 0, 0);
-	Vector L = center - ori;
-
-	float tca = L.dot(dir);
-
-	float d2 = L.dot(L) - tca * tca;
-	if (d2 > 1) return false;
-
-	float thc = sqrt(1 - d2);
-	t0 = tca - thc;
-	t1 = tca + thc;
-
-	if (t0 > t1) std::swap(t0, t1);
-
-	if (t0 < 0) {
-		t0 = t1;
-		if (t0 < 0) return false;
-	}
-
-	t = t0;
-
-	impact = local_to_global_point(ori + t * dir);
-	return true;
-
-    /*
     Ray local_ray = global_to_local(ray);
 
-    float origin_squared = local_ray.origin.dot(local_ray.origin);
-    float direction_squared = local_ray.direction.dot(local_ray.direction);
-    float d = local_ray.direction.dot(local_ray.origin);
-    float t = -1;
+    float a = pow(local_ray.direction[0], 2) + 
+        pow(local_ray.direction[1], 2) + 
+        pow(local_ray.direction[2], 2);
 
-    float delta = (d * d) - direction_squared * (origin_squared - 1);
+    float b = 2 * (local_ray.origin[0] * local_ray.direction[0] +
+        local_ray.origin[1] * local_ray.direction[1] + 
+        local_ray.origin[2] * local_ray.direction[2]);
 
-    // - pas d'intersection
-    if (delta < 0)
+    float c = pow(local_ray.origin[0], 2) +
+        pow(local_ray.origin[1], 2) + 
+        pow(local_ray.origin[2], 2) 
+    - 1.0f;
+
+    float t = -1.0f;
+
+    if (!Entity::solve_polynomial_2(a, b, c, t))
         return false;
 
-    // - un seul point d'intersection
-    if (origin_squared < 1)
-        t = (-d + sqrt(delta)) / direction_squared;
-
-    else
-    {
-        if (d >= 0)
-            return false;
-
-        float t1 = (-d - sqrt(delta)) / direction_squared;
-        float t2 = (-d + sqrt(delta)) / direction_squared;
-
-        // - deux points d'intersection en direction de la sphère, on prend
-        // le plus proche
-        if (t1 > 0 && t2 > 0)
-            t = t1 < t2 ? t1 : t2;
-
-        // - t2 est le seul point d'intersection en direction de la sphère
-        else if (t2 > 0)
-            t = t2;
-
-        // - t1 est le seul point d'intersection en direction de la sphère
-        else
-            t = t1;
-    }
-
-    impact = local_to_global(local_ray.origin + t * local_ray.direction);
+    impact = local_to_global_point(local_ray.origin + t * local_ray.direction);
 
     return true;
-    */
 }
 
 Ray Sphere::get_normal(const Vector& impact, const Vector& observator) const

@@ -4,10 +4,16 @@ bool Cylinder::intersect(const Ray& ray, Vector& impact) const
 {
     Ray local_ray = global_to_local(ray);
 
-    float a = pow(local_ray.direction[0], 2) + pow(local_ray.direction[2], 2);
-    float b = 2 * (local_ray.origin[0] * local_ray.direction[0] + local_ray.origin[2] * local_ray.direction[2]);
-    float c = pow(local_ray.origin[0], 2) + pow(local_ray.origin[2], 2) - 1.f;
-    float t = -1.f;
+    float a = pow(local_ray.direction[0], 2) + 
+        pow(local_ray.direction[2], 2);
+
+    float b = 2 * (local_ray.origin[0] * local_ray.direction[0] + 
+        local_ray.origin[2] * local_ray.direction[2]);
+
+    float c = pow(local_ray.origin[0], 2) + 
+        pow(local_ray.origin[2], 2) - 1.f;
+
+    float t = -1.0f;
 
 
     if (!Entity::solve_polynomial_2(a, b, c, t))

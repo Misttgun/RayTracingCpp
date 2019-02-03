@@ -122,6 +122,7 @@ int main()
     //   p6->set_material(mat_red);
     //   scene.add_object(p6);
 
+    /*
     std::shared_ptr<Cube> p7 = std::make_shared<Cube>(Cube());
     p7->rotate_y(45);
     p7->rotate_x(45);
@@ -129,6 +130,14 @@ int main()
     p7->scale(1.f);
     p7->set_material(mat_red);
     scene.add_object(p7);
+    */
+
+    std::shared_ptr<Cone> cone = std::make_shared<Cone>(Cone());
+    cone->translate(-2, 0, -2);
+    //cone->rotate_x(90);
+    cone->set_material(mat_red);
+    cone->scale(1.0f),
+    scene.add_object(cone);
 
 
     std::shared_ptr<Light> l = std::make_shared<Light>(Light(2, -1.5, 0));
