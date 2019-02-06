@@ -8,8 +8,6 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
 
     Color specular;
     Color diffuse;
-    const float shadow_min = .25;
-    int shadowed_by_n_lights = 0;
 
     for (int i = 0; i < nb_light; i++)
     {
@@ -18,18 +16,7 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
         Vector n_normal = normal.direction.normalized();
         Vector to_cam = Vector(ray.origin - impact).normalized();
 
-        Ray shadow_ray(impact + n_normal, light_direction);
         Color light_color = curr_light->color;
-
-        if (shadow)
-        {
-            Vector shadow_impact;
-            auto intersected = scene.closer_intersected(shadow_ray, shadow_impact);
-            if (intersected)
-            {
-                ++shadowed_by_n_lights;
-            }
-        }
 
         Vector reflect = ((2 * (light_direction.dot(n_normal))) * n_normal - light_direction).normalized();
 
@@ -43,19 +30,13 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
 
     const Color ambient = (scene.get_ambiant() * curr_mat.light_influence + curr_mat.color * (1 - curr_mat.light_influence)) * curr_mat.ka;
 
-    const float iluminated_by_lights = nb_light - shadowed_by_n_lights;
-    const float light_proportion = (iluminated_by_lights / nb_light);
-    float shadow_multiplier;
-    shadowed_by_n_lights > 0 ? shadow_multiplier = light_proportion + shadow_min : shadow_multiplier = 1;
-
-    return (ambient + specular + diffuse) * shadow_multiplier;
-
-
+    return ambient + specular + diffuse;
 }
 
-float Renderer::get_shadow_color(const Vector& impact, const Scene& scene) const
+float Renderer::get_shadow_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene) const
 {
-    const float shadow_min = .45;
+    Ray normal = obj.get_normal(impact, ray.origin);
+    const float shadow_min = .20f;
     int shadowed_by_n_lights = 0;
 
     const int nb_light = scene.nb_lights();
@@ -64,14 +45,14 @@ float Renderer::get_shadow_color(const Vector& impact, const Scene& scene) const
     {
         const auto curr_light = scene.get_light(i);
         Vector light_direction = curr_light->get_vector_to_light(impact).normalized();
-        Ray shadow_ray(impact * 0.8f, light_direction * 0.8f);
+        Vector n_normal = normal.direction.normalized();
+
+        Ray shadow_ray(impact + n_normal, light_direction);
 
         Vector shadow_impact;
         auto intersected = scene.closer_intersected(shadow_ray, shadow_impact);
         if (intersected)
-        {
             ++shadowed_by_n_lights;
-        }
     }
 
     const float iluminated_by_lights = nb_light - shadowed_by_n_lights;

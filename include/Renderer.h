@@ -9,11 +9,10 @@ class Renderer
 {
 public:
     Color get_impact_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene) const;
-    float get_shadow_color(const Vector& impact, const Scene& scene) const;
+    float get_shadow_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene) const;
     void save_ppm(std::string file, Color** pixel_map, int width, int height) const;
 
-private:
-    const bool shadow = true;
+    bool reflect;
 };
 
 #endif

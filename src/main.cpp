@@ -191,7 +191,7 @@ int main()
             }
             else
             {
-                render_2[i][j] = renderer.get_impact_color(ray, *intersected, impact, scene);
+                render_2[i][j] = renderer.get_impact_color(ray, *intersected, impact, scene) * renderer.get_shadow_color(ray, *intersected, impact, scene);
                 max = std::max(std::max(std::max(render_2[i][j].r, render_2[i][j].g), render_2[i][j].b), max);
             }
         }
