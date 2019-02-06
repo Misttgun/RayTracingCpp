@@ -7,9 +7,8 @@
 #include "Cylinder.h"
 #include <iostream>
 
-void Scene::render() 
-{
-}
+void Scene::render()
+{}
 
 void Scene::load(const std::string& file)
 {
@@ -107,7 +106,7 @@ void Scene::load_object(std::istringstream& params)
     // - shininess
     params >> shininess;
 
-    Material mat(ka, kd, ks, shininess);
+    //Material mat(ka, kd, ks, shininess);
     std::shared_ptr<Object> o = nullptr;
 
     switch(object)
@@ -146,7 +145,7 @@ void Scene::load_object(std::istringstream& params)
     if (r_z > 0.00001f || r_z < -0.00001f)
         o->rotate_z(r_z);
     o->scale(s);
-    o->set_material(mat);
+    //o->set_material(mat);
     add_object(o);
 }
 
@@ -171,8 +170,8 @@ void Scene::load_light(std::istringstream& params)
     params >> b;
     Color is = Color(r, g, b);
 
-    std::shared_ptr<Light> light = std::make_shared<Light>(Light(tr_x, tr_y, tr_z, id, is));
-    add_light(light);
+    //std::shared_ptr<Light> light = std::make_shared<Light>(Light(tr_x, tr_y, tr_z, id, is));
+    //add_light(light);
 }
 
 std::shared_ptr<Object> Scene::closer_intersected(const Ray& ray, Vector& impact) const
@@ -198,7 +197,7 @@ std::shared_ptr<Object> Scene::closer_intersected(const Ray& ray, Vector& impact
         // - on met à jour le pointeur et la distance
         current_distance = impact_distance;
         tmp_obj = object;
-		impact = tmp_impact;
+        impact = tmp_impact;
     }
 
     return tmp_obj;

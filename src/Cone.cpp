@@ -54,7 +54,7 @@ Ray Cone::get_normal(const Vector& impact, const Vector& observator) const
         (-2 * local_impact[1]) / magnitude, 
         (2 * local_impact[2]) / magnitude);
     
-    if (local_ray_direction.dot(local_normal.normalized()) > 0)
+    if (local_ray_direction.dot(local_normal.normalized()) < 0)
         return Ray(impact, local_to_global_vector(local_normal).normalized());
 
     return Ray(impact, local_to_global_vector(local_normal * -1).normalized());

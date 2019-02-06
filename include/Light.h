@@ -12,7 +12,7 @@ class Light : public Entity
 public:
 	Light() = default;
 	Light(const float x, const float y, const float z);
-	Light(const float x, const float y, const float z, const Color& v_id, const Color& v_is);
+	Light(const float x, const float y, const float z, const Color& v_color);
 	Light(const Light& c);
 	~Light() = default;
 
@@ -27,11 +27,9 @@ public:
 	{
 		using std::swap;
 		swap(static_cast<Entity&>(first), static_cast<Entity&>(second));
-		swap(first.id, second.id);
-		swap(first.is, second.is);
+		swap(first.color, second.color);
 	}
 
-	Color id;
-	Color is;
+	Color color;
 };
 #endif
