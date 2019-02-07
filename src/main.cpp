@@ -70,22 +70,27 @@ int main()
     std::cout << "-----------------------------------" << std::endl;
     inverse.display();
     */
-    Scene scene;
+
+    const int size = 800;
+    Scene scene(size);
 
     //scene.load("config.txt");
 
-    Material chalk_red(Color(1, 0, 0), 0.2f, 0.4f, 0.2f, 2, 0.25f);
-    Material plastic_blue(Color(0, 0, 1), 0.2f, 0.4f, 0.4f, 20, 0.35f);
-    Material metal_green(Color(0, 1, 0), 0.2f, 0.4f, 0.4f, 50, 0.01f);
-    Material chalk_grey(Color(0.5, 0.5, 0.5), 0.2f, 0.4f, 0.2f, 2, 0.25f);
+    Material chalk_red(Color(1, 0, 0), 0.2f, 0.4f, 0.2f, 2, 0.25f, false);
+    Material mirror_blue(Color(0, 0, 1), 0.2f, 1.0f, 0.5f, 1, 0.01f, true);
+    Material metal_green(Color(0, 1, 0), 0.2f, 0.4f, 0.4f, 50, 0.01f, false);
+    Material chalk_grey(Color(0.5, 0.5, 0.5), 0.2f, 0.4f, 0.2f, 2, 0.25f, false);
 
-    //std::shared_ptr<Sphere> p = std::make_shared<Sphere>(Sphere());
-    std::shared_ptr<Plan> p = std::make_shared<Plan>(Plan());
-    //p->rotate_x(-180);
-    p->translate(0, 0, -6);
-    //p->scale(10.0f);
-    p->set_material(chalk_grey);
-    scene.add_object(p);
+    std::shared_ptr<Plan> back = std::make_shared<Plan>(Plan());
+    back->translate(0, 0, -8);
+    back->set_material(mirror_blue);
+    scene.add_object(back);
+
+    //std::shared_ptr<Plan> front = std::make_shared<Plan>(Plan());
+    //front->rotate_y(180);
+    //front->translate(0, 0, -12);
+    //front->set_material(chalk_grey);
+    //scene.add_object(front);
 
     // FRONT IS BLUE
     //std::shared_ptr<Sphere> p2 = std::make_shared<Sphere>(Sphere());
@@ -94,25 +99,27 @@ int main()
     //p2->set_material(mat_blue);
     //scene.add_object(p2);
 
- //   // RIGHT IS GREEN
-    //std::shared_ptr<Sphere> p3 = std::make_shared<Sphere>(Sphere());
-    //p3->translate(1, 0, 2);
-    //p3->set_material(mat_green);
-    //scene.add_object(p3);
+   // RIGHT IS GREEN
+    /*std::shared_ptr<Sphere> p3 = std::make_shared<Sphere>(Sphere());
+    p3->translate(1, -1, -1);
+    p3->set_material(metal_green);
+    scene.add_object(p3);*/
 
     // LEFT IS RED
     std::shared_ptr<Sphere> p4 = std::make_shared<Sphere>(Sphere());
     p4->rotate_y(45);
-    p4->translate(2.5, 0, -2);
-    p4->scale(1.0f);
-    p4->set_material(metal_green);
+    p4->translate(1.75f, 0, -2);
+    p4->scale(1.75f);
+    p4->set_material(mirror_blue);
     scene.add_object(p4);
 
     std::shared_ptr<Cylinder> p5 = std::make_shared<Cylinder>(Cylinder());
+    //std::shared_ptr<Cube> p5 = std::make_shared<Cube>(Cube());
+    //p5->rotate_y(45);
     //p5->rotate_x(45);
-    p5->translate(1, 0, -4);
-    p5->scale(1.0f);
-    p5->set_material(plastic_blue);
+    p5->translate(0.5f, 0, -4);
+    p5->scale(1.5f);
+    p5->set_material(chalk_red);
     scene.add_object(p5);
 
     //   std::shared_ptr<Cone> p6 = std::make_shared<Cone>(Cone());
@@ -128,24 +135,24 @@ int main()
     p7->rotate_x(45);
     p7->translate(-2.5, 1, -2);
     p7->scale(1.f);
-    p7->set_material(chalk_red);
+    p7->set_material(metal_green);
     scene.add_object(p7);
 
 
     std::shared_ptr<Cone> cone = std::make_shared<Cone>(Cone());
-    cone->translate(-2, -1, -2);
+    cone->translate(-1.5f, -1, -2);
     //cone->rotate_x(90);
-    cone->set_material(plastic_blue);
-    cone->scale(1.0f),
-        scene.add_object(cone);
+    cone->set_material(metal_green);
+    cone->scale(2.0f);
+    scene.add_object(cone);
 
 
     std::shared_ptr<Light> l = std::make_shared<Light>(Light(2, -1.5, 0));
     l->color = Color(1.f, 1.f, 0.8f);
     scene.add_light(l);
-    
+
     std::shared_ptr<Light> l1 = std::make_shared<Light>(Light(-2, -1.5, 0));
-    l->color = Color(1.f, 1.f, 0.8f);
+    l1->color = Color(1.f, 0.2f, 0.8f);
     scene.add_light(l1);
 
     // SETTING CAMERA
@@ -157,7 +164,7 @@ int main()
 
 
     // SET META DATA
-    scene.set_bg(Color(0, 0, 0));
+    scene.set_bg(Color(0.5f, 0.5f, 0.5f));
     scene.set_ambiant(Color(0.5, 0.5, 0.5));
 
     std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "
@@ -167,14 +174,6 @@ int main()
     Renderer renderer;
     Camera cam = scene.get_camera();
 
-    const int size = 800;
-
-    Color** render_2 = new Color*[size];
-    for (int i = 0; i < size; i++)
-        render_2[i] = new Color[size];
-
-    float max = -INFINITY;
-
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
@@ -183,49 +182,28 @@ int main()
 
             Ray ray = cam.get_ray(x, y);
             Vector impact;
-            std::shared_ptr<Object> intersected = scene.closer_intersected(ray, impact);
 
-            if (intersected == nullptr)
-            {
-                render_2[i][j] = scene.get_background();
-            }
-            else
-            {
-                render_2[i][j] = renderer.get_impact_color(ray, *intersected, impact, scene) * renderer.get_shadow_color(ray, *intersected, impact, scene);
-                max = std::max(std::max(std::max(render_2[i][j].r, render_2[i][j].g), render_2[i][j].b), max);
-            }
+            const auto pixel_color = scene.cast_ray(ray, impact, renderer, 1);
+            scene.image[i][j] = pixel_color;
         }
     }
 
     std::ofstream file_ppm;
     file_ppm.open("render.ppm");
 
-    //file_ppm << "P3\n" << width << " " << height << "\n255\n";
     file_ppm << "P3\n" << size << " " << size << "\n255\n";
 
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
         {
-            if (render_2[i][j].r > 1.f || render_2[i][j].g > 1.f || render_2[i][j].b > 1.f)
-            {
-                render_2[i][j].r /= max;
-                render_2[i][j].g /= max;
-                render_2[i][j].b /= max;
-            }
-
-            file_ppm << render_2[i][j].r * 255 << " " << render_2[i][j].g * 255 << " " << render_2[i][j].b * 255 << " ";
+            file_ppm << scene.image[i][j].r * 255 << " " << scene.image[i][j].g * 255 << " " << scene.image[i][j].b * 255 << " ";
         }
 
         file_ppm << "\n";
     }
     //std::cout << "Res = " << res << std::endl;
     std::cout << "DONE !\n";
-
-    for (auto i = 0; i < size; i++)
-        delete render_2[i];
-
-    delete[] render_2;
 
     getchar();
     return 0;

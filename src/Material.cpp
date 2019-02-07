@@ -1,7 +1,7 @@
 #include "Material.h"
 
-Material::Material(const Color& v_color, const float v_ka, const float v_kd, const float v_ks, const float v_shininess, const float v_light_influence)
-	: color(v_color), ka(v_ka), kd(v_kd), ks(v_ks), shininess(v_shininess), light_influence(v_light_influence)
+Material::Material(const Color& v_color, const float v_ka, const float v_kd, const float v_ks, const float v_shininess, const float v_light_influence, bool v_reflect)
+	: color(v_color), ka(v_ka), kd(v_kd), ks(v_ks), shininess(v_shininess), light_influence(v_light_influence), reflect(v_reflect)
 {}
 
 Material::Material(const Material & c)
@@ -12,6 +12,7 @@ Material::Material(const Material & c)
 	ks = c.ks;
 	shininess = c.shininess;
     light_influence = c.light_influence;
+    reflect = c.reflect;
 }
 
 Material& Material::operator=(const Material & rhs)

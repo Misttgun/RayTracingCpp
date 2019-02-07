@@ -1,23 +1,30 @@
 #include "Renderer.h"
 
-Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene) const
+Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene, int depth) const
 {
     const int nb_light = scene.nb_lights();
     Ray normal = obj.get_normal(impact, ray.origin);
+    const Vector n_normal = normal.direction.normalized();
+    const Vector to_cam = (ray.origin - impact).normalized();
     const Material curr_mat = obj.get_material();
 
     Color specular;
     Color diffuse;
 
+    if(curr_mat.reflect)
+    {
+        const Vector reflect = 2 * to_cam.dot(n_normal)* n_normal - to_cam;
+        const Ray reflected_ray = Ray(impact + n_normal, reflect);
+        Vector new_impact;
+        return scene.cast_ray(reflected_ray, new_impact, *this, depth + 1);
+    }
+
     for (int i = 0; i < nb_light; i++)
     {
         const auto curr_light = scene.get_light(i);
         Vector light_direction = curr_light->get_vector_to_light(impact).normalized();
-        Vector n_normal = normal.direction.normalized();
-        Vector to_cam = Vector(ray.origin - impact).normalized();
 
         Color light_color = curr_light->color;
-
         Vector reflect = ((2 * (light_direction.dot(n_normal))) * n_normal - light_direction).normalized();
 
         const auto cos_a = n_normal.dot(light_direction);
@@ -33,7 +40,7 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
     return ambient + specular + diffuse;
 }
 
-float Renderer::get_shadow_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene) const
+float Renderer::get_shadow_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene, int depth) const
 {
     Ray normal = obj.get_normal(impact, ray.origin);
     const float shadow_min = .20f;

@@ -6,8 +6,26 @@
 #include "Cube.h"
 #include "Cylinder.h"
 #include <iostream>
+#include <fstream>
+#include <algorithm>
+#include "Renderer.h"
 
-void Scene::render()
+Scene::Scene(int v_image_size) : image_size(v_image_size)
+{
+    image = new Color*[image_size];
+    for (int i = 0; i < image_size; i++)
+        image[i] = new Color[image_size];
+}
+
+Scene::~Scene()
+{
+    for (auto i = 0; i < image_size; i++)
+        delete image[i];
+
+    delete[] image;
+}
+
+void Scene::render() const
 {}
 
 void Scene::load(const std::string& file)
@@ -64,7 +82,6 @@ void Scene::load_globals(std::istringstream& params, int& nb_obj)
     params >> nb_obj;
 }
 
-
 void Scene::load_object(std::istringstream& params)
 {
     char object;
@@ -109,7 +126,7 @@ void Scene::load_object(std::istringstream& params)
     //Material mat(ka, kd, ks, shininess);
     std::shared_ptr<Object> o = nullptr;
 
-    switch(object)
+    switch (object)
     {
         case 'P':
             o = std::make_shared<Plan>(Plan());
@@ -135,7 +152,7 @@ void Scene::load_object(std::istringstream& params)
 
     if (tr_x > 0.00001f || tr_x < -0.00001f && tr_y > 0.00001f || tr_y < -0.00001f && tr_z > 0.00001f || tr_z < -0.00001f)
         o->translate(tr_x, tr_y, tr_z);
-    
+
     if (r_x > 0.00001f || r_x < -0.00001f)
         o->rotate_x(r_x);
 
@@ -149,7 +166,7 @@ void Scene::load_object(std::istringstream& params)
     add_object(o);
 }
 
-void Scene::load_light(std::istringstream& params)
+void Scene::load_light(std::istringstream& params) const
 {
     float tr_x, tr_y, tr_z, r, g, b;
 
@@ -201,6 +218,27 @@ std::shared_ptr<Object> Scene::closer_intersected(const Ray& ray, Vector& impact
     }
 
     return tmp_obj;
+}
+
+Color Scene::cast_ray(const Ray& ray, Vector& impact, const Renderer& renderer, int depth) const
+{
+    if (depth >= MAX_DEPTH)
+        return get_background();
+
+    const std::shared_ptr<Object> intersected = closer_intersected(ray, impact);
+
+    if (intersected == nullptr)
+    {
+        return get_background();
+    }
+
+    auto res_color = renderer.get_impact_color(ray, *intersected, impact, *this, depth) * renderer.get_shadow_color(ray, *intersected, impact, *this, depth);
+
+    res_color.r = std::fmin(res_color.r, 1);
+    res_color.g = std::fmin(res_color.g, 1);
+    res_color.b = std::fmin(res_color.b, 1);
+
+    return  res_color;
 }
 
 float Scene::compute_distance(const Vector& a, const Vector& b) const
