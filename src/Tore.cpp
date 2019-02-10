@@ -4,30 +4,29 @@
 bool Tore::intersect(const Ray& ray, Vector& impact) const
 {
     Ray local_ray = global_to_local(ray);
-
     Vector local_ori = local_ray.origin;
     Vector local_dir = local_ray.direction.normalized();
 
+    // - define tore radius size
     float R = 1.0f, r = 0.25f;
 
-    float R2 = R*R, r2 = r*r;
-    float x_dir = local_dir[0], y_dir = local_dir[1], z_dir = local_dir[2];
-    float x_ori = local_ori[0], y_ori = local_ori[1], z_ori = local_ori[2];
-
-    float dir_squared = local_dir.dot(local_dir);
-    float ori_squared = local_ori.dot(local_ori) /*+ R*R - r*r*/;
-    float ori_dot_dir = local_ori.dot(local_dir);
-
-    float a = pow(dir_squared, 2.0f);
-    float b = 4.0f*ori_dot_dir;
-    float c = 2.0f*(ori_squared + R2 - r2) - 4.0f*R2*(1.0f - z_dir*z_dir) + 4.0f*pow(ori_dot_dir, 2.0f);
-   float d = 8.0f*R2*z_ori*z_dir + 4.0f*ori_dot_dir*(ori_squared - R*R - r*r);
-   float e = pow(x_ori, 4.0f) + pow(y_ori, 4.0f) + pow(z_ori, 4.0f) + pow(R*R - r*r, 2.0f) + 2.0f*(x_ori*x_ori*y_ori*y_ori + z_ori*z_ori*(R2 - r2) + (x_ori*x_ori + y_ori*y_ori)*(z_ori*z_ori - R2 - r2));
-
+    // - cache usefull values
+    float ox = local_ori[0], oy = local_ori[1], oz = local_ori[2];
+    float dx = local_dir[0], dy = local_dir[1], dz = local_dir[2];
+    float od = local_ori.dot(local_dir), sq_od = pow(od, 2.0f);
+    float sq_o = local_ori.dot(local_ori);
+    float sq_R = 1.0f, sq_r = pow(r, 2.0f);
+    float sq_ox = ox*ox, sq_oy = oy*oy, sq_oz = oz*oz;
+    
+    // - compute coefficients
+    float a = 1.0f; // a = d^4 a d is normalized
+    float b = 4.0f*od; 
+    float c = 2.0f*(sq_o + sq_R - sq_r) - 4.0f*sq_R*(1 - dz*dz) + 4.0f*sq_od;
+    float d = 8.0f*sq_R*(dz*oz) + 4.0f*od*(sq_o - sq_R - sq_r);
+    float e = pow(ox, 4.0f) + pow(oy, 4.0f) + pow(oz, 4.0f) + pow(sq_R - sq_r, 2.0f);
+    e += 2*(sq_ox*sq_oy + sq_oz*(sq_R - sq_r) + (sq_ox + sq_oy)*(sq_oz - sq_R - sq_r));
 
     float t = -1.0f;
-
-
     if(!Entity::solve_polynomial_4(b, c, d, e, t))
 	return false;
 
@@ -57,16 +56,17 @@ Ray Tore::get_normal(const Vector& impact, const Vector& observator) const
     float R2 = 1.0f;
     float r2 = 0.25f * 0.25f;
 
-    /* 
-    float x_normal = 4*x*(x*x + y*y + z*z + R2 - r2) - 8*R2*x;
-    float y_normal = 4*y*(x*x + y*y + z*z + R2 - r2) - 8*R2*y;
-    float z_normal = 4*z*(x*x + y*y + z*z + R2 - r2); 
-    */
+     
+    float x_normal = 4.0f*x*(x*x + y*y + z*z + R2 - r2) - 8.0f*R2*x;
+    float y_normal = 4.0f*y*(x*x + y*y + z*z + R2 - r2) - 8.0f*R2*y;
+    float z_normal = 4.0f*z*(x*x + y*y + z*z + R2 - r2); 
     
+    
+    /*
     float x_normal = 4.0f*x*(x*x + y*y + z*z - 1.0625f);
     float y_normal = 4.0f*y*(x*x + y*y + z*z - 1.0625f);
-    float z_normal = 4.0f*z*(x*x + y*y + z*z + 0.9375f);
-    
+    float z_normal = 4.0f*z*(x*x + y*y + z*z);
+   */ 
     Vector local_normal(x_normal, y_normal, z_normal);
     
     if (local_ray_direction.dot(local_normal.normalized()) < 0)

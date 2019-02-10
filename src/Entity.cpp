@@ -210,10 +210,7 @@ bool Entity::solve_polynomial_2(float a, float b, float c, float& t) const
             t = t2;
     }
 
-    if (t < 0.f)
-        return false;
-
-    return true;
+    return (t > 0.f);
 }
 
 // - use only by solve_polynomial_4. Only return one real solution, DOES NOT
@@ -267,7 +264,7 @@ bool Entity::solve_polynomial_4(float a, float b, float c, float d, float &t) co
     float p = (-3.0f/8.0f)*pow(a, 2.0f) + b;
     float q = (1.0f/8.0f)*pow(a, 3.0f) - (1.0f/2.0f)*a*b + c;
     float r = (-3.0f/256.0f)*pow(a, 4.0f) + (1.0f/16.0f)*pow(a, 2.0f)*b + (-1.0f/4.0f)*a*c + d;
-    float t1 = -1.0f, t2 = -1.0f; 
+    float t1 = -1.0f, t2 = -1.0f;
 
     // give us a 3rd degree polynomial : y^3 - (p/2)y^2 - ry + (4rp-q^2) / 8 = 0
     float y;
@@ -298,17 +295,20 @@ bool Entity::solve_polynomial_4(float a, float b, float c, float d, float &t) co
 	    return false;
     }
 
-    if (t1 > 0.0f && t2 > 0.0f)
+    if (t1 > 0 && t2 > 0)
 	t = (t1 < t2) ? t1 : t2;
 
-    else if (t1 > 0.0f)
+    else if (t1 > 0)
 	t = t1;
-
+    
     else 
 	t = t2;
 
+    if (t1 > 0 && t2 > 0)
+	std::cout << t1 << " " << t2 << " : " << t << std::endl;
     t -= a/4.0f;
-    return true;
+
+    return t > 0;
 }
 
 bool Entity::is_epsilon(float value, float test, float delta) const
