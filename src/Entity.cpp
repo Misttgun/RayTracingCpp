@@ -216,6 +216,101 @@ bool Entity::solve_polynomial_2(float a, float b, float c, float& t) const
     return true;
 }
 
+// - use only by solve_polynomial_4. Only return one real solution, DOES NOT
+// RESOLVE ALL THE SYSTEM
+void Entity::solve_polynomial_3(float a, float b, float c, float &t) const
+{
+    // polynom must be of the form x^3 + ax^2 + bx + c
+
+    float p = (-1.0f/3.0f)*pow(a, 2.0f) + b;
+    float q = (2.0f/27.0f)*pow(a, 3.0f) + (-1.0f/3.0f)*a*b + c;
+
+    // let y = x - a/3, polynom is now y^3 + py + q
+
+    // simplify arithmetics
+    float p_ = p / 3.0f;
+    float q_ = q / 2.0f;
+    float delta_ = -(pow(p_, 3.0f) + pow(q_, 2.0f));
+
+    float y;
+
+    // 1 real solution
+    if (delta_ < 0)
+    {
+	float r = cbrt(-q_ + sqrt(-delta_));
+	float s = cbrt(-q_ - sqrt(-delta_));
+	y = r + s;
+    }
+
+    // 2 real solutions
+    else if (delta_ > -0.00001f && delta_ < 0.00001f)
+    {
+	float r = cbrt(-q_);
+	y = 2.0f*r;
+    }
+
+    // 3 solutions
+    else
+    {
+	float theta = (1.0f/3.0f)*acos(-q_ / sqrt(-pow(p_, 3.0f)));
+	y = 2.0f*sqrt(-p_)*cos(theta);
+    }
+
+    // x = y + 3/a;
+    t = y - a/3.0f;
+}
+
+bool Entity::solve_polynomial_4(float a, float b, float c, float d, float &t) const
+{
+    // polynom must be of the form x^4 + ax^3 + bx^2 +cx + d;
+    
+    float p = (-3.0f/8.0f)*pow(a, 2.0f) + b;
+    float q = (1.0f/8.0f)*pow(a, 3.0f) - (1.0f/2.0f)*a*b + c;
+    float r = (-3.0f/256.0f)*pow(a, 4.0f) + (1.0f/16.0f)*pow(a, 2.0f)*b + (-1.0f/4.0f)*a*c + d;
+    float t1 = -1.0f, t2 = -1.0f; 
+
+    // give us a 3rd degree polynomial : y^3 - (p/2)y^2 - ry + (4rp-q^2) / 8 = 0
+    float y;
+    solve_polynomial_3(-p/2.0f, -r, (4.0f*r*p - q*q)/8.0f, y);
+
+    // after we get one real solution (there's always one)
+    float b_q = sqrt(2.0f*y - p);
+    float c_q = sqrt(y*y - r);
+
+ 
+    if (q >= 0)
+    {
+	// solutions of the quartic are the solutions of 
+	// x^2 + x*sqrt(2y - p) + y - sqrt(y^2 - r) = 0
+	// x^2 - x*sqrt(2y - p) + y + sqrt(y^2 - r) = 0
+	
+	if (!solve_polynomial_2(1.0f, b_q, y-c_q, t1) && !solve_polynomial_2(1.0f, -b_q, y+c_q, t2))
+	    return false;
+    }
+
+    else
+    {
+	// solutions of the quartic are the solutions of 
+	// x^2 + x*sqrt(2y - p) + y + sqrt(y^2 - r) = 0
+	// x^2 - x*sqrt(2y - p) + y - sqrt(y^2 - r) = 0
+
+	if (!solve_polynomial_2(1.0f, b_q, y+c_q, t1) && !solve_polynomial_2(1.0f, -b_q, y-c_q, t2))
+	    return false;
+    }
+
+    if (t1 > 0.0f && t2 > 0.0f)
+	t = (t1 < t2) ? t1 : t2;
+
+    else if (t1 > 0.0f)
+	t = t1;
+
+    else 
+	t = t2;
+
+    t -= a/4.0f;
+    return true;
+}
+
 bool Entity::is_epsilon(float value, float test, float delta) const
 {
     return (test > value - delta && test < value + delta);

@@ -14,6 +14,7 @@
 #include <algorithm>
 #include "Cube.h"
 #include "Cone.h"
+#include "Tore.h"
 
 int main()
 {
@@ -145,6 +146,12 @@ int main()
     cone->set_material(metal_green);
     cone->scale(2.0f);
     scene.add_object(cone);
+    
+    std::shared_ptr<Tore> tore = std::make_shared<Tore>(Tore());
+    tore->translate(-1.5f, -1.0f, 0.0f);
+    tore->set_material(chalk_red);
+    tore->scale(1.0f);
+    scene.add_object(tore);
 
 
     std::shared_ptr<Light> l = std::make_shared<Light>(Light(2, -1.5, 0));

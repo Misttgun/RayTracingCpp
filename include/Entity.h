@@ -32,6 +32,8 @@ public:
 	void scale(float factor);
 
     bool solve_polynomial_2(float a, float b, float c, float& t) const;
+    void solve_polynomial_3(float a, float b, float c, float& t) const;
+    bool solve_polynomial_4(float a, float b, float c, float d, float &t) const;
     bool is_epsilon(float value, float test, float delta) const;
 
     // - ray coordinates
