@@ -80,11 +80,13 @@ int main()
     Material chalk_red(Color(1, 0, 0), 0.2f, 0.4f, 0.2f, 2, 0.25f, false);
     Material mirror_blue(Color(0, 0, 1), 0.2f, 1.0f, 0.5f, 1, 0.01f, true);
     Material metal_green(Color(0, 1, 0), 0.2f, 0.4f, 0.4f, 50, 0.01f, false);
+    Material chalk_blue(Color(0, 0, 1), 0.2f, 0.4f, 0.2f, 2, 0.25f, false);
     Material chalk_grey(Color(0.5, 0.5, 0.5), 0.2f, 0.4f, 0.2f, 2, 0.25f, false);
 
     std::shared_ptr<Plan> back = std::make_shared<Plan>(Plan());
     back->translate(0, 0, -8);
-    back->set_material(mirror_blue);
+    //back->set_material(mirror_blue);
+    back->set_materials(chalk_red, chalk_blue);
     scene.add_object(back);
 
     //std::shared_ptr<Plan> front = std::make_shared<Plan>(Plan());
@@ -136,7 +138,7 @@ int main()
     p7->rotate_x(45);
     p7->translate(-2.5, 1, -2);
     p7->scale(1.f);
-    p7->set_material(metal_green);
+    p7->set_materials(metal_green, mirror_blue);
     scene.add_object(p7);
 
 
