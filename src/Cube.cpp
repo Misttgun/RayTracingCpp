@@ -96,3 +96,52 @@ Ray Cube::get_normal(const Vector& impact, const Vector& observator) const
 
     return Ray(impact, normal);
 }
+
+Material Cube::get_material(const Vector& impact) const
+{
+    Vector local_impact = global_to_local_point(impact);
+    float x = local_impact[0], y = local_impact[1], z = local_impact[2];
+    float x_face, y_face;
+
+    if (std::abs(x - 1.0f) < 0.0001f)
+    {
+        x_face = y;
+        y_face = z;
+    }
+
+    else if (std::abs(y - 1.0f) < 0.0001f)
+    {
+        x_face = x;
+        y_face = z;
+    }
+
+    else if (std::abs(z - 1.0f) < 0.0001f)
+    {
+        x_face = x;
+        y_face = y;
+
+    }
+
+    else if (std::abs(x + 1.0f) < 0.0001f)
+    {
+        x_face = y;
+        y_face = z;
+    }
+
+    else if (std::abs(y + 1.0f) < 0.0001f)
+    {
+        x_face = x;
+        y_face = z;
+    }
+
+    else if (std::abs(z + 1.0f) < 0.0001f)
+    {
+        x_face = x;
+        y_face = y;
+    }
+
+    if (x_face < 0 && y_face >= 0 || x_face >= 0 && y_face < 0)
+        return _material;
+
+    return _material2;
+}

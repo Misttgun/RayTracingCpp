@@ -7,7 +7,7 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
     Ray normal = obj.get_normal(impact, ray.origin);
     const Vector n_normal = normal.direction.normalized();
     const Vector direction = (ray.origin - impact).normalized();
-    const Material curr_mat = obj.get_material();
+    const Material curr_mat = obj.get_material(impact);
 
     Color specular;
     Color diffuse;
