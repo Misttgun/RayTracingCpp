@@ -105,43 +105,43 @@ Material Cube::get_material(const Vector& impact) const
 
     if (std::abs(x - 1.0f) < 0.0001f)
     {
-    	x_face = y;
-	y_face = z;
+        x_face = y;
+        y_face = z;
     }
 
     else if (std::abs(y - 1.0f) < 0.0001f)
     {
         x_face = x;
-	y_face = z;
+        y_face = z;
     }
 
     else if (std::abs(z - 1.0f) < 0.0001f)
     {
-	x_face = x;
+        x_face = x;
         y_face = y;
 
     }
 
     else if (std::abs(x + 1.0f) < 0.0001f)
     {
-       x_face = y;
-       y_face = z;
+        x_face = y;
+        y_face = z;
     }
 
     else if (std::abs(y + 1.0f) < 0.0001f)
     {
-	x_face = x;
-	y_face = z;
+        x_face = x;
+        y_face = z;
     }
 
     else if (std::abs(z + 1.0f) < 0.0001f)
     {
-	x_face = x;
-	y_face = y;
+        x_face = x;
+        y_face = y;
     }
 
     if (x_face < 0 && y_face >= 0 || x_face >= 0 && y_face < 0)
-	return _material;
+        return _material;
 
     return _material2;
 }

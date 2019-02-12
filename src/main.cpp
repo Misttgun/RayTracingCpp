@@ -82,6 +82,7 @@ int main()
     Material metal_green(Color(0, 1, 0), 0.2f, 0.4f, 0.4f, 50, 0.01f, false);
     Material chalk_blue(Color(0, 0, 1), 0.2f, 0.4f, 0.2f, 2, 0.25f, false);
     Material chalk_grey(Color(0.5, 0.5, 0.5), 0.2f, 0.4f, 0.2f, 2, 0.25f, false);
+    Material chalk_black(Color(0, 0, 0), 0.2f, 0.4f, 0.2f, 2, 0.25f, false);
 
     std::shared_ptr<Plan> back = std::make_shared<Plan>(Plan());
     back->translate(0, 0, -8);
@@ -122,7 +123,7 @@ int main()
     //p5->rotate_x(45);
     p5->translate(0.5f, 0, -4);
     p5->scale(1.5f);
-    p5->set_material(chalk_red);
+    p5->set_materials(chalk_black, mirror_blue);
     scene.add_object(p5);
 
     //   std::shared_ptr<Cone> p6 = std::make_shared<Cone>(Cone());
@@ -145,7 +146,7 @@ int main()
     std::shared_ptr<Cone> cone = std::make_shared<Cone>(Cone());
     cone->translate(-1.5f, -1, -2);
     //cone->rotate_x(90);
-    cone->set_material(metal_green);
+    cone->set_materials(metal_green, mirror_blue);
     cone->scale(2.0f);
     scene.add_object(cone);
     
