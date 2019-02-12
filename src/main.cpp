@@ -129,6 +129,13 @@ int main()
     Renderer renderer;
     Camera cam = scene.get_camera();
 
+    
+    Color** antialiased_color = new Color*[size*2];
+
+    for (int i = 0; i < size * 2; i++)
+	antialiased_color[i] = new Color[size*2];
+    
+
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
@@ -138,11 +145,26 @@ int main()
             Ray ray = cam.get_ray(x, y);
             Vector impact;
 
-            const auto pixel_color = scene.cast_ray(ray, impact, renderer, 1);
-            scene.image[i][j] = pixel_color;
+            const auto pixel_color_a = scene.cast_ray(ray, impact, renderer, 1);
+
+            antialiased_color[i][j] = pixel_color_a;
         }
     }
 
+    for (int i = 0; i < size; i++)
+    {
+	for (int j = 0; j < size; j++)
+	{
+	    scene.image[i][j] = (antialiased_color[i][j] + antialiased_color[i][j+1] + antialiased_color[i+1][j] + antialiased_color[i+1][j+1]) / 4;
+
+	}
+    }
+
+    for (int i = 0; i < size; i++)
+	delete antialiased_color[i];
+
+    delete[] antialiased_color;
+    
     std::ofstream file_ppm;
     file_ppm.open("render.ppm");
 
