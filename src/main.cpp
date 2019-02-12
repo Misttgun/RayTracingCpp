@@ -18,60 +18,6 @@
 
 int main()
 {
-    /*
-    HPoint vec(1, 2, 3, 2);
-    HPoint vac(4, 5, 6, 3);
-
-    HVector res = vac - vec;
-    //float res = vac.dot(vec);
-
-    Point vec1(1, 2, 3);
-    Point vac1(4, 5, 6);
-
-    Vector res1 = vac1;
-
-    Matrix mat;
-    mat(0, 0) = 5;
-    mat(0, 1) = -2;
-    mat(0, 2) = 2;
-    mat(0, 3) = 7;
-
-    mat(1, 0) = 1;
-    mat(1, 1) = 0;
-    mat(1, 2) = 0;
-    mat(1, 3) = 3;
-
-    mat(2, 0) = -3;
-    mat(2, 1) = 1;
-    mat(2, 2) = 5;
-    mat(2, 3) = 0;
-
-    mat(3, 0) = 3;
-    mat(3, 1) = -1;
-    mat(3, 2) = -9;
-    mat(3, 3) = 4;
-
-    Matrix adj;
-    mat.adjoint(adj);
-
-    Matrix inverse = mat.inverse();
-
-    HVector product = mat * vec;
-
-
-    std::cout << "(" << product[0] << ", " << product[1] << ", " << product[2] << ", " << product[3] << ")" << std::endl;
-    std::cout << "-----------------------------------" << std::endl;
-    std::cout << "(" << res.x << ", " << res.y << ", " << res.z << ", " << res.w << ")" << std::endl;
-    std::cout << "-----------------------------------" << std::endl;
-    std::cout << "(" << res1.x << ", " << res1.y << ", " << res1.z << ")" << std::endl;
-    std::cout << "-----------------------------------" << std::endl;
-    mat.display();
-    std::cout << "-----------------------------------" << std::endl;
-    adj.display();
-    std::cout << "-----------------------------------" << std::endl;
-    inverse.display();
-    */
-
     const int size = 800;
     Scene scene(size);
 
@@ -87,7 +33,7 @@ int main()
     std::shared_ptr<Plan> back = std::make_shared<Plan>(Plan());
     back->translate(0, 0, -8);
     //back->set_material(mirror_blue);
-    back->set_materials(chalk_red, chalk_blue);
+    back->set_materials(chalk_red, chalk_grey);
     scene.add_object(back);
 
     //std::shared_ptr<Plan> front = std::make_shared<Plan>(Plan());
@@ -97,11 +43,11 @@ int main()
     //scene.add_object(front);
 
     // FRONT IS BLUE
-    //std::shared_ptr<Sphere> p2 = std::make_shared<Sphere>(Sphere());
-    ////std::shared_ptr<Square> p2 = std::make_shared<Square>(Square());
-    //p2->translate(0, 1, 0);
-    //p2->set_material(mat_blue);
-    //scene.add_object(p2);
+    std::shared_ptr<Sphere> p2 = std::make_shared<Sphere>(Sphere());
+    //std::shared_ptr<Square> p2 = std::make_shared<Square>(Square());
+    p2->translate(0, 1, 0);
+    p2->set_materials(chalk_grey, chalk_black);
+    scene.add_object(p2);
 
    // RIGHT IS GREEN
     /*std::shared_ptr<Sphere> p3 = std::make_shared<Sphere>(Sphere());
@@ -133,7 +79,6 @@ int main()
     //   p6->set_material(mat_red);
     //   scene.add_object(p6);
 
-
     std::shared_ptr<Cube> p7 = std::make_shared<Cube>(Cube());
     p7->rotate_y(45);
     p7->rotate_x(45);
@@ -150,11 +95,11 @@ int main()
     cone->scale(2.0f);
     scene.add_object(cone);
     
-    //std::shared_ptr<Tore> tore = std::make_shared<Tore>(Tore());
-    //tore->translate(-1.5f, -1.0f, 0.0f);
-    //tore->set_material(chalk_red);
-    //tore->scale(1.0f);
-    //scene.add_object(tore);
+    std::shared_ptr<Tore> tore = std::make_shared<Tore>(Tore());
+    tore->translate(-1.5f, -1.0f, 0.0f);
+    tore->set_materials(chalk_red, chalk_grey);
+    tore->scale(1.0f);
+    scene.add_object(tore);
 
 
     std::shared_ptr<Light> l = std::make_shared<Light>(Light(2, -1.5, 0));
