@@ -77,14 +77,15 @@ int main()
 
     //scene.load("config.txt");
 
-    Material chalk_red(Color(1, 0, 0), 0.2f, 0.4f, 0.2f, 2, 0.25f, false);
-    Material mirror_blue(Color(0, 0, 1), 0.2f, 1.0f, 0.5f, 1, 0.01f, true);
-    Material metal_green(Color(0, 1, 0), 0.2f, 0.4f, 0.4f, 50, 0.01f, false);
-    Material chalk_grey(Color(0.5, 0.5, 0.5), 0.2f, 0.4f, 0.2f, 2, 0.25f, false);
+    Material chalk_red(Color(1, 0, 0), 0.2f, 0.4f, 0.2f, 2, 0.25f, Type::Phong);
+    Material mirror_blue(Color(0, 0, 1), 0.2f, 1.0f, 0.5f, 1, 0.01f, Type::Reflection);
+    Material metal_green(Color(0, 1, 0), 0.2f, 0.4f, 0.4f, 50, 0.01f, Type::Phong);
+    Material chalk_grey(Color(0.5, 0.5, 0.5), 0.2f, 0.4f, 0.2f, 2, 0.25f, Type::Phong);
+    Material glass_yellow(Color(1, 1, 0), 0.2f, 0.4f, 0.4f, 0.0001f, 0.1f, Type::Refraction);
 
     std::shared_ptr<Plan> back = std::make_shared<Plan>(Plan());
     back->translate(0, 0, -8);
-    back->set_material(mirror_blue);
+    back->set_material(chalk_grey);
     scene.add_object(back);
 
     //std::shared_ptr<Plan> front = std::make_shared<Plan>(Plan());
@@ -111,7 +112,7 @@ int main()
     p4->rotate_y(45);
     p4->translate(1.75f, 0, -2);
     p4->scale(1.75f);
-    p4->set_material(mirror_blue);
+    p4->set_material(glass_yellow);
     scene.add_object(p4);
 
     std::shared_ptr<Cylinder> p5 = std::make_shared<Cylinder>(Cylinder());
@@ -147,11 +148,11 @@ int main()
     cone->scale(2.0f);
     scene.add_object(cone);
     
-    std::shared_ptr<Tore> tore = std::make_shared<Tore>(Tore());
-    tore->translate(-1.5f, -1.0f, 0.0f);
-    tore->set_material(chalk_red);
-    tore->scale(1.0f);
-    scene.add_object(tore);
+    //std::shared_ptr<Tore> tore = std::make_shared<Tore>(Tore());
+    //tore->translate(-1.5f, -1.0f, 0.0f);
+    //tore->set_material(chalk_red);
+    //tore->scale(1.0f);
+    //scene.add_object(tore);
 
 
     std::shared_ptr<Light> l = std::make_shared<Light>(Light(2, -1.5, 0));
@@ -171,7 +172,7 @@ int main()
 
 
     // SET META DATA
-    scene.set_bg(Color(0.5f, 0.5f, 0.5f));
+    scene.set_bg(Color(0.5f, 0.5f, 1.0f));
     scene.set_ambiant(Color(0.5, 0.5, 0.5));
 
     std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "

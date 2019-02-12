@@ -21,6 +21,7 @@ public:
 	Vector& operator*=(float value);
 	Vector operator/(float value) const;
 	Vector& operator/=(float value);
+    bool operator!= (const Vector& value);
 
 	float operator[](int i) const;
 	float& operator[](int i);

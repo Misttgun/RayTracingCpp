@@ -1,4 +1,5 @@
 #include "Vector.h"
+#include "Utils.h"
 
 #include <cmath>
 #include <cassert>
@@ -77,6 +78,11 @@ Vector& Vector::operator/=(const float value)
 	y /= value;
 	z /= value;
 	return *this;
+}
+
+bool Vector::operator!=(const Vector & value)
+{
+    return !Utils::float_comp(x, value.x) || !Utils::float_comp(y, value.y) || !Utils::float_comp(z, value.z);
 }
 
 float Vector::operator[](const int i) const
