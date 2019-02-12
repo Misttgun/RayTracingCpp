@@ -73,7 +73,7 @@ int main()
     inverse.display();
     */
 
-    Scene *scene = SceneLoader::load("scene.json");
+    std::shared_ptr<Scene> scene = SceneLoader::load("scene.json");
 
     auto size = scene->image_size;
 

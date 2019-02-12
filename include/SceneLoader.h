@@ -11,7 +11,7 @@
 
 class SceneLoader {
 public:
-    static Scene * load(const std::string& file);
+    static std::shared_ptr<Scene> load(const std::string& file);
 
 private:
     SceneLoader() = default;
