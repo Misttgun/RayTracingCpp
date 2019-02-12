@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef _SCENE_H_INCLUDED_
-#define _SCENE_H_INCLUDED
+#define _SCENE_H_INCLUDED_
 
 #include <string>
 #include <vector>

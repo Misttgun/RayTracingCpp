@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef _OBJECT_H_INCLUDED_
-#define _OBJECT_H_INLCUDED_
+#define _OBJECT_H_INCLUDED_
 
 #include "Entity.h"
 #include "Material.h"
