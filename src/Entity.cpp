@@ -180,38 +180,67 @@ bool Entity::solve_polynomial_2(float a, float b, float c, float& t) const
     t = -1.0f;
 
     // - pas de solution réelle
-    if (delta < 0)
+    if (delta < 0.0f)
         return false;
 
     // 1 solution réelle
     if (delta <= 0.0001f  && delta >= -0.0001f)
-        t = -b / (2 * a);
+    {
+        t = -b / (2.0f * a);
+    }
 
     // - deux solutions réelles
     else
     {
-        float t1 = (-b - sqrt(delta)) / (2 * a);
-        float t2 = (-b + sqrt(delta)) / (2 * a);
+        float t1 = (-b - sqrt(delta)) / (2.0f * a);
+        float t2 = (-b + sqrt(delta)) / (2.0f * a);
 
         // - le rayon est dirigé à l'opposé de l'objet
-        if (t1 < 0.f && t2 < 0.f)
+        if (t1 < 0.0f && t2 < 0.0f)
             return false;
 
-        // - le rayon est dirigé vers l'objet et a deux intersections
-        if (t1 > 0.f && t2 > 0.f)
+        // - le rayon est dirigé vers l'objet et a deux intersection
+        if (t1 > 0.0f && t2 > 0.0f)
             t = t1 < t2 ? t1 : t2;
 
-        // - origine du rayon dans l'objet et seul t1 visible
-        else if (t1 > 0.f)
+        // - origine du rayon dans l'objet et seul t1 visibl
+        else if (t1 > 0.0f)
             t = t1;
 
         // - origine du rayon dans l'objet t seul t2 visible
-        else
+        else if (t2 > 0.0f)
             t = t2;
     }
 
-    return (t > 0.f);
+
+    return (t > 0.0f);
 }
+
+bool Entity::solve_full_polynomial_2(float a, float b, float c, float& t1, float& t2) const
+{
+    const float delta = b * b - 4 * a * c;
+
+    // - pas de solution réelle
+    if (delta < 0.0f)
+        return false;
+
+    // 1 solution réelle
+    if (delta <= 0.0001f  && delta >= -0.0001f)
+    {
+        t1 = -b / (2.0f * a);
+	t2 = t1;
+    }
+
+    // - deux solutions réelles
+    else
+    {
+        t1 = (-b - sqrt(delta)) / (2.0f * a);
+        t2 = (-b + sqrt(delta)) / (2.0f * a);
+    }
+
+    return true;
+}
+
 
 // - use only by solve_polynomial_4. Only return one real solution, DOES NOT
 // RESOLVE ALL THE SYSTEM
@@ -232,7 +261,7 @@ void Entity::solve_polynomial_3(float a, float b, float c, float &t) const
     float y;
 
     // 1 real solution
-    if (delta_ < 0)
+    if (delta_ < 0.0f)
     {
 	float r = cbrt(-q_ + sqrt(-delta_));
 	float s = cbrt(-q_ - sqrt(-delta_));
@@ -264,7 +293,7 @@ bool Entity::solve_polynomial_4(float a, float b, float c, float d, float &t) co
     float p = (-3.0f/8.0f)*pow(a, 2.0f) + b;
     float q = (1.0f/8.0f)*pow(a, 3.0f) - (1.0f/2.0f)*a*b + c;
     float r = (-3.0f/256.0f)*pow(a, 4.0f) + (1.0f/16.0f)*pow(a, 2.0f)*b + (-1.0f/4.0f)*a*c + d;
-    float t1 = -1.0f, t2 = -1.0f;
+    float t1 = -INFINITY, t2 = -INFINITY, t3 = -INFINITY, t4 = -INFINITY;
 
     // give us a 3rd degree polynomial : y^3 - (p/2)y^2 - ry + (4rp-q^2) / 8 = 0
     float y;
@@ -275,14 +304,15 @@ bool Entity::solve_polynomial_4(float a, float b, float c, float d, float &t) co
     float c_q = sqrt(y*y - r);
 
  
-    if (q >= 0)
+    if (q >= 0.0f)
     {
 	// solutions of the quartic are the solutions of 
 	// x^2 + x*sqrt(2y - p) + y - sqrt(y^2 - r) = 0
 	// x^2 - x*sqrt(2y - p) + y + sqrt(y^2 - r) = 0
-	
-	if (!solve_polynomial_2(1.0f, b_q, y-c_q, t1) && !solve_polynomial_2(1.0f, -b_q, y+c_q, t2))
-	    return false;
+
+	solve_full_polynomial_2(1.0f, b_q, y-c_q, t1, t2);
+       	solve_full_polynomial_2(1.0f, -b_q, y+c_q, t3, t4);
+	 
     }
 
     else
@@ -290,24 +320,33 @@ bool Entity::solve_polynomial_4(float a, float b, float c, float d, float &t) co
 	// solutions of the quartic are the solutions of 
 	// x^2 + x*sqrt(2y - p) + y + sqrt(y^2 - r) = 0
 	// x^2 - x*sqrt(2y - p) + y - sqrt(y^2 - r) = 0
-
-	if (!solve_polynomial_2(1.0f, b_q, y+c_q, t1) && !solve_polynomial_2(1.0f, -b_q, y-c_q, t2))
-	    return false;
+	solve_full_polynomial_2(1.0f, b_q, y+c_q, t1, t2);
+       	solve_full_polynomial_2(1.0f, -b_q, y-c_q, t3, t4);
     }
+    t1 -= a/4.0f;
+    t2 -= a/4.0f;
+    t3 -= a/4.0f;
+    t4 -= a/4.0f;
 
-    if (t1 > 0 && t2 > 0)
-	t = (t1 < t2) ? t1 : t2;
+    if (t1 < 0.0f && t2 < 0.0f && t3 < 0.0f && t4 < 0.0f)
+	return false;
 
-    else if (t1 > 0)
+    t = INFINITY;
+
+    if (t1 >= 0.0f && t1 < t)
 	t = t1;
-    
-    else 
+
+    if (t2 >= 0.0f && t2 < t)
 	t = t2;
+    
+    if (t3 >= 0.0f && t3 < t)
+	t = t3;
+    
+    if (t4 >= 0.0f && t4 < t)
+	t = t4;
 
-    if (t1 > 0 && t2 > 0)
-	std::cout << t1 << " " << t2 << " : " << t << std::endl;
-    t -= a/4.0f;
-
+    if (t == INFINITY)
+	return false;
     return t > 0;
 }
 

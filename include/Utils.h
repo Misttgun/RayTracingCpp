@@ -5,7 +5,7 @@
 
 #include "Vector.h"
 #include <algorithm>
-
+#include <cmath>
 class Utils
 {
     public:
@@ -45,7 +45,7 @@ class Utils
         return reflected;
     }
 
-    static const double Utils::fresnel(double indice_of_refraction, Vector normal, Vector direction)
+    static const double fresnel(double indice_of_refraction, Vector normal, Vector direction)
     {
         double cosi = std::max(-1.0f, std::min(normal.dot(direction), 1.0f));
         double etai = 1.0;
