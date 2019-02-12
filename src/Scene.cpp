@@ -25,6 +25,31 @@ Scene::~Scene()
     delete[] image;
 }
 
+Scene::Scene(const Scene& copy) : _lights(), _objects()
+{
+    image_size = copy.image_size;
+
+    Camera _camera = copy._camera;
+    Color _background = copy._background;
+    Color _ambiant = copy._ambiant;
+
+    for (auto light : copy._lights)
+        _lights.push_back(light);
+
+    for (auto object : copy._objects)
+        _objects.push_back(object);
+
+    image = new Color*[image_size];
+    for (int i = 0; i < image_size; i++)
+        image[i] = new Color[image_size];
+
+    for (int i = 0; i < image_size; i++)
+        for (int j = 0; j < image_size; j++)
+            image[i][j] = copy.image[i][j];
+
+    const int MAX_DEPTH = 5;
+}
+
 void Scene::render() const
 {}
 

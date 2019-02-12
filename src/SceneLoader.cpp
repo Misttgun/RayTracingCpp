@@ -30,6 +30,7 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file) {
     int image_size = globals["image_size"];
 
     std::shared_ptr<Scene> scene = std::make_shared<Scene>(Scene(image_size));
+    std::cout << "INIT HERE : " << image_size << "\n";
 
     auto camera_data = globals["camera"];
     float x = camera_data["x"];

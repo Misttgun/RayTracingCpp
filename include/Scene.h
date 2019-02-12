@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 
 #ifndef _SCENE_H_INCLUDED_
 #define _SCENE_H_INCLUDED_
@@ -20,6 +20,7 @@ class Scene
 {
 public:
     Scene() = default;
+    Scene(const Scene& Copy);
     explicit Scene(int v_image_size);
     ~Scene();
 
