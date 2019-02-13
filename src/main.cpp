@@ -17,6 +17,7 @@
 #include "Cone.h"
 #include "FCone.h"
 #include "Tore.h"
+#include "Circle.h"
 
 int main()
 {
@@ -107,6 +108,12 @@ int main()
     tore->set_materials(chalk_red, chalk_grey);
     tore->scale(1.0f);
     scene.add_object(tore);
+
+    std::shared_ptr<Circle> circle = std::make_shared<Circle>(Circle());
+    circle->scale(1.0f);
+    circle->translate(0.0f, 0.0f, 0.0f);
+    circle->set_materials(chalk_red, chalk_grey);
+    scene.add_object(circle);
 
 
     std::shared_ptr<Light> l = std::make_shared<Light>(Light(2, -1.5, 0));
