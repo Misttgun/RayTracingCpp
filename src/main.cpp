@@ -11,9 +11,11 @@
 #include "Sphere.h"
 #include "Square.h"
 #include "Cylinder.h"
+#include "FCylinder.h"
 #include <algorithm>
 #include "Cube.h"
 #include "Cone.h"
+#include "FCone.h"
 #include "Tore.h"
 
 int main()
@@ -93,7 +95,7 @@ int main()
     scene.add_object(p7);
 
 
-    std::shared_ptr<Cone> cone = std::make_shared<Cone>(Cone());
+    std::shared_ptr<FCone> cone = std::make_shared<FCone>(FCone());
     cone->translate(-1.5f, -1, -2);
     //cone->rotate_x(90);
     cone->set_materials(metal_green, chalk_blue);
