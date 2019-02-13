@@ -149,11 +149,11 @@ int main()
     std::ofstream file_ppm;
     file_ppm.open("render.ppm");
 
-    file_ppm << "P3\n" << size << " " << size << "\n255\n";
+    file_ppm << "P3\n" << scene_size << " " << scene_size << "\n255\n";
 
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < scene_size; i++)
     {
-        for (int j = 0; j < size; j++)
+        for (int j = 0; j < scene_size; j++)
         {
             file_ppm << antialiased_image[i][j].r * 255 << " " << antialiased_image[i][j].g * 255 << " " << antialiased_image[i][j].b * 255 << " ";
         }

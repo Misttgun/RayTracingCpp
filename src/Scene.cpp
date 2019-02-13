@@ -249,22 +249,28 @@ Color** Scene::get_final_image() const
     for (int i = 0; i < image_size; i++)
         res[i] = new Color[image_size];
 
-    for (int i = 0; i < image_size; i++)
-        for (int j = 0; j < image_size; j++)
-            res[i][j] = get_final_pixel(i, j);
-
+    for (int i = 0; i < image_size * _sampling_factor; i += _sampling_factor)
+        for (int j = 0; j < image_size *_sampling_factor; j += _sampling_factor)
+        {
+            int y = i / _sampling_factor, x = j / _sampling_factor;
+            res[y][x] = get_final_pixel(i, j);
+        }
     return res;
 }
 
-Color Scene::get_final_pixel(int i, int j) const
+Color Scene::get_final_pixel(int y, int x) const
 {
-    Color res = image[i][j];
+    Color res = image[y][x];
     int count = 1;
-    for (int i = 1; i < _sampling_factor; i++)
+
+    for (int i = 0, y_offset = -_sampling_factor / 2; i < _sampling_factor; i++, y_offset++)
     {
-        for (int j = 1; j < _sampling_factor; j++)
+        for (int j = 0, x_offset = -_sampling_factor / 2; j < _sampling_factor; j++)
         {
-            res += image[i - 1][j - 1];
+            if (x + x_offset < 0 || y + y_offset < 0 || (x_offset == 0 && y_offset == 0))
+                continue;
+
+            res += image[y + y_offset][x + x_offset];
             count++;
         }
     }
