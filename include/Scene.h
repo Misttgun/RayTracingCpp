@@ -94,7 +94,7 @@ public:
 
     Color** image;
     int image_size;
-    const int _sampling_factor = 16;
+    const int _sampling_factor = 2;
 
 private:
     void load_globals(std::istringstream& params, int& nb_obj);
