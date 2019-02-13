@@ -18,9 +18,9 @@
 
 int main()
 {
-    const int size = 800;
-    Scene scene(size);
-
+    const int scene_size = 800;
+    Scene scene(scene_size);
+    const int size = scene.image_size * scene._sampling_factor;
     //scene.load("config.txt");
 
     Material chalk_red(Color(1, 0, 0), 0.4f, 0.2f, 2, 0.25f, Type::Phong);
@@ -143,25 +143,33 @@ int main()
             Ray ray = cam.get_ray(x, y);
             Vector impact;
 
-            const auto pixel_color = scene.cast_ray(ray, impact, renderer, 1);
-            scene.image[i][j] = pixel_color;
+            const auto pixel_color_a = scene.cast_ray(ray, impact, renderer, 1);
+
+            scene.image[i][j] = pixel_color_a;
         }
     }
+
+    Color** antialiased_image = scene.get_final_image();
 
     std::ofstream file_ppm;
     file_ppm.open("render.ppm");
 
-    file_ppm << "P3\n" << size << " " << size << "\n255\n";
+    file_ppm << "P3\n" << scene_size << " " << scene_size << "\n255\n";
 
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < scene_size; i++)
     {
-        for (int j = 0; j < size; j++)
+        for (int j = 0; j < scene_size; j++)
         {
-            file_ppm << scene.image[i][j].r * 255 << " " << scene.image[i][j].g * 255 << " " << scene.image[i][j].b * 255 << " ";
+            file_ppm << antialiased_image[i][j].r * 255 << " " << antialiased_image[i][j].g * 255 << " " << antialiased_image[i][j].b * 255 << " ";
         }
 
         file_ppm << "\n";
     }
+
+    for (int i = 0; i < scene_size; i++)
+        delete antialiased_image[i];
+
+    delete[] antialiased_image;
     //std::cout << "Res = " << res << std::endl;
     std::cout << "DONE !\n";
 

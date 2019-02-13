@@ -89,9 +89,12 @@ public:
 
     Color cast_ray(const Ray& ray, Vector& impact, const Renderer& renderer, int depth) const;
     float compute_distance(const Vector& a, const Vector& b) const;
+    Color** get_final_image() const;
+    Color get_final_pixel(int i, int j) const;
 
     Color** image;
     int image_size;
+    const int _sampling_factor = 16;
 
 private:
     void load_globals(std::istringstream& params, int& nb_obj);
@@ -104,6 +107,7 @@ private:
     std::vector<std::shared_ptr<Light>> _lights;
     std::vector<std::shared_ptr<Object>> _objects;
     const int MAX_DEPTH = 5;
+    
 };
 
 #endif 

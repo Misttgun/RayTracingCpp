@@ -12,9 +12,11 @@
 
 Scene::Scene(int v_image_size) : image_size(v_image_size)
 {
-    image = new Color*[image_size];
-    for (int i = 0; i < image_size; i++)
-        image[i] = new Color[image_size];
+    int final_size = image_size * _sampling_factor;
+
+    image = new Color*[final_size];
+    for (int i = 0; i < final_size; i++)
+        image[i] = new Color[final_size];
 }
 
 Scene::~Scene()
@@ -239,6 +241,41 @@ Color Scene::cast_ray(const Ray& ray, Vector& impact, const Renderer& renderer, 
     res_color.b = std::fmin(res_color.b, 1);
 
     return  res_color;
+}
+
+Color** Scene::get_final_image() const
+{
+    auto res = new Color*[image_size];
+    for (int i = 0; i < image_size; i++)
+        res[i] = new Color[image_size];
+
+    for (int i = 0; i < image_size * _sampling_factor; i += _sampling_factor)
+        for (int j = 0; j < image_size *_sampling_factor; j += _sampling_factor)
+        {
+            int y = i / _sampling_factor, x = j / _sampling_factor;
+            res[y][x] = get_final_pixel(i, j);
+        }
+    return res;
+}
+
+Color Scene::get_final_pixel(int y, int x) const
+{
+    Color res = image[y][x];
+    int count = 1;
+
+    for (int i = 0, y_offset = -_sampling_factor / 2; i < _sampling_factor; i++, y_offset++)
+    {
+        for (int j = 0, x_offset = -_sampling_factor / 2; j < _sampling_factor; j++)
+        {
+            if (x + x_offset < 0 || y + y_offset < 0 || (x_offset == 0 && y_offset == 0))
+                continue;
+
+            res += image[y + y_offset][x + x_offset];
+            count++;
+        }
+    }
+
+    return res / count;
 }
 
 float Scene::compute_distance(const Vector& a, const Vector& b) const
