@@ -23,51 +23,55 @@ int main()
 
     //scene.load("config.txt");
 
-    Material chalk_red(Color(1, 0, 0), 0.2f, 0.4f, 0.2f, 2, 0.25f, Type::Phong);
-    Material mirror_blue(Color(0, 0, 1), 0.2f, 1.0f, 0.5f, 1, 0.01f, Type::Reflection);
-    Material metal_green(Color(0, 1, 0), 0.2f, 0.4f, 0.4f, 50, 0.01f, Type::Phong);
-    Material chalk_grey(Color(0.5, 0.5, 0.5), 0.2f, 0.4f, 0.2f, 2, 0.25f, Type::Phong);
-    Material glass_yellow(Color(1, 1, 0), 0.2f, 0.4f, 0.4f, 0.0001f, 0.1f, Type::Refraction);
-    Material chalk_black(Color(0, 0, 0), 0.2f, 0.4f, 0.2f, 2, 0.25f, Type::Phong);
+    Material chalk_red(Color(1, 0, 0), 0.4f, 0.2f, 2, 0.25f, Type::Phong);
+    Material chalk_green(Color(0, 1, 0), 0.4f, 0.2f, 2, 0.25f, Type::Phong);
+    Material chalk_blue(Color(0, 0, 1), 0.4f, 0.2f, 2, 0.25f, Type::Phong);
+    Material mirror_blue(Color(0, 0, 1), 1.0f, 0.5f, 1, 0.01f, Type::Reflection);
+    Material metal_green(Color(0, 1, 0), 0.4f, 0.4f, 50, 0.01f, Type::Phong);
+    Material chalk_grey(Color(0.5, 0.5, 0.5), 0.4f, 0.2f, 2, 0.25f, Type::Phong);
+    Material glass_yellow(Color(1, 1, 0), 0.4f, 0.4f, 0.0001f, 0.1f, Type::Refraction);
+    Material chalk_black(Color(0, 0, 0), 0.4f, 0.2f, 2, 0.25f, Type::Phong);
 
     std::shared_ptr<Plan> back = std::make_shared<Plan>(Plan());
     back->translate(0, 0, -8);
-    //back->set_material(mirror_blue);
+    /*back->rotate_x(90);
+    back->translate(0, 5, 0);*/
     back->set_materials(chalk_red, chalk_black);
+    //back->set_material(chalk_red);
     scene.add_object(back);
 
-    std::shared_ptr<Plan> front = std::make_shared<Plan>(Plan());
+    /*std::shared_ptr<Plan> front = std::make_shared<Plan>(Plan());
     front->rotate_y(-180);
     front->translate(0, 0, 8);
     front->scale(10);
     front->set_material(chalk_grey);
-    scene.add_object(front);
+    scene.add_object(front);*/
 
     // FRONT IS BLUE
-    std::shared_ptr<Sphere> p2 = std::make_shared<Sphere>(Sphere());
+    std::shared_ptr<Cube> p2 = std::make_shared<Cube>(Cube());
     //std::shared_ptr<Square> p2 = std::make_shared<Square>(Square());
-    p2->translate(0, 1, 0);
-    p2->set_materials(chalk_grey, chalk_black);
+    p2->translate(2.f, 0, -4);
+    p2->scale(0.5f);
+    p2->set_materials(chalk_grey, chalk_green);
     scene.add_object(p2);
 
-   // RIGHT IS GREEN
-    /*std::shared_ptr<Sphere> p3 = std::make_shared<Sphere>(Sphere());
-    p3->translate(1, -1, -1);
-    p3->set_material(metal_green);
-    scene.add_object(p3);*/
+    // RIGHT IS GREEN
+     /*std::shared_ptr<Sphere> p3 = std::make_shared<Sphere>(Sphere());
+     p3->translate(1, -1, -1);
+     p3->set_material(metal_green);
+     scene.add_object(p3);*/
 
-    // LEFT IS RED
+     // LEFT IS RED
     std::shared_ptr<Sphere> p4 = std::make_shared<Sphere>(Sphere());
-    p4->rotate_y(45);
-    p4->translate(1.75f, 0, -2);
-    p4->scale(1.75f);
+    //std::shared_ptr<Cube> p4 = std::make_shared<Cube>(Cube());
+    //p4->rotate_x(45);
+    //p4->rotate_y(45);
+    p4->translate(1.75f, 0, 0);
+    p4->scale(1.f);
     p4->set_material(glass_yellow);
     scene.add_object(p4);
 
     std::shared_ptr<Cylinder> p5 = std::make_shared<Cylinder>(Cylinder());
-    //std::shared_ptr<Cube> p5 = std::make_shared<Cube>(Cube());
-    //p5->rotate_y(45);
-    //p5->rotate_x(45);
     p5->translate(0.5f, 0, -4);
     p5->scale(1.5f);
     p5->set_materials(chalk_black, mirror_blue);
@@ -92,10 +96,10 @@ int main()
     std::shared_ptr<Cone> cone = std::make_shared<Cone>(Cone());
     cone->translate(-1.5f, -1, -2);
     //cone->rotate_x(90);
-    cone->set_materials(metal_green, mirror_blue);
+    cone->set_materials(metal_green, chalk_blue);
     cone->scale(2.0f);
     scene.add_object(cone);
-    
+
     std::shared_ptr<Tore> tore = std::make_shared<Tore>(Tore());
     tore->translate(-1.5f, -1.0f, 0.0f);
     tore->set_materials(chalk_red, chalk_grey);
@@ -120,7 +124,7 @@ int main()
 
 
     // SET META DATA
-    scene.set_bg(Color(0.5f, 0.5f, 0.5f));
+    scene.set_bg(Color(0.f, 0.f, 0.f));
     scene.set_ambiant(Color(0.5, 0.5, 0.5));
 
     std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "

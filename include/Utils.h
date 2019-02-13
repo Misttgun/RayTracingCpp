@@ -6,14 +6,13 @@
 #include "Vector.h"
 #include <algorithm>
 #include <cmath>
+
 class Utils
 {
 public:
     static Vector refract(const Vector& normal, const Vector& direction, const float coef)
     {
-        double cosi = std::max(-1.0f, std::min(normal.dot(direction), 1.0f));
-        double etai = 1;
-        double etat = coef;
+        float cosi = std::max(-1.0f, std::min(normal.dot(direction), 1.0f));
         Vector n_normal = normal;
 
         if (cosi < 0)
@@ -22,49 +21,44 @@ public:
         }
         else
         {
-            std::swap(etai, etat);
-            n_normal *= -1.0;
+            n_normal *= -1.0f;
         }
 
-        double eta = etai / etat;
-        double k = 1 - eta * eta * (1 - cosi * cosi);
-        Vector refracted = (k < 0) ? Vector(0, 0, 0) : direction * eta + normal * (eta * cosi - sqrt(k));
+        const float eta = 1 / coef;
+        float k = 1 - eta * eta * (1 - cosi * cosi);
+        Vector refracted = (k < 0) ? Vector(0, 0, 0) : direction * eta + n_normal * (eta * cosi - std::sqrt(k));
 
-        //const float c1 = -(normal.dot(direction));
-        //const float c2 = sqrt(1 - pow(coef, 2) * (1 - pow(c1, 2)));
-        //const Vector refracted = (direction * coef) + (coef * c1 - c2) * normal;
-
-        return refracted;
+        return refracted.normalized();
     }
 
     static Vector reflect(const Vector& normal, const Vector& direction)
     {
-        Vector reflected = (2.0 * (direction.dot(normal))) * normal - direction;
+        Vector reflected = direction - (2.0 * (direction.dot(normal))) * normal;
 
-        return reflected;
+        return reflected.normalized();
     }
 
-    static double fresnel(double indice_of_refraction, const Vector& normal, const Vector& direction)
+    static float fresnel(double indice_of_refraction, const Vector& normal, const Vector& direction)
     {
-        double cosi = std::max(-1.0f, std::min(normal.dot(direction), 1.0f));
-        double etai = 1.0;
-        double etat = indice_of_refraction;
-        double kr;
+        float cosi = std::max(-1.0f, std::min(normal.dot(direction), 1.0f));
+        float etai = 1.0;
+        float etat = indice_of_refraction;
+        float kr;
 
         if (cosi > 0)
             std::swap(etai, etat);
 
-        double sint = etai / etat * sqrt(std::max(0.0, 1.0 - cosi * cosi));
+        float sint = etai / etat * std::sqrt(std::max(0.0, 1.0 - cosi * cosi));
 
         if (sint >= 1.0)
             kr = 1.0;
 
         else
         {
-            double cost = sqrt(std::max(0.0, 1.0 - sint * sint));
-            cosi = abs(cosi);
-            double rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost));
-            double rp = ((etat * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
+            float cost = std::sqrt(std::max(0.0, 1.0 - sint * sint));
+            cosi = std::abs(cosi);
+            float rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost));
+            float rp = ((etat * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
             kr = (rs * rs + rp * rp) / 2;
         }
 

@@ -6,7 +6,9 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
     const int nb_light = scene.nb_lights();
     Ray normal = obj.get_normal(impact, ray.origin);
     const Vector n_normal = normal.direction.normalized();
-    const Vector direction = (ray.origin - impact).normalized();
+    //const Vector direction = (ray.origin - impact).normalized();
+    Vector direction = ray.direction;
+    direction.normalized();
     const Material curr_mat = obj.get_material(impact);
 
     Color specular;
@@ -36,35 +38,35 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
 
         // - Reflexion
         const Vector reflect = Utils::reflect(n_normal, direction);
-        Vector reflect_origin = reflect.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
-        const Ray reflected_ray = Ray(reflect_origin, reflect);
+        const Vector reflect_origin = reflect.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
+        const Ray reflected_ray = Ray(reflect_origin, /*-1 * */reflect);
         Vector reflected_impact;
-        Color reflected_color = scene.cast_ray(reflected_ray, reflected_impact, *this, depth + 1);
+        const Color reflected_color = scene.cast_ray(reflected_ray, reflected_impact, *this, depth + 1);
 
         // - Refraction
-        Vector refract = Utils::refract(-1 * n_normal, direction, 1.33f);
+        Vector refract = Utils::refract(n_normal, direction, 1.5f);
         Color refracted_color;
 
-        /*if(refract != Vector(0.0f, 0.0f, 0.0f))
+        if(refract != Vector(0.0f, 0.0f, 0.0f))
         {
-            Vector refract_origin = refract.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
+            const Vector refract_origin = refract.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
             const Ray refracted_ray = Ray(refract_origin, refract);
             Vector refracted_impact;
             refracted_color = scene.cast_ray(refracted_ray, refracted_impact, *this, depth + 1);
         }
-        else*/
+        else
         {
             refracted_color = scene.get_background();
         }
 
-        double kr = Utils::fresnel(1.33f, n_normal, direction);
+        double kr = Utils::fresnel(1.5f, n_normal, direction);
 
         return reflected_color * kr + refracted_color * (1 - kr);
     }
 
     if(curr_mat.mat_type == Type::Reflection)
     {
-        const Vector reflect = Utils::reflect(n_normal, direction);
+        Vector reflect = Utils::reflect(n_normal, direction);
         Vector reflect_origin = reflect.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
         const Ray reflected_ray = Ray(reflect_origin, reflect);
         Vector new_impact;
