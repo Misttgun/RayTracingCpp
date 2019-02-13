@@ -18,9 +18,9 @@
 
 int main()
 {
-    const int size = 800;
-    Scene scene(size);
-
+    const int scene_size = 800;
+    Scene scene(scene_size);
+    const int size = scene.image_size * scene._sampling_factor;
     //scene.load("config.txt");
 
     Material chalk_red(Color(1, 0, 0), 0.2f, 0.4f, 0.2f, 2, 0.25f, Type::Phong);
@@ -129,13 +129,6 @@ int main()
     Renderer renderer;
     Camera cam = scene.get_camera();
 
-    
-    Color** antialiased_color = new Color*[size*2];
-
-    for (int i = 0; i < size * 2; i++)
-	antialiased_color[i] = new Color[size*2];
-    
-
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
@@ -147,24 +140,12 @@ int main()
 
             const auto pixel_color_a = scene.cast_ray(ray, impact, renderer, 1);
 
-            antialiased_color[i][j] = pixel_color_a;
+            scene.image[i][j] = pixel_color_a;
         }
     }
 
-    for (int i = 0; i < size; i++)
-    {
-	for (int j = 0; j < size; j++)
-	{
-	    scene.image[i][j] = (antialiased_color[i][j] + antialiased_color[i][j+1] + antialiased_color[i+1][j] + antialiased_color[i+1][j+1]) / 4;
+    Color** antialiased_image = scene.get_final_image();
 
-	}
-    }
-
-    for (int i = 0; i < size; i++)
-	delete antialiased_color[i];
-
-    delete[] antialiased_color;
-    
     std::ofstream file_ppm;
     file_ppm.open("render.ppm");
 
@@ -174,11 +155,16 @@ int main()
     {
         for (int j = 0; j < size; j++)
         {
-            file_ppm << scene.image[i][j].r * 255 << " " << scene.image[i][j].g * 255 << " " << scene.image[i][j].b * 255 << " ";
+            file_ppm << antialiased_image[i][j].r * 255 << " " << antialiased_image[i][j].g * 255 << " " << antialiased_image[i][j].b * 255 << " ";
         }
 
         file_ppm << "\n";
     }
+
+    for (int i = 0; i < scene_size; i++)
+        delete antialiased_image[i];
+
+    delete[] antialiased_image;
     //std::cout << "Res = " << res << std::endl;
     std::cout << "DONE !\n";
 
