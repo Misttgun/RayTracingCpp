@@ -24,13 +24,19 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file) {
     json j;
     i >> j;
 
-    std::cout << j["globals"] << std::endl;
+    std::shared_ptr<Scene> scene = loadGlobals(j);
+    std::vector<Material> materials = loadMaterials(j);
+    loadObjects(scene, j, materials);
+    loadLights(scene, j);
 
-    auto globals = j["globals"];
+    return scene;
+}
+
+std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json) {
+    auto globals = json["globals"];
     int image_size = globals["image_size"];
 
     std::shared_ptr<Scene> scene = std::make_shared<Scene>(Scene(image_size));
-    std::cout << "INIT HERE : " << image_size << "\n";
 
     auto camera_data = globals["camera"];
     float x = camera_data["x"];
@@ -53,8 +59,13 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file) {
     float ambiant_b = ambiant_color_data["b"];
     scene->set_ambiant(Color(ambiant_r, ambiant_g, ambiant_b));
 
+    return scene;
+}
+
+std::vector<Material> SceneLoader::loadMaterials(nlohmann::basic_json<> json) {
     std::vector<Material> materials;
-    for (const auto &material_data : j["materials"]) {
+
+    for (const auto &material_data : json["materials"]) {
         auto color_data = material_data["color"];
         float r = color_data["r"];
         float g = color_data["g"];
@@ -73,7 +84,13 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file) {
         materials.push_back(material);
     }
 
-    for (const auto &object_data : j["objects"]) {
+    return materials;
+}
+
+void SceneLoader::loadObjects(std::shared_ptr<Scene> scene,
+                              nlohmann::basic_json<> json,
+                              std::vector<Material> materials) {
+    for (const auto &object_data : json["objects"]) {
         auto type = object_data["type"];
         std::shared_ptr<Object> object = nullptr;
 
@@ -97,9 +114,9 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file) {
         }
 
         auto translation_data = object_data["translation"];
-        x = translation_data["x"];
-        y = translation_data["y"];
-        z = translation_data["z"];
+        float x = translation_data["x"];
+        float y = translation_data["y"];
+        float z = translation_data["z"];
         object->translate(x, y, z);
 
         if (object_data.find("rotation") != object_data.end()) {
@@ -122,15 +139,17 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file) {
 
         scene->add_object(object);
     }
+};
 
-    for (const auto &light_data : j["lights"]) {
-        std::shared_ptr<Light> light;
-        light = std::make_shared<Light>(Light());
+void SceneLoader::loadLights(std::shared_ptr<Scene> scene,
+                             nlohmann::basic_json<> json) {
+    for (const auto &light_data : json["lights"]) {
+        std::shared_ptr<Light> light = std::make_shared<Light>(Light());
 
         auto translation_data = light_data["translation"];
-        x = translation_data["x"];
-        y = translation_data["y"];
-        z = translation_data["z"];
+        float x = translation_data["x"];
+        float y = translation_data["y"];
+        float z = translation_data["z"];
         light->translate(x, y, z);
 
         auto color_data = light_data["color"];
@@ -142,6 +161,5 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file) {
 
         scene->add_light(light);
     }
-
-    return scene;
 }
+

@@ -7,6 +7,7 @@
 
 
 #include <string>
+#include <json.hpp>
 #include "Scene.h"
 
 class SceneLoader {
@@ -15,6 +16,14 @@ public:
 
 private:
     SceneLoader() = default;
+
+    static std::shared_ptr<Scene> loadGlobals( nlohmann::basic_json<> json);
+    static void loadLights(std::shared_ptr<Scene> scene,
+                           nlohmann::basic_json<> json);
+    static std::vector<Material> loadMaterials(nlohmann::basic_json<> json);
+    static void loadObjects(std::shared_ptr<Scene> scene,
+                            nlohmann::basic_json<> json,
+                            std::vector<Material> materials);
 };
 
 
