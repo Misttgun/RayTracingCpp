@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef _CONE_H_INCLUDED_
-#define CONE_H_INCLUDED_
+#define _CONE_H_INCLUDED_
 
 #include "Object.h"
 
