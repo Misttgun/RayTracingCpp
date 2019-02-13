@@ -25,7 +25,6 @@ public:
     ~Scene();
 
     void render() const;
-    void load(const std::string& file);
     std::shared_ptr<Object> closer_intersected(const Ray& ray, Vector& impact) const;
 
     Color get_background() const
@@ -95,10 +94,6 @@ public:
     int image_size;
 
 private:
-    void load_globals(std::istringstream& params, int& nb_obj);
-    void load_object(std::istringstream& params);
-    void load_light(std::istringstream& params) const;
-
     Camera _camera;
     Color _background;
     Color _ambiant;
