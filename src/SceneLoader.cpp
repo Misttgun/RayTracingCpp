@@ -37,6 +37,7 @@ std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json) {
     int image_size = globals["image_size"];
 
     std::shared_ptr<Scene> scene = std::make_shared<Scene>(Scene(image_size));
+    scene->output_file = globals["output_file"];
 
     auto camera_data = globals["camera"];
     float x = camera_data["x"];

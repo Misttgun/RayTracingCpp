@@ -92,6 +92,7 @@ public:
 
     Color** image;
     int image_size;
+    std::string output_file;
 
 private:
     Camera _camera;

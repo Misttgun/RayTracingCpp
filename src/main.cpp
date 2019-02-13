@@ -99,7 +99,7 @@ int main()
     }
 
     std::ofstream file_ppm;
-    file_ppm.open("render.ppm");
+    file_ppm.open(scene->output_file);
 
     file_ppm << "P3\n" << size << " " << size << "\n255\n";
 
