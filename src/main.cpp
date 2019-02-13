@@ -87,14 +87,15 @@ int main()
     std::shared_ptr<Plan> back = std::make_shared<Plan>(Plan());
     back->translate(0, 0, -8);
     //back->set_material(mirror_blue);
-    back->set_materials(chalk_red, chalk_blue);
+    back->set_materials(chalk_red, chalk_black);
     scene.add_object(back);
 
-    //std::shared_ptr<Plan> front = std::make_shared<Plan>(Plan());
-    //front->rotate_y(180);
-    //front->translate(0, 0, -12);
-    //front->set_material(chalk_grey);
-    //scene.add_object(front);
+    std::shared_ptr<Plan> front = std::make_shared<Plan>(Plan());
+    front->rotate_y(-180);
+    front->translate(0, 0, 8);
+    front->scale(10);
+    front->set_material(chalk_grey);
+    scene.add_object(front);
 
     // FRONT IS BLUE
     //std::shared_ptr<Sphere> p2 = std::make_shared<Sphere>(Sphere());
@@ -174,7 +175,7 @@ int main()
 
 
     // SET META DATA
-    scene.set_bg(Color(0.5f, 0.5f, 1.0f));
+    scene.set_bg(Color(0.5f, 0.5f, 0.5f));
     scene.set_ambiant(Color(0.5, 0.5, 0.5));
 
     std::cout << "Scene is loaded with " << scene.nb_objects() << " objects and "

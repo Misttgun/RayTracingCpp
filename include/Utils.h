@@ -8,15 +8,15 @@
 
 class Utils
 {
-    public:
-    static const Vector refract(const Vector& normal, const Vector& direction, const float coef)
+public:
+    static Vector refract(const Vector& normal, const Vector& direction, const float coef)
     {
         double cosi = std::max(-1.0f, std::min(normal.dot(direction), 1.0f));
         double etai = 1;
         double etat = coef;
         Vector n_normal = normal;
 
-        if(cosi < 0)
+        if (cosi < 0)
         {
             cosi = -cosi;
         }
@@ -28,36 +28,35 @@ class Utils
 
         double eta = etai / etat;
         double k = 1 - eta * eta * (1 - cosi * cosi);
+        Vector refracted = (k < 0) ? Vector(0, 0, 0) : direction * eta + normal * (eta * cosi - sqrt(k));
 
         //const float c1 = -(normal.dot(direction));
         //const float c2 = sqrt(1 - pow(coef, 2) * (1 - pow(c1, 2)));
         //const Vector refracted = (direction * coef) + (coef * c1 - c2) * normal;
 
-        Vector refracted = (k < 0) ? Vector(0, 0, 0) : direction * eta + normal * (eta * cosi - sqrt(k));
-
         return refracted;
     }
 
-    static const Vector reflect(const Vector& normal, const Vector& direction)
+    static Vector reflect(const Vector& normal, const Vector& direction)
     {
         Vector reflected = (2.0 * (direction.dot(normal))) * normal - direction;
 
         return reflected;
     }
 
-    static const double Utils::fresnel(double indice_of_refraction, Vector normal, Vector direction)
+    static double fresnel(double indice_of_refraction, const Vector& normal, const Vector& direction)
     {
         double cosi = std::max(-1.0f, std::min(normal.dot(direction), 1.0f));
         double etai = 1.0;
         double etat = indice_of_refraction;
         double kr;
 
-        if(cosi > 0)
+        if (cosi > 0)
             std::swap(etai, etat);
 
         double sint = etai / etat * sqrt(std::max(0.0, 1.0 - cosi * cosi));
 
-        if(sint >= 1.0)
+        if (sint >= 1.0)
             kr = 1.0;
 
         else
@@ -72,9 +71,9 @@ class Utils
         return kr;
     }
 
-    static const bool float_comp(float a, float b)
+    static bool float_comp(float a, float b)
     {
-      return std::abs(b - a) < 0.0001f;
+        return std::abs(b - a) < 0.0001f;
     }
 };
 

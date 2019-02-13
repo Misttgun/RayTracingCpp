@@ -14,11 +14,11 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
 
     if(curr_mat.mat_type == Type::Refraction)
     {
-        //const Vector inside_ray_origin = impact + n_normal;
+        //const Vector inside_ray_origin = impact + 0.001f * direction;
         //const Vector inside_ray_dir = Utils::refract(n_normal, direction, 1 / 1.33f); // Valeur en dur pour tester
         //const Ray ray_inside = Ray(inside_ray_origin, inside_ray_dir);
         //Vector inside_impact;
-        //auto inside_obj = scene.closer_intersected(ray_inside, inside_impact);
+        //const auto inside_obj = scene.closer_intersected(ray_inside, inside_impact);
 
         //if(inside_obj == nullptr)
         //    return scene.get_background();
@@ -33,6 +33,7 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
         //Vector out_impact;
 
         //return scene.cast_ray(ray_out, out_impact, *this, depth + 1);
+
         // - Reflexion
         const Vector reflect = Utils::reflect(n_normal, direction);
         Vector reflect_origin = reflect.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
@@ -44,14 +45,14 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
         Vector refract = Utils::refract(-1 * n_normal, direction, 1.33f);
         Color refracted_color;
 
-        if(refract != Vector(0.0f, 0.0f, 0.0f))
+        /*if(refract != Vector(0.0f, 0.0f, 0.0f))
         {
             Vector refract_origin = refract.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
             const Ray refracted_ray = Ray(refract_origin, refract);
             Vector refracted_impact;
             refracted_color = scene.cast_ray(refracted_ray, refracted_impact, *this, depth + 1);
         }
-        else
+        else*/
         {
             refracted_color = scene.get_background();
         }
