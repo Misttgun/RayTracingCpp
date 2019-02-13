@@ -38,20 +38,20 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file) {
     float z = camera_data["z"];
     float focal = camera_data["focal"];
 
-    auto camera = Camera(x, y, z, focal); // FIXME Won't it get destroyed?
+    auto camera = Camera(x, y, z, focal);
     scene->set_camera(camera);
 
     auto background_color_data = globals["background_color"];
     float bg_r = background_color_data["r"];
     float bg_g = background_color_data["g"];
     float bg_b = background_color_data["b"];
-    scene->set_bg(Color(bg_r, bg_g, bg_b)); // FIXME Won't it get destroyed?
+    scene->set_bg(Color(bg_r, bg_g, bg_b));
 
     auto ambiant_color_data = globals["ambiant_color"];
     float ambiant_r = ambiant_color_data["r"];
     float ambiant_g = ambiant_color_data["g"];
     float ambiant_b = ambiant_color_data["b"];
-    scene->set_ambiant(Color(ambiant_r, ambiant_g, ambiant_b)); // FIXME Won't it get destroyed?
+    scene->set_ambiant(Color(ambiant_r, ambiant_g, ambiant_b));
 
     std::vector<Material> materials;
     for (const auto &material_data : j["materials"]) {
