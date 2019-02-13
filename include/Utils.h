@@ -5,7 +5,7 @@
 
 #include "Vector.h"
 #include <algorithm>
-
+#include <cmath>
 class Utils
 {
 public:
