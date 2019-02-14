@@ -18,9 +18,15 @@
 #include "FCone.h"
 #include "Tore.h"
 #include "Circle.h"
+#include <chrono>
+#include <thread>
+#include <atomic>
+#include <future>
 
 int main()
 {
+    auto start = std::chrono::steady_clock::now();
+
     const int scene_size = 800;
     Scene scene(scene_size);
     const int size = scene.image_size * scene._sampling_factor;
@@ -36,7 +42,7 @@ int main()
     Material chalk_black(Color(0, 0, 0), 0.4f, 0.2f, 2, 0.25f, Type::Phong);
 
     std::shared_ptr<Plan> back = std::make_shared<Plan>(Plan());
-    back->translate(0, 0, -8);
+    back->translate(0, 0, -10);
     /*back->rotate_x(90);
     back->translate(0, 5, 0);*/
     back->set_materials(chalk_red, chalk_black);
@@ -143,7 +149,8 @@ int main()
     Renderer renderer;
     Camera cam = scene.get_camera();
 
-    for (int i = 0; i < size; i++)
+    //----------------- PAS DE MULTITHREADING --------------
+    /*for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
         {
@@ -156,7 +163,42 @@ int main()
 
             scene.image[i][j] = pixel_color_a;
         }
+    }*/
+
+    //------------- ZONE MULTITHREADING ------------------
+    std::size_t max = size * size;
+    std::size_t cores = std::thread::hardware_concurrency();
+    volatile std::atomic<std::size_t> count(0);
+    std::vector<std::future<void>> future_vector;
+
+    for (std::size_t k(0); k < cores; ++k)
+    {
+        future_vector.emplace_back(std::async([=, &scene]()
+        {
+            for (std::size_t index(k); index < max; index += cores)
+            {
+                std::size_t i = index / size;
+                std::size_t j = index % size;
+
+                float x = static_cast<float>(j) / size;
+                float y = static_cast<float>(i) / size;
+
+                Ray ray = cam.get_ray(x, y);
+                Vector impact;
+
+                const auto pixel_color_a = scene.cast_ray(ray, impact, renderer, 1);
+
+                scene.image[i][j] = pixel_color_a;
+            }
+        }));
     }
+
+    for(int i = 0; i < future_vector.size(); i++)
+    {
+        future_vector.at(i).get();
+    }
+
+    //------------- FIN ZONE MULTITHREADING ------------------
 
     Color** antialiased_image = scene.get_final_image();
 
@@ -182,6 +224,9 @@ int main()
     //std::cout << "Res = " << res << std::endl;
     std::cout << "DONE !\n";
 
+    auto end = std::chrono::steady_clock::now();
+    auto diff = end - start;
+    std::cout << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
     getchar();
     return 0;
 }
