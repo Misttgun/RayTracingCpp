@@ -21,7 +21,7 @@ class Scene
 public:
     Scene() = default;
     Scene(const Scene& Copy);
-    explicit Scene(int v_image_size);
+    explicit Scene(int v_image_size, unsigned int v_sampling_factor);
     ~Scene();
 
     void render() const;
@@ -96,7 +96,7 @@ public:
     int image_size;
     std::string output_file;
     bool apply_shadows;
-    const int _sampling_factor = 2;
+    unsigned int _sampling_factor = 2;
 
 private:
     Camera _camera;

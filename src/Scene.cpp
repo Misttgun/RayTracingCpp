@@ -10,7 +10,7 @@
 #include <algorithm>
 #include "Renderer.h"
 
-Scene::Scene(int v_image_size) : image_size(v_image_size)
+Scene::Scene(int v_image_size, unsigned int v_sampling_factor) : image_size(v_image_size), _sampling_factor(v_sampling_factor)
 {
     int final_size = image_size * _sampling_factor;
 

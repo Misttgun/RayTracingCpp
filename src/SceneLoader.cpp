@@ -36,8 +36,10 @@ std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json) {
     std::cout << "Loading global settings." << std::endl;
     auto globals = json["globals"];
     int image_size = globals["image_size"];
+    unsigned int sampling_factor = globals["sampling_factor"];
 
-    std::shared_ptr<Scene> scene = std::make_shared<Scene>(Scene(image_size));
+    std::shared_ptr<Scene> scene =
+            std::make_shared<Scene>(Scene(image_size, sampling_factor));
     scene->output_file = globals["output_file"];
     scene->apply_shadows = globals["apply_shadows"];
 
