@@ -1,4 +1,4 @@
- #pragma once
+#pragma once
 
 #ifndef _SCENE_H_INCLUDED_
 #define _SCENE_H_INCLUDED_
@@ -89,10 +89,13 @@ public:
 
     Color cast_ray(const Ray& ray, Vector& impact, const Renderer& renderer, int depth) const;
     float compute_distance(const Vector& a, const Vector& b) const;
+    Color** get_final_image() const;
+    Color get_final_pixel(int i, int j) const;
 
     Color** image;
     int image_size;
     std::string output_file;
+    const int _sampling_factor = 2;
 
 private:
     Camera _camera;

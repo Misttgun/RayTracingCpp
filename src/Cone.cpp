@@ -3,8 +3,6 @@
 
 bool Cone::intersect(const Ray& ray, Vector& impact) const
 {
-    float y_min = -1.0f;
-    float y_max = 0.0f;
 
     Ray local_ray = global_to_local(ray);
 
@@ -27,7 +25,7 @@ bool Cone::intersect(const Ray& ray, Vector& impact) const
 
     const Vector local_impact = local_ray.origin + t * local_ray.direction;
 
-    if (local_impact[1] < y_min || local_impact[1] > y_max)
+    if (local_impact[1] > 0.0f)
         return false;
 
     impact = local_to_global_point(local_impact);
@@ -58,4 +56,29 @@ Ray Cone::get_normal(const Vector& impact, const Vector& observator) const
         return Ray(impact, local_to_global_vector(local_normal).normalized());
 
     return Ray(impact, local_to_global_vector(local_normal * -1).normalized());
+}
+
+Material Cone::get_material(const Vector& impact) const
+{
+
+    Vector local_impact = global_to_local_point(impact);
+    float x = local_impact[0], y = local_impact[1], z = local_impact[2];
+
+    y = abs(static_cast<int>(floor(local_impact[1] * 2))) % 2;
+
+    if (y == 0)
+    {
+        if (x < 0 && z >= 0 || x >= 0 && z < 0)
+            return _material;
+
+        return _material2;
+    }
+
+    else
+    {
+        if (x < 0 && z >= 0 || x >= 0 && z < 0)
+            return _material2;
+
+        return _material;
+    }
 }

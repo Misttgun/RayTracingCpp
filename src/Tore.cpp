@@ -21,10 +21,10 @@ bool Tore::intersect(const Ray& ray, Vector& impact) const
     // - compute coefficients
     float a = 1.0f; // a = d^4 a d is normalized
     float b = 4.0f*od; 
-    float c = 2.0f*(sq_o + sq_R - sq_r) - 4.0f*sq_R*(1 - dz*dz) + 4.0f*sq_od;
+    float c = 2.0f*(sq_o + sq_R - sq_r) - 4.0f*sq_R*(1.0f - dz*dz) + 4.0f*sq_od;
     float d = 8.0f*sq_R*(dz*oz) + 4.0f*od*(sq_o - sq_R - sq_r);
     float e = pow(ox, 4.0f) + pow(oy, 4.0f) + pow(oz, 4.0f) + pow(sq_R - sq_r, 2.0f);
-    e += 2*(sq_ox*sq_oy + sq_oz*(sq_R - sq_r) + (sq_ox + sq_oy)*(sq_oz - sq_R - sq_r));
+    e += 2.0f*(sq_ox*sq_oy + sq_oz*(sq_R - sq_r) + (sq_ox + sq_oy)*(sq_oz - sq_R - sq_r));
 
     float t = -1.0f;
     if(!Entity::solve_polynomial_4(b, c, d, e, t))
@@ -73,4 +73,26 @@ Ray Tore::get_normal(const Vector& impact, const Vector& observator) const
         return Ray(impact, local_to_global_vector(local_normal).normalized());
 
     return Ray(impact, local_to_global_vector(local_normal * -1).normalized());
+}
+
+Material Tore::get_material(const Vector& impact) const
+{
+    Vector local_impact = global_to_local_point(impact);
+    float x = local_impact[0], y = local_impact[1], z = local_impact[2];
+
+    if (z >= 0)
+    {
+        if (x < 0 && y >= 0 || x >= 0 && y < 0)
+            return _material;
+
+        return _material2;
+    }
+
+    else
+    {
+        if (x < 0 && y >= 0 || x >= 0 && y < 0)
+            return _material2;
+
+        return _material;
+    }    
 }
