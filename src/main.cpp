@@ -47,7 +47,7 @@ int main()
         }
     }
 
-    Color** antialiased_image = scene.get_final_image();
+    Color** antialiased_image = scene->get_final_image();
 
     std::ofstream file_ppm;
     file_ppm.open(scene->output_file);
