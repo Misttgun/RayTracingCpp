@@ -21,7 +21,9 @@ Scene::Scene(int v_image_size) : image_size(v_image_size)
 
 Scene::~Scene()
 {
-    for (auto i = 0; i < image_size; i++)
+    int final_size = image_size * _sampling_factor;
+
+    for (auto i = 0; i < final_size; i++)
         delete image[i];
 
     delete[] image;
@@ -30,6 +32,7 @@ Scene::~Scene()
 Scene::Scene(const Scene& copy) : _lights(), _objects()
 {
     image_size = copy.image_size;
+    int final_size = image_size * _sampling_factor;
 
     Camera _camera = copy._camera;
     Color _background = copy._background;
@@ -41,12 +44,12 @@ Scene::Scene(const Scene& copy) : _lights(), _objects()
     for (auto object : copy._objects)
         _objects.push_back(object);
 
-    image = new Color*[image_size];
-    for (int i = 0; i < image_size; i++)
-        image[i] = new Color[image_size];
+    image = new Color*[final_size];
+    for (int i = 0; i < final_size; i++)
+        image[i] = new Color[final_size];
 
-    for (int i = 0; i < image_size; i++)
-        for (int j = 0; j < image_size; j++)
+    for (int i = 0; i < final_size; i++)
+        for (int j = 0; j < final_size; j++)
             image[i][j] = copy.image[i][j];
 
     const int MAX_DEPTH = 5;
