@@ -115,21 +115,21 @@ void SceneLoader::loadObjects(std::shared_ptr<Scene> scene,
             continue;
         }
 
+        if (object_data.find("rotation") != object_data.end()) {
+            auto rotation_data = object_data["rotation"];
+            float x = rotation_data["x"];
+            float y = rotation_data["y"];
+            float z = rotation_data["z"];
+            object->rotate_x(x);
+            object->rotate_y(y);
+            object->rotate_z(z);
+        }
+
         auto translation_data = object_data["translation"];
         float x = translation_data["x"];
         float y = translation_data["y"];
         float z = translation_data["z"];
         object->translate(x, y, z);
-
-        if (object_data.find("rotation") != object_data.end()) {
-            auto rotation_data = object_data["rotation"];
-            x = rotation_data["x"];
-            y = rotation_data["y"];
-            z = rotation_data["z"];
-            object->rotate_x(x);
-            object->rotate_y(y);
-            object->rotate_z(z);
-        }
 
         if (object_data.find("scale") != object_data.end()) {
             float scale = object_data["scale"];
