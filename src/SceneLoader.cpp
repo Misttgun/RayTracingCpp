@@ -33,6 +33,7 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file) {
 }
 
 std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json) {
+    std::cout << "Loading global settings." << std::endl;
     auto globals = json["globals"];
     int image_size = globals["image_size"];
 
@@ -64,6 +65,7 @@ std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json) {
 }
 
 std::vector<Material> SceneLoader::loadMaterials(nlohmann::basic_json<> json) {
+    std::cout << "Loading materials." << std::endl;
     std::vector<Material> materials;
 
     for (const auto &material_data : json["materials"]) {
@@ -73,7 +75,6 @@ std::vector<Material> SceneLoader::loadMaterials(nlohmann::basic_json<> json) {
         float b = color_data["b"];
         Color color(r, g, b);
 
-        float ka = material_data["ka"];
         float kd = material_data["kd"];
         float ks = material_data["ks"];
         float shininess = material_data["shininess"];
@@ -90,6 +91,7 @@ std::vector<Material> SceneLoader::loadMaterials(nlohmann::basic_json<> json) {
 void SceneLoader::loadObjects(std::shared_ptr<Scene> scene,
                               nlohmann::basic_json<> json,
                               std::vector<Material> materials) {
+    std::cout << "Loading objects." << std::endl;
     for (const auto &object_data : json["objects"]) {
         auto type = object_data["type"];
         std::shared_ptr<Object> object = nullptr;
@@ -143,6 +145,7 @@ void SceneLoader::loadObjects(std::shared_ptr<Scene> scene,
 
 void SceneLoader::loadLights(std::shared_ptr<Scene> scene,
                              nlohmann::basic_json<> json) {
+    std::cout << "Loading lights." << std::endl;
     for (const auto &light_data : json["lights"]) {
         std::shared_ptr<Light> light = std::make_shared<Light>(Light());
 
