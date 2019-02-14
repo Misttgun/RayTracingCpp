@@ -137,7 +137,13 @@ void SceneLoader::loadObjects(std::shared_ptr<Scene> scene,
         }
 
         int material_index = object_data["material"];
-        object->set_material(materials[material_index]);
+        if (object_data.find("material_2") != object_data.end()) {
+            int material_index_2 = object_data["material_2"];
+            object->set_materials(materials[material_index],
+                                  materials[material_index_2]);
+        } else {
+            object->set_material(materials[material_index]);
+        }
 
         scene->add_object(object);
     }
