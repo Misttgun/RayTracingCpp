@@ -99,7 +99,10 @@ Color Scene::cast_ray(const Ray& ray, Vector& impact, const Renderer& renderer, 
         return get_background();
     }
 
-    auto res_color = renderer.get_impact_color(ray, *intersected, impact, *this, depth)/* * renderer.get_shadow_color(ray, *intersected, impact, *this, depth)*/;
+    auto res_color = renderer.get_impact_color(ray, *intersected, impact, *this, depth);
+    if (apply_shadows) {
+         res_color *= renderer.get_shadow_color(ray, *intersected, impact, *this, depth);
+    }
 
     res_color.r = std::fmin(res_color.r, 1);
     res_color.g = std::fmin(res_color.g, 1);

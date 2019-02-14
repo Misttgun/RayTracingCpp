@@ -95,6 +95,7 @@ public:
     Color** image;
     int image_size;
     std::string output_file;
+    bool apply_shadows;
     const int _sampling_factor = 2;
 
 private:
