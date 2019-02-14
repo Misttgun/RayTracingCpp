@@ -4,11 +4,20 @@
 
 #include <utility>
 #include "Color.h"
+#include "json.hpp"
 
 enum class Type
 {
     Reflection, Refraction, Phong
 };
+
+// map Type values to JSON as strings
+NLOHMANN_JSON_SERIALIZE_ENUM( Type, {
+    {Type::Reflection, nullptr},
+    {Type::Reflection, "reflection"},
+    {Type::Refraction, "refraction"},
+    {Type::Phong, "phong"},
+})
 
 class Material
 {

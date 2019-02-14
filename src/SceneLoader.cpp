@@ -78,10 +78,9 @@ std::vector<Material> SceneLoader::loadMaterials(nlohmann::basic_json<> json) {
         float ks = material_data["ks"];
         float shininess = material_data["shininess"];
         float light_influence = material_data["light_influence"];
-        bool reflect = material_data["reflect"];
+        Type type = material_data["type"];
 
-        Material material(color, ka, kd, ks, shininess, light_influence,
-                          reflect);
+        Material material(color, kd, ks, shininess, light_influence, type);
         materials.push_back(material);
     }
 
