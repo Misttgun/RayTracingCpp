@@ -21,3 +21,4 @@ file(GLOB HEADERS "include/*.h")
 file(GLOB SOURCES "src/*.cpp")
 
 add_executable(RayTracing ${SOURCES} ${HEADERS})
+target_link_libraries(RayTracing pthread)

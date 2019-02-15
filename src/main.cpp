@@ -75,9 +75,9 @@ int main()
                 Ray ray = cam.get_ray(x, y);
                 Vector impact;
 
-                const auto pixel_color_a = scene.cast_ray(ray, impact, renderer, 1);
+                const auto pixel_color_a = scene->cast_ray(ray, impact, renderer, 1);
 
-                scene.image[i][j] = pixel_color_a;
+                scene->image[i][j] = pixel_color_a;
             }
         }));
     }
