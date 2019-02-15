@@ -96,7 +96,7 @@ public:
     int image_size;
     std::string output_file;
     bool apply_shadows;
-    unsigned int _sampling_factor = 2;
+    int _sampling_factor = 2;
 
 private:
     Camera _camera;

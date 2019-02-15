@@ -32,6 +32,7 @@ Scene::~Scene()
 Scene::Scene(const Scene& copy) : _lights(), _objects()
 {
     image_size = copy.image_size;
+    _sampling_factor = copy._sampling_factor;
     int final_size = image_size * _sampling_factor;
 
     Camera _camera = copy._camera;
