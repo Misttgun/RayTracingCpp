@@ -110,8 +110,6 @@ int main()
 
         Color** antialiased_image = scene->get_final_image();
 
-        //SDL_SetRenderTarget(sdl_renderer, texture);
-
         for (int i = 0; i < scene_size; i++)
         {
             for (int j = 0; j < scene_size; j++)
@@ -125,9 +123,6 @@ int main()
             }
         }
 
-        //SDL_SetRenderTarget(sdl_renderer, nullptr);
-
-        //SDL_RenderCopy(sdl_renderer, texture, nullptr, nullptr);
         SDL_RenderPresent(sdl_renderer);
 
         SDL_Delay(100);
