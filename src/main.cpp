@@ -52,7 +52,6 @@ int main()
 
     SDL_Window* window = SDL_CreateWindow("Ray Tracing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scene_size, scene_size, 0);
     SDL_Renderer* sdl_renderer = SDL_CreateRenderer(window, -1, 0);
-    SDL_Texture* texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, scene_size, scene_size);
 
     const Renderer renderer;
     const Camera cam = scene->get_camera();
@@ -100,6 +99,8 @@ int main()
         }));
     }
 
+    const auto sdl_start = std::chrono::steady_clock::now();
+
     while (true)
     {
         SDL_PollEvent(&event);
@@ -127,6 +128,8 @@ int main()
 
         SDL_Delay(100);
     }
+
+    const auto sdl_end = std::chrono::steady_clock::now();
 
     std::cout << "Now saving antialiased image..." << std::endl;
 
@@ -162,7 +165,7 @@ int main()
     std::cout << "DONE !\n";
 
     const auto end = std::chrono::steady_clock::now();
-    const auto diff = end - start;
+    const auto diff = end - start - (sdl_end - sdl_start);
     std::cout << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
     getchar();
     return 0;
