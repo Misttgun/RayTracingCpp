@@ -7,11 +7,12 @@
 
 class FCylinder : public Cylinder
 {
-    public:
-        FCylinder() = default;
-        FCylinder(float x, float y, float z) : Cylinder(x, y, z) {};
+public:
+    FCylinder() = default;
+    FCylinder(float x, float y, float z) : Cylinder(x, y, z)
+    {};
 
-        bool intersect(const Ray& ray, Vector& impact) const override;
+    bool intersect(const Ray& ray, Vector& impact) const override;
 };
 
 #endif

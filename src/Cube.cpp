@@ -5,8 +5,6 @@ bool Cube::intersect(const Ray& ray, Vector &impact) const
     Vector orig = global_to_local_point(ray.origin);
     Vector dir = global_to_local_vector(ray.direction).normalized();
 
-    float t;
-
     float tmin = (-1 - orig[0]) / dir[0];
     float tmax = (1 - orig[0]) / dir[0];
 
@@ -23,7 +21,9 @@ bool Cube::intersect(const Ray& ray, Vector &impact) const
         return false;
 
     if (tymin > tmin)
-        tmin = tymin;    if (tymax < tmax)
+        tmin = tymin;
+
+    if (tymax < tmax)
         tmax = tymax;
 
     float tzmin = (-1 - orig[2]) / dir[2];
@@ -41,7 +41,7 @@ bool Cube::intersect(const Ray& ray, Vector &impact) const
     if (tzmax < tmax)
         tmax = tzmax;
 
-    t = tmin;
+    float t = tmin;
 
     if (t < 0)
     {
@@ -57,7 +57,7 @@ bool Cube::intersect(const Ray& ray, Vector &impact) const
 Ray Cube::get_normal(const Vector& impact, const Vector& observator) const
 {
     Vector nImpact = global_to_local_point(impact);
-    Vector nObservator = global_to_local_point(observator);
+    const Vector nObservator = global_to_local_point(observator);
     Vector normal(0, 0, 0);
     Vector dir = nImpact - nObservator;
     dir = dir.normalized();
@@ -100,8 +100,10 @@ Ray Cube::get_normal(const Vector& impact, const Vector& observator) const
 Material Cube::get_material(const Vector& impact) const
 {
     Vector local_impact = global_to_local_point(impact);
-    float x = local_impact[0], y = local_impact[1], z = local_impact[2];
-    float x_face, y_face;
+    const float x = local_impact[0];
+    const float y = local_impact[1];
+    const float z = local_impact[2];
+    float x_face = 0, y_face = 0;
 
     if (std::abs(x - 1.0f) < 0.0001f)
     {

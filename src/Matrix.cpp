@@ -132,14 +132,13 @@ float Matrix::determinant(const Matrix& mat, const int n)
 void Matrix::adjoint(Matrix& adj) const
 {
 	Matrix temp;
-	int sign;
 
-	for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
 			get_cofactor(*this, temp, i, j, 4);
-			sign = ((i + j) % 2 == 0) ? 1 : -1;
+		    const int sign = ((i + j) % 2 == 0) ? 1 : -1;
 			adj(j, i) = sign * determinant(temp, 3);
 		}
 	}
@@ -147,7 +146,7 @@ void Matrix::adjoint(Matrix& adj) const
 
 Matrix Matrix::inverse() const
 {
-	float det = determinant(*this, 4);
+    const float det = determinant(*this, 4);
 	assert(det != 0);
 
 	Matrix adj;

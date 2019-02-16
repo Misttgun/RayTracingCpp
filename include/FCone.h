@@ -9,7 +9,8 @@ class FCone : public Cone
 {
 public:
     FCone() = default;
-    FCone(float x, float y, float z) : Cone(x, y, z) {};
+    FCone(float x, float y, float z) : Cone(x, y, z)
+    {};
 
     bool intersect(const Ray& ray, Vector& impact) const override;
 };

@@ -1,5 +1,4 @@
 #include "Color.h"
-#include <iostream>
 #include <algorithm>
 
 Color::Color()

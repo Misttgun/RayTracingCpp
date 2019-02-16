@@ -19,11 +19,10 @@ class Scene
 {
 public:
     Scene() = default;
-    Scene(const Scene& Copy);
+    Scene(const Scene& copy);
     explicit Scene(int v_image_size, unsigned int v_sampling_factor);
     ~Scene();
 
-    void render() const;
     std::shared_ptr<Object> closer_intersected(const Ray& ray, Vector& impact) const;
 
     Color get_background() const
@@ -91,10 +90,10 @@ public:
     Color** get_final_image() const;
     Color get_final_pixel(int i, int j) const;
 
-    Color** image;
-    int image_size;
+    Color** image{};
+    int image_size{};
     std::string output_file;
-    bool apply_shadows;
+    bool apply_shadows{};
     int _sampling_factor = 2;
 
 private:
@@ -104,7 +103,7 @@ private:
     std::vector<std::shared_ptr<Light>> _lights;
     std::vector<std::shared_ptr<Object>> _objects;
     const int MAX_DEPTH = 5;
-    Color **res;
+    Color **res{};
 };
 
 #endif 

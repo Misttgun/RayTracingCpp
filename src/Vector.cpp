@@ -1,7 +1,5 @@
 #include "Vector.h"
 #include "Utils.h"
-
-#include <cmath>
 #include <cassert>
 
 Vector::Vector()
