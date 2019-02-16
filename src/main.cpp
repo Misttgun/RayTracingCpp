@@ -112,14 +112,14 @@ int main()
         }
     }
 
-    std::cout << "Now saving antialiased image..." << std::endl;
-
     for (auto& i : future_vector)
     {
         i.get();
     }
 
     //------------- FIN ZONE MULTITHREADING ------------------
+
+    std::cout << "Now saving antialiased image..." << std::endl;
 
     Color** antialiased_image = scene->get_final_image();
 
