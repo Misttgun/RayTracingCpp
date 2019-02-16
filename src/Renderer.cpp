@@ -70,13 +70,16 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
 
     const Color ambient = (scene.get_ambiant() * curr_mat.light_influence + curr_mat.color * (1 - curr_mat.light_influence)) * curr_mat.ka;
 
+    if (scene.apply_shadows) {
+        return (ambient + specular + diffuse) * get_shadow_color(ray, obj, impact, scene, depth);
+    }
     return ambient + specular + diffuse;
 }
 
 float Renderer::get_shadow_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene, int depth) const
 {
     Ray normal = obj.get_normal(impact, ray.origin);
-    Vector n_normal = normal.direction.normalized();
+    const Vector n_normal = normal.direction.normalized();
     const float shadow_min = .20f;
     int shadowed_by_n_lights = 0;
 

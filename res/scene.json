@@ -2,7 +2,7 @@
     "globals": {
         "output_file": "out.ppm",
         "image_size": 800,
-        "apply_shadows": false,
+        "apply_shadows": true,
         "sampling_factor": 2,
         "camera": {
             "x": 0,
@@ -146,7 +146,7 @@
             "translation": {
                 "x": 1.75,
                 "y": 0,
-                "z": 0
+                "z": -1
             },
             "material": 7
         },
@@ -192,7 +192,7 @@
             "translation": {
                 "x": -1.5,
                 "y": -1,
-                "z": 0
+                "z": -1
             },
             "material": 0,
 			"material_2": 3
@@ -202,7 +202,7 @@
             "translation": {
                 "x": 0,
                 "y": 0,
-                "z": 0
+                "z": -1
             },
             "material": 0,
 			"material_2": 3
