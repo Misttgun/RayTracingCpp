@@ -11,6 +11,9 @@ set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
+# Set SFML directory
+set(SDL2_DIR "lib/SDL2-2.0.9")
+
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
@@ -24,5 +27,5 @@ file(GLOB HEADERS "include/*.h")
 file(GLOB SOURCES "src/*.cpp")
 
 add_executable(RayTracing ${SOURCES} ${HEADERS})
-target_link_libraries(RayTracing pthread)
+#target_link_libraries(RayTracing pthread)
 target_link_libraries(RayTracing ${SDL2_LIBRARIES})

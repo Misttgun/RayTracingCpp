@@ -14,15 +14,25 @@
 #include <Cube.h>
 #include <Cylinder.h>
 #include <Tore.h>
-
-#include "SceneLoader.h"
+#include "FCone.h"
+#include "FCylinder.h"
+#include "Circle.h"
 
 using json = nlohmann::json;
 
-std::shared_ptr<Scene> SceneLoader::load(const std::string &file) {
+std::shared_ptr<Scene> SceneLoader::load(const std::string &file)
+{
     std::ifstream i(file);
     json j;
-    i >> j;
+    try
+    {
+        j = json::parse(i);
+    }
+    catch (json::parse_error &e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+    //i >> j;
 
     std::shared_ptr<Scene> scene = loadGlobals(j);
     std::vector<Material> materials = loadMaterials(j);
@@ -32,15 +42,17 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file) {
     return scene;
 }
 
-std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json) {
+std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json)
+{
     std::cout << "Loading global settings." << std::endl;
     auto globals = json["globals"];
     int image_size = globals["image_size"];
     unsigned int sampling_factor = globals["sampling_factor"];
 
     std::shared_ptr<Scene> scene =
-            std::make_shared<Scene>(Scene(image_size, sampling_factor));
-    scene->output_file = globals["output_file"];
+        std::make_shared<Scene>(Scene(image_size, sampling_factor));
+    std::string test = globals["output_file"];;
+    scene->output_file = test;
     scene->apply_shadows = globals["apply_shadows"];
 
     auto camera_data = globals["camera"];
@@ -49,7 +61,7 @@ std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json) {
     float z = camera_data["z"];
     float focal = camera_data["focal"];
 
-    auto camera = Camera(x, y, z, focal);
+    const auto camera = Camera(x, y, z, focal);
     scene->set_camera(camera);
 
     auto background_color_data = globals["background_color"];
@@ -67,11 +79,13 @@ std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json) {
     return scene;
 }
 
-std::vector<Material> SceneLoader::loadMaterials(nlohmann::basic_json<> json) {
+std::vector<Material> SceneLoader::loadMaterials(nlohmann::basic_json<> json)
+{
     std::cout << "Loading materials." << std::endl;
     std::vector<Material> materials;
 
-    for (const auto &material_data : json["materials"]) {
+    for (const auto &material_data : json["materials"])
+    {
         auto color_data = material_data["color"];
         float r = color_data["r"];
         float g = color_data["g"];
@@ -91,34 +105,62 @@ std::vector<Material> SceneLoader::loadMaterials(nlohmann::basic_json<> json) {
     return materials;
 }
 
-void SceneLoader::loadObjects(std::shared_ptr<Scene> scene,
-                              nlohmann::basic_json<> json,
-                              std::vector<Material> materials) {
+void SceneLoader::loadObjects(std::shared_ptr<Scene> scene, nlohmann::basic_json<> json, std::vector<Material> materials)
+{
     std::cout << "Loading objects." << std::endl;
-    for (const auto &object_data : json["objects"]) {
+    for (const auto &object_data : json["objects"])
+    {
         auto type = object_data["type"];
         std::shared_ptr<Object> object = nullptr;
 
-        if (type == "plan") {
+        if (type == "plan")
+        {
             object = std::make_shared<Plan>(Plan());
-        } else if (type == "square") {
+        }
+        else if (type == "square")
+        {
             object = std::make_shared<Square>(Square());
-        } else if (type == "sphere") {
+        }
+        else if (type == "sphere")
+        {
             object = std::make_shared<Sphere>(Sphere());
-        } else if (type == "cone") {
+        }
+        else if (type == "cone")
+        {
             object = std::make_shared<Cone>(Cone());
-        } else if (type == "cube") {
+        }
+        else if (type == "fcone")
+        {
+            object = std::make_shared<FCone>(FCone());
+        }
+        else if (type == "cube")
+        {
             object = std::make_shared<Cube>(Cube());
-        } else if (type == "cylinder") {
+        }
+        else if (type == "circle")
+        {
+            object = std::make_shared<Circle>(Circle());
+        }
+        else if (type == "cylinder")
+        {
             object = std::make_shared<Cylinder>(Cylinder());
-        } else if (type == "tore") {
+        }
+        else if (type == "fcylinder")
+        {
+            object = std::make_shared<FCylinder>(FCylinder());
+        }
+        else if (type == "tore")
+        {
             object = std::make_shared<Tore>(Tore());
-        } else {
+        }
+        else
+        {
             std::cerr << "Invalid object type: " << type << std::endl;
             continue;
         }
 
-        if (object_data.find("rotation") != object_data.end()) {
+        if (object_data.find("rotation") != object_data.end())
+        {
             auto rotation_data = object_data["rotation"];
             float x = rotation_data["x"];
             float y = rotation_data["y"];
@@ -134,17 +176,21 @@ void SceneLoader::loadObjects(std::shared_ptr<Scene> scene,
         float z = translation_data["z"];
         object->translate(x, y, z);
 
-        if (object_data.find("scale") != object_data.end()) {
+        if (object_data.find("scale") != object_data.end())
+        {
             float scale = object_data["scale"];
             object->scale(scale);
         }
 
         int material_index = object_data["material"];
-        if (object_data.find("material_2") != object_data.end()) {
+        if (object_data.find("material_2") != object_data.end())
+        {
             int material_index_2 = object_data["material_2"];
             object->set_materials(materials[material_index],
                                   materials[material_index_2]);
-        } else {
+        }
+        else
+        {
             object->set_material(materials[material_index]);
         }
 
@@ -152,10 +198,11 @@ void SceneLoader::loadObjects(std::shared_ptr<Scene> scene,
     }
 };
 
-void SceneLoader::loadLights(std::shared_ptr<Scene> scene,
-                             nlohmann::basic_json<> json) {
+void SceneLoader::loadLights(std::shared_ptr<Scene> scene, nlohmann::basic_json<> json)
+{
     std::cout << "Loading lights." << std::endl;
-    for (const auto &light_data : json["lights"]) {
+    for (const auto &light_data : json["lights"])
+    {
         std::shared_ptr<Light> light = std::make_shared<Light>(Light());
 
         auto translation_data = light_data["translation"];

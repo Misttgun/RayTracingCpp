@@ -1,29 +1,18 @@
 #include "Scene.h"
 #include "Vector.h"
-#include "HVector.h"
-#include "Matrix.h"
 #include "Renderer.h"
 
 #include <iostream>
 #include <memory>
 #include <fstream>
-#include "Plan.h"
-#include "Sphere.h"
-#include "Square.h"
-#include "Cylinder.h"
-#include "FCylinder.h"
-#include <algorithm>
 #include <SceneLoader.h>
-#include "Cube.h"
-#include "Cone.h"
-#include "FCone.h"
-#include "Tore.h"
-#include "Circle.h"
 #include <chrono>
 #include <thread>
 #include <atomic>
 #include <future>
 #include <SDL.h>
+
+#undef main
 
 int main()
 {
@@ -32,7 +21,8 @@ int main()
     SDL_Texture *texture;
     SDL_Event event;
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                      "Couldn't initialize SDL: %s", SDL_GetError());
         return 3;
@@ -40,21 +30,17 @@ int main()
 
     auto start = std::chrono::steady_clock::now();
 
-    std::shared_ptr<Scene> scene = SceneLoader::load("scene.json");
+    std::shared_ptr<Scene> scene = SceneLoader::load("../res/scene.json"); //TODO Modifier pour permettre à l'utilisateur de choisir sa scène
+    //std::shared_ptr<Scene> scene = SceneLoader::load("../../res/scene.json");
     const int scene_size = scene->image_size;
     const int size = scene->image_size * scene->_sampling_factor;
 
     std::cout << "Scene is loaded with " << scene->nb_objects() << " objects and "
         << scene->nb_lights() << " lights\n";
 
-    window = SDL_CreateWindow("Ray Tracing",
-                              SDL_WINDOWPOS_UNDEFINED,
-                              SDL_WINDOWPOS_UNDEFINED,
-                              scene_size, scene_size,
-                              0);
+    window = SDL_CreateWindow("Ray Tracing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scene_size, scene_size, 0);
     sdl_renderer = SDL_CreateRenderer(window, -1, 0);
-    texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
-                                scene_size, scene_size);
+    texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, scene_size, scene_size);
 
 
     Renderer renderer;
@@ -133,7 +119,7 @@ int main()
 
     std::cout << "Now saving antialiased image..." << std::endl;
 
-    for(int i = 0; i < future_vector.size(); i++)
+    for (int i = 0; i < future_vector.size(); i++)
     {
         future_vector.at(i).get();
     }
@@ -162,8 +148,8 @@ int main()
 
     delete[] antialiased_image;
 
-    SDL_DestroyRenderer(sdl_renderer);
-    SDL_Quit();
+    //SDL_DestroyRenderer(sdl_renderer);
+    //SDL_Quit();
 
     //std::cout << "Res = " << res << std::endl;
     std::cout << "DONE !\n";

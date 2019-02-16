@@ -6,7 +6,6 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
     const int nb_light = scene.nb_lights();
     Ray normal = obj.get_normal(impact, ray.origin);
     const Vector n_normal = normal.direction.normalized();
-    //const Vector direction = (ray.origin - impact).normalized();
     Vector direction = ray.direction;
     direction.normalized();
     const Material curr_mat = obj.get_material(impact);
@@ -14,32 +13,12 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
     Color specular;
     Color diffuse;
 
-    if(curr_mat.mat_type == Type::Refraction)
+    if (curr_mat.mat_type == Type::Refraction)
     {
-        //const Vector inside_ray_origin = impact + 0.001f * direction;
-        //const Vector inside_ray_dir = Utils::refract(n_normal, direction, 1 / 1.33f); // Valeur en dur pour tester
-        //const Ray ray_inside = Ray(inside_ray_origin, inside_ray_dir);
-        //Vector inside_impact;
-        //const auto inside_obj = scene.closer_intersected(ray_inside, inside_impact);
-
-        //if(inside_obj == nullptr)
-        //    return scene.get_background();
-
-        //Ray inside_normal = inside_obj->get_normal(inside_impact, ray_inside.origin);
-        //const Vector inside_n_normal = inside_normal.direction.normalized();
-        //const Vector inside_direction = (ray_inside.origin - inside_impact).normalized();
-        //const Vector out_ray_origin = inside_impact + inside_n_normal;
-        //const Vector out_ray_dir = Utils::refract(-1 *
-        //                                          inside_n_normal, inside_direction, 1.33f); // Valeur en dur pour tester
-        //const Ray ray_out = Ray(out_ray_origin, out_ray_dir);
-        //Vector out_impact;
-
-        //return scene.cast_ray(ray_out, out_impact, *this, depth + 1);
-
         // - Reflexion
         const Vector reflect = Utils::reflect(n_normal, direction);
         const Vector reflect_origin = reflect.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
-        const Ray reflected_ray = Ray(reflect_origin, /*-1 * */reflect);
+        const Ray reflected_ray = Ray(reflect_origin, reflect);
         Vector reflected_impact;
         const Color reflected_color = scene.cast_ray(reflected_ray, reflected_impact, *this, depth + 1);
 
@@ -47,7 +26,7 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
         Vector refract = Utils::refract(n_normal, direction, 1.5f);
         Color refracted_color;
 
-        if(refract != Vector(0.0f, 0.0f, 0.0f))
+        if (refract != Vector(0.0f, 0.0f, 0.0f))
         {
             const Vector refract_origin = refract.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
             const Ray refracted_ray = Ray(refract_origin, refract);
@@ -64,16 +43,16 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
         return reflected_color * kr + refracted_color * (1 - kr);
     }
 
-    if(curr_mat.mat_type == Type::Reflection)
+    if (curr_mat.mat_type == Type::Reflection)
     {
         Vector reflect = Utils::reflect(n_normal, direction);
-        Vector reflect_origin = reflect.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
+        const Vector reflect_origin = reflect.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
         const Ray reflected_ray = Ray(reflect_origin, reflect);
         Vector new_impact;
         return scene.cast_ray(reflected_ray, new_impact, *this, depth + 1);
     }
 
-    for(int i = 0; i < nb_light; i++)
+    for (int i = 0; i < nb_light; i++)
     {
         const auto curr_light = scene.get_light(i);
         Vector light_direction = curr_light->get_vector_to_light(impact).normalized();
@@ -97,22 +76,23 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
 float Renderer::get_shadow_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene, int depth) const
 {
     Ray normal = obj.get_normal(impact, ray.origin);
+    Vector n_normal = normal.direction.normalized();
     const float shadow_min = .20f;
     int shadowed_by_n_lights = 0;
 
     const int nb_light = scene.nb_lights();
 
-    for(int i = 0; i < nb_light; i++)
+    for (int i = 0; i < nb_light; i++)
     {
         const auto curr_light = scene.get_light(i);
         Vector light_direction = curr_light->get_vector_to_light(impact).normalized();
-        Vector n_normal = normal.direction.normalized();
-
-        Ray shadow_ray(impact + n_normal, light_direction);
+        
+        const Vector shadow_origin = light_direction.dot(n_normal) < 0 ? impact - n_normal : impact + n_normal;
+        Ray shadow_ray(shadow_origin, light_direction);
 
         Vector shadow_impact;
         auto intersected = scene.closer_intersected(shadow_ray, shadow_impact);
-        if(intersected)
+        if (intersected)
             ++shadowed_by_n_lights;
     }
 

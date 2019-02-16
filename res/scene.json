@@ -1,0 +1,237 @@
+{
+    "globals": {
+        "output_file": "out.ppm",
+        "image_size": 800,
+        "apply_shadows": false,
+        "sampling_factor": 2,
+        "camera": {
+            "x": 0,
+            "y": 0,
+            "z": 5,
+            "focal": 2
+        },
+        "background_color": {
+            "r": 0,
+            "g": 0,
+            "b": 0
+        },
+        "ambiant_color": {
+            "r": 0.5,
+            "g": 0.5,
+            "b": 0.5
+        }
+    },
+    "materials": [
+        {
+            "color": {
+                "r": 1,
+                "g": 0,
+                "b": 0
+            },
+            "kd": 0.4,
+            "ks": 0.2,
+            "shininess": 2,
+            "light_influence": 0.25,
+            "type": "phong"
+        },
+		{
+            "color": {
+                "r": 0,
+                "g": 1,
+                "b": 0
+            },
+            "kd": 0.4,
+            "ks": 0.2,
+            "shininess": 2,
+            "light_influence": 0.25,
+            "type": "phong"
+        },
+		{
+            "color": {
+                "r": 0,
+                "g": 0,
+                "b": 1
+            },
+            "kd": 0.4,
+            "ks": 0.2,
+            "shininess": 2,
+            "light_influence": 0.25,
+            "type": "phong"
+        },
+		{
+            "color": {
+                "r": 0.5,
+                "g": 0.5,
+                "b": 0.5
+            },
+            "kd": 0.4,
+            "ks": 0.2,
+            "shininess": 2,
+            "light_influence": 0.25,
+            "type": "phong"
+        },
+		{
+            "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+            },
+            "kd": 0.4,
+            "ks": 0.2,
+            "shininess": 2,
+            "light_influence": 0.25,
+            "type": "phong"
+        },
+        {
+            "color": {
+                "r": 0,
+                "g": 1,
+                "b": 0
+            },
+            "kd": 0.4,
+            "ks": 0.4,
+            "shininess": 50,
+            "light_influence": 0.01,
+            "type": "phong"
+        },
+        {
+            "color": {
+                "r": 0,
+                "g": 0,
+                "b": 1
+            },
+            "kd": 1,
+            "ks": 0.5,
+            "shininess": 1,
+            "light_influence": 0.01,
+            "type": "reflection"
+        },
+        {
+            "color": {
+                "r": 1,
+                "g": 1,
+                "b": 0
+            },
+            "kd": 0.4,
+            "ks": 0.4,
+            "shininess": 0.0001,
+            "light_influence": 0.1,
+            "type": "refraction"
+        }
+    ],
+    "objects": [
+        {
+            "type": "plan",
+            "translation": {
+                "x": 0,
+                "y": 0,
+                "z": -10
+            },
+            "material": 0,
+            "material_2": 4
+        },
+		{
+            "type": "cube",
+            "translation": {
+                "x": 2,
+                "y": 0,
+                "z": -4
+            },
+            "scale": 0.5,
+            "material": 3,
+			"material_2": 1
+        },
+        {
+            "type": "sphere",
+            "translation": {
+                "x": 1.75,
+                "y": 0,
+                "z": 0
+            },
+            "material": 7
+        },
+		{
+            "type": "cylinder",
+            "translation": {
+                "x": 0.5,
+                "y": 0,
+                "z": -4
+            },
+            "scale": 1.5,
+            "material": 4,
+			"material_2": 6
+        },
+		{
+            "type": "cube",
+            "translation": {
+                "x": -2.5,
+                "y": 1,
+                "z": -2
+            },
+            "rotation": {
+                "x": 45,
+                "y": 45,
+                "z": 0
+            },
+            "material": 5,
+			"material_2": 6
+        },
+		{
+            "type": "fcone",
+            "translation": {
+                "x": -1.5,
+                "y": -1,
+                "z": -2
+            },
+            "scale": 2,
+            "material": 5,
+			"material_2": 2
+        },
+		{
+            "type": "tore",
+            "translation": {
+                "x": -1.5,
+                "y": -1,
+                "z": 0
+            },
+            "material": 0,
+			"material_2": 3
+        },
+        {
+            "type": "circle",
+            "translation": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "material": 0,
+			"material_2": 3
+        }
+    ],
+    "lights": [
+        {
+            "translation": {
+                "x": 2,
+                "y": -1.5,
+                "z": 0
+            },
+            "color": {
+                "r": 1,
+                "g": 1,
+                "b": 0.8
+            }
+        },
+        {
+            "translation": {
+                "x": -2,
+                "y": -1.5,
+                "z": 0
+            },
+            "color": {
+                "r": 1,
+                "g": 0.2,
+                "b": 0.8
+            }
+        }
+    ]
+}
