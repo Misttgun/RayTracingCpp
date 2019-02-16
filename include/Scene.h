@@ -104,6 +104,7 @@ private:
     std::vector<std::shared_ptr<Light>> _lights;
     std::vector<std::shared_ptr<Object>> _objects;
     const int MAX_DEPTH = 5;
+    Color **res;
 };
 
 #endif 

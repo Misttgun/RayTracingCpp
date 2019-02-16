@@ -17,6 +17,11 @@ Scene::Scene(int v_image_size, unsigned int v_sampling_factor) : image_size(v_im
     image = new Color*[final_size];
     for (int i = 0; i < final_size; i++)
         image[i] = new Color[final_size];
+
+    res = new Color*[image_size];
+    for (int i = 0; i < image_size; i++)
+        res[i] = new Color[image_size];
+
 }
 
 Scene::~Scene()
@@ -27,6 +32,11 @@ Scene::~Scene()
         delete image[i];
 
     delete[] image;
+
+    for (int i = 0; i < image_size; i++)
+        delete res[i];
+
+    delete[] res;
 }
 
 Scene::Scene(const Scene& copy) : _lights(), _objects()
@@ -52,6 +62,14 @@ Scene::Scene(const Scene& copy) : _lights(), _objects()
     for (int i = 0; i < final_size; i++)
         for (int j = 0; j < final_size; j++)
             image[i][j] = copy.image[i][j];
+
+    res = new Color*[image_size];
+    for (int i = 0; i < image_size; i++)
+        res[i] = new Color[image_size];
+
+    for (int i = 0; i < image_size; i++)
+        for (int j = 0; j < image_size; j++)
+            res[i][j] = copy.res[i][j];
 
     const int MAX_DEPTH = 5;
 }
@@ -114,10 +132,6 @@ Color Scene::cast_ray(const Ray& ray, Vector& impact, const Renderer& renderer, 
 
 Color** Scene::get_final_image() const
 {
-    auto res = new Color*[image_size];
-    for (int i = 0; i < image_size; i++)
-        res[i] = new Color[image_size];
-
     for (int i = 0; i < image_size * _sampling_factor; i += _sampling_factor)
         for (int j = 0; j < image_size *_sampling_factor; j += _sampling_factor)
         {
