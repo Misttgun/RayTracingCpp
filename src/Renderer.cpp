@@ -38,7 +38,7 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
             refracted_color = scene.get_background();
         }
 
-        double kr = Utils::fresnel(1.5f, n_normal, direction);
+        const float kr = Utils::fresnel(1.5f, n_normal, direction);
 
         return reflected_color * kr + refracted_color * (1 - kr);
     }
@@ -64,8 +64,8 @@ Color Renderer::get_impact_color(const Ray& ray, const Object& obj, const Vector
         const auto cos_b = reflect.dot(direction);
         auto temp_color = (light_color * curr_mat.light_influence + curr_mat.color * (1 - curr_mat.light_influence));
 
-        diffuse += temp_color * curr_mat.kd * std::fmax(cos_a, 0);
-        specular += temp_color * curr_mat.ks * pow(std::fmax(cos_b, 0), curr_mat.shininess);
+        diffuse += temp_color * curr_mat.kd * std::fmax(cos_a, 0.0f);
+        specular += temp_color * curr_mat.ks * pow(std::fmax(cos_b, 0.0f), curr_mat.shininess);
     }
 
     const Color ambient = (scene.get_ambiant() * curr_mat.light_influence + curr_mat.color * (1 - curr_mat.light_influence)) * curr_mat.ka;
@@ -99,12 +99,7 @@ float Renderer::get_shadow_color(const Ray& ray, const Object& obj, const Vector
             ++shadowed_by_n_lights;
     }
 
-    const float iluminated_by_lights = nb_light - shadowed_by_n_lights;
-    const float light_proportion = (iluminated_by_lights / nb_light);
-    return (shadowed_by_n_lights > 0) ? light_proportion + shadow_min : 1;
-}
-
-void Renderer::save_ppm(std::string file, Color** pixel_map, int width, int height) const
-{
-
+    const int iluminated_by_lights = nb_light - shadowed_by_n_lights;
+    const int light_proportion = (iluminated_by_lights / nb_light);
+    return (shadowed_by_n_lights > 0) ? light_proportion + shadow_min : 1.0f;
 }

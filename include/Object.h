@@ -5,7 +5,6 @@
 
 #include "Entity.h"
 #include "Material.h"
-#include <cmath>
 
 class Object : public Entity
 {
@@ -16,11 +15,13 @@ public:
 
     virtual bool intersect(const Ray& ray, Vector& impact) const = 0;
     virtual Ray get_normal(const Vector& impact, const Vector& observator) const = 0;
-    inline void set_material(const Material& m)
+
+    void set_material(const Material& m)
     {
         _material = m; _material2 = m;
     }
-    inline void set_materials(const Material& m1, const Material& m2)
+
+    void set_materials(const Material& m1, const Material& m2)
     {
         _material = m1; _material2 = m2;
     }

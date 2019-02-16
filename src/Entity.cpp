@@ -216,13 +216,13 @@ bool Entity::solve_polynomial_2(float a, float b, float c, float& t) const
     return (t > 0.0f);
 }
 
-bool Entity::solve_full_polynomial_2(float a, float b, float c, float& t1, float& t2) const
+void Entity::solve_full_polynomial_2(float a, float b, float c, float& t1, float& t2) const
 {
     const float delta = b * b - 4 * a * c;
 
     // - pas de solution réelle
     if (delta < 0.0f)
-        return false;
+        return;
 
     // 1 solution réelle
     if (delta <= 0.0001f  && delta >= -0.0001f)
@@ -237,8 +237,6 @@ bool Entity::solve_full_polynomial_2(float a, float b, float c, float& t1, float
         t1 = (-b - sqrt(delta)) / (2.0f * a);
         t2 = (-b + sqrt(delta)) / (2.0f * a);
     }
-
-    return true;
 }
 
 

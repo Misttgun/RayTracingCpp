@@ -9,7 +9,7 @@ bool Square::intersect(const Ray& ray, Vector &impact) const
 
 	if (dire[2] < 0)
 	{
-		float t = -ori[2] / dire[2];
+	    const float t = -ori[2] / dire[2];
 		impact = ori + t * dire;
 
 		if (impact[0] <= 1 && impact[0] >= -1 && impact[1] <= 1 && impact[1] >= -1)

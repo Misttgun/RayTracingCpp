@@ -12,7 +12,6 @@ public:
 
     Color get_impact_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene, int depth) const;
     float get_shadow_color(const Ray& ray, const Object& obj, const Vector& impact, const Scene& scene, int depth) const;
-    void save_ppm(std::string file, Color** pixel_map, int width, int height) const;
 };
 
 #endif

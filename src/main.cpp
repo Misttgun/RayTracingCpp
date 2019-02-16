@@ -1,7 +1,6 @@
 #include "Scene.h"
 #include "Vector.h"
 #include "Renderer.h"
-
 #include <iostream>
 #include <memory>
 #include <fstream>
@@ -43,7 +42,7 @@ int main()
     if (not (std::cin >> std::boolalpha >> do_real_time_display))
     {
         std::cout << "Did not understand your choice, assuming false."
-                << std::endl;
+            << std::endl;
         do_real_time_display = false;
     }
 
@@ -56,7 +55,6 @@ int main()
 
     const auto start = std::chrono::steady_clock::now();
 
-    const int scene_size = scene->image_size;
     const int size = scene->image_size * scene->_sampling_factor;
     scene->output_file = file_name;
 
@@ -83,7 +81,6 @@ int main()
     //------------- ZONE MULTITHREADING ------------------
     const std::size_t max = size * size;
     const std::size_t cores = std::thread::hardware_concurrency();
-    volatile std::atomic<std::size_t> count(0);
     std::vector<std::future<void>> future_vector;
 
     for (std::size_t k(0); k < cores; ++k)
@@ -92,11 +89,11 @@ int main()
         {
             for (std::size_t index(k); index < max; index += cores)
             {
-                std::size_t i = index / size;
-                std::size_t j = index % size;
+                const std::size_t i = index / size;
+                const std::size_t j = index % size;
 
-                float x = static_cast<float>(j) / size;
-                float y = static_cast<float>(i) / size;
+                const float x = static_cast<float>(j) / size;
+                const float y = static_cast<float>(i) / size;
 
                 Ray ray = cam.get_ray(x, y);
                 Vector impact;
@@ -108,12 +105,14 @@ int main()
         }));
     }
 
-    if (do_real_time_display) {
-        int sdl_loop_result = sdl_loop(scene);
+    if (do_real_time_display)
+    {
+        const int sdl_loop_result = sdl_loop(scene);
 
-        if (sdl_loop_result != 0) {
+        if (sdl_loop_result != 0)
+        {
             std::cerr << "SDL loop failed, returning " << sdl_loop_result
-                    << std::endl;
+                << std::endl;
             return sdl_loop_result;
         }
     }
@@ -145,14 +144,11 @@ int main()
  * @param scene The scene to display in the window
  * @return 0 on success, not 0 on error
  */
-int sdl_loop(const std::shared_ptr<Scene> &scene) {
+int sdl_loop(const std::shared_ptr<Scene> &scene)
+{
     const int scene_size = scene->image_size;
     SDL_Event event;
-
-    SDL_Window* window = SDL_CreateWindow("Ray Tracing",
-                                          SDL_WINDOWPOS_UNDEFINED,
-                                          SDL_WINDOWPOS_UNDEFINED,
-                                          scene_size, scene_size, 0);
+    SDL_Window* window = SDL_CreateWindow("Ray Tracing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scene_size, scene_size, 0);
     SDL_Renderer* sdl_renderer = SDL_CreateRenderer(window, -1, 0);
 
     bool stop = false;
@@ -177,7 +173,7 @@ int sdl_loop(const std::shared_ptr<Scene> &scene) {
 
     SDL_DestroyRenderer(sdl_renderer);
     SDL_Quit();
-    
+
     return 0;
 }
 
@@ -188,7 +184,8 @@ int sdl_loop(const std::shared_ptr<Scene> &scene) {
  * @param scene_size The size of a side of the image
  */
 void render_image_sdl(Color **image, SDL_Renderer *sdl_renderer,
-                      const int scene_size) {
+                      const int scene_size)
+{
     for (int i = 0; i < scene_size; i++)
     {
         for (int j = 0; j < scene_size; j++)
@@ -209,19 +206,19 @@ void render_image_sdl(Color **image, SDL_Renderer *sdl_renderer,
  * Saves the final image of passed scene in its output file, BMP format
  * @param scene The scene of which the image should be saved in a BMP file
  */
-void save_scene_to_bmp(const std::shared_ptr<Scene> &scene) {
-    SDL_Surface *surface;
+void save_scene_to_bmp(const std::shared_ptr<Scene> &scene)
+{
     std::string file_name = scene->output_file;
     Color **image = scene->get_final_image();
 
     file_name.append(".bmp");
 
-    surface = SDL_CreateRGBSurface(0, scene->image_size, scene->image_size, 32,
-                                   0, 0, 0, 0);
+    SDL_Surface* surface = SDL_CreateRGBSurface(0, scene->image_size, scene->image_size, 32, 0, 0, 0, 0);
 
-    if (surface == nullptr) {
+    if (surface == nullptr)
+    {
         std::cerr << "SDL_CreateRGBSurface() failed: %s" << SDL_GetError()
-                << std::endl;
+            << std::endl;
         exit(1);
     }
 
@@ -236,7 +233,8 @@ void save_scene_to_bmp(const std::shared_ptr<Scene> &scene) {
  * Saves the final image of passed scene in its output file, PPM format
  * @param scene The scene of which the image should be saved in a PPM file
  */
-void save_scene_to_ppm(const std::shared_ptr<Scene> &scene) {
+void save_scene_to_ppm(const std::shared_ptr<Scene> &scene)
+{
     const int scene_size = scene->image_size;
     std::string file_name = scene->output_file;
     Color** antialiased_image = scene->get_final_image();

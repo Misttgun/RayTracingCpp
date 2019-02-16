@@ -13,7 +13,7 @@ public:
 	Entity();
 	Entity(float x, float y, float z);
 	Entity(const Entity& entity);
-	~Entity() = default;
+    virtual ~Entity() = default;
 
 	Entity& operator=(const Entity& other);
 
@@ -32,7 +32,7 @@ public:
 	void scale(float factor);
 
     bool solve_polynomial_2(float a, float b, float c, float& t) const;
-    bool solve_full_polynomial_2(float a, float b, float c, float&t1, float& t2) const;
+    void solve_full_polynomial_2(float a, float b, float c, float&t1, float& t2) const;
     void solve_polynomial_3(float a, float b, float c, float& t) const;
     bool solve_polynomial_4(float a, float b, float c, float d, float &t) const;
     bool is_epsilon(float value, float test, float delta) const;
