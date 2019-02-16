@@ -16,10 +16,27 @@
 
 int main()
 {
-    SDL_Window *window;
-    SDL_Renderer *sdl_renderer;
-    SDL_Texture *texture;
     SDL_Event event;
+
+    std::string scene_name;
+    std::string file_name;
+
+    std::cout << "Write the scene file name : ";
+    std::cin >> scene_name;
+    scene_name.append(".json");
+    const std::string scene_file_path = "../res/" + scene_name; // Visual studio
+    //const std::string scene_file_path = "../../res/" + scene_name; // Executable
+
+    //std::shared_ptr<Scene> scene = SceneLoader::load("../res/scene.json"); //TODO Modifier pour permettre à l'utilisateur de choisir sa scène
+    std::shared_ptr<Scene> scene = SceneLoader::load(scene_file_path);
+
+    //If scene is not loaded
+    if (!scene)
+        return 1;
+
+    std::cout << "Write the output file name : ";
+    std::cin >> file_name;
+    file_name.append(".ppm");
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -28,23 +45,21 @@ int main()
         return 3;
     }
 
-    auto start = std::chrono::steady_clock::now();
+    const auto start = std::chrono::steady_clock::now();
 
-    std::shared_ptr<Scene> scene = SceneLoader::load("../res/scene.json"); //TODO Modifier pour permettre à l'utilisateur de choisir sa scène
-    //std::shared_ptr<Scene> scene = SceneLoader::load("../../res/scene.json");
     const int scene_size = scene->image_size;
     const int size = scene->image_size * scene->_sampling_factor;
+    scene->output_file = file_name;
 
-    std::cout << "Scene is loaded with " << scene->nb_objects() << " objects and "
-        << scene->nb_lights() << " lights\n";
+    std::cout << "Scene is loaded with " << scene->nb_objects() << " objects and " << scene->nb_lights() << " lights\n";
 
-    window = SDL_CreateWindow("Ray Tracing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scene_size, scene_size, 0);
-    sdl_renderer = SDL_CreateRenderer(window, -1, 0);
-    texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, scene_size, scene_size);
+    SDL_Window* window = SDL_CreateWindow("Ray Tracing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scene_size,
+                                          scene_size, 0);
+    SDL_Renderer* sdl_renderer = SDL_CreateRenderer(window, -1, 0);
+    SDL_Texture* texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, scene_size, scene_size);
 
-
-    Renderer renderer;
-    Camera cam = scene->get_camera();
+    const Renderer renderer;
+    const Camera cam = scene->get_camera();
 
     //----------------- PAS DE MULTITHREADING --------------
     /*for (int i = 0; i < size; i++)
@@ -62,8 +77,8 @@ int main()
     }*/
 
     //------------- ZONE MULTITHREADING ------------------
-    std::size_t max = size * size;
-    std::size_t cores = std::thread::hardware_concurrency();
+    const std::size_t max = size * size;
+    const std::size_t cores = std::thread::hardware_concurrency();
     volatile std::atomic<std::size_t> count(0);
     std::vector<std::future<void>> future_vector;
 
@@ -91,7 +106,6 @@ int main()
 
     while (true)
     {
-        Color color;
         SDL_PollEvent(&event);
         if (event.type == SDL_QUIT)
         {
@@ -106,7 +120,7 @@ int main()
         {
             for (int j = 0; j < scene_size; j++)
             {
-                color = antialiased_image[i][j];
+                const Color color = antialiased_image[i][j];
                 SDL_SetRenderDrawColor(sdl_renderer,
                                        static_cast<Uint8> (color.r * 255),
                                        static_cast<Uint8> (color.g * 255),
@@ -125,9 +139,9 @@ int main()
 
     std::cout << "Now saving antialiased image..." << std::endl;
 
-    for (int i = 0; i < future_vector.size(); i++)
+    for (auto& i : future_vector)
     {
-        future_vector.at(i).get();
+        i.get();
     }
 
     //------------- FIN ZONE MULTITHREADING ------------------
@@ -149,11 +163,6 @@ int main()
         file_ppm << "\n";
     }
 
-    for (int i = 0; i < scene_size; i++)
-        delete antialiased_image[i];
-
-    delete[] antialiased_image;
-
     SDL_DestroyRenderer(sdl_renderer);
     SDL_Quit();
 
@@ -161,8 +170,8 @@ int main()
     //std::cout << "Res = " << res << std::endl;
     std::cout << "DONE !\n";
 
-    auto end = std::chrono::steady_clock::now();
-    auto diff = end - start;
+    const auto end = std::chrono::steady_clock::now();
+    const auto diff = end - start;
     std::cout << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
     getchar();
     return 0;

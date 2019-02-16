@@ -23,6 +23,12 @@ using json = nlohmann::json;
 std::shared_ptr<Scene> SceneLoader::load(const std::string &file)
 {
     std::ifstream i(file);
+    if (!i.is_open())
+    {
+        std::cout << "Incorrect scene name..." << std::endl;
+        return nullptr;
+    }
+
     json j;
     try
     {
@@ -49,10 +55,9 @@ std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json)
     int image_size = globals["image_size"];
     unsigned int sampling_factor = globals["sampling_factor"];
 
-    std::shared_ptr<Scene> scene =
-        std::make_shared<Scene>(Scene(image_size, sampling_factor));
-    std::string test = globals["output_file"];;
-    scene->output_file = test;
+    std::shared_ptr<Scene> scene = std::make_shared<Scene>(Scene(image_size, sampling_factor));
+    //std::string test = globals["output_file"];;
+    //scene->output_file = test;
     scene->apply_shadows = globals["apply_shadows"];
 
     auto camera_data = globals["camera"];
