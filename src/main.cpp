@@ -99,13 +99,12 @@ int main()
         }));
     }
 
-    const auto sdl_start = std::chrono::steady_clock::now();
-
     while (true)
     {
         SDL_PollEvent(&event);
         if (event.type == SDL_QUIT)
         {
+            std::cout << "Stopping real time rendering." << std::endl;
             break;
         }
 
@@ -128,8 +127,6 @@ int main()
 
         SDL_Delay(100);
     }
-
-    const auto sdl_end = std::chrono::steady_clock::now();
 
     std::cout << "Now saving antialiased image..." << std::endl;
 
@@ -165,7 +162,7 @@ int main()
     std::cout << "DONE !\n";
 
     const auto end = std::chrono::steady_clock::now();
-    const auto diff = end - start - (sdl_end - sdl_start);
+    const auto diff = end - start;
     std::cout << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
     getchar();
     return 0;
