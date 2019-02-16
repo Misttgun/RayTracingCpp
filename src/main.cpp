@@ -24,10 +24,8 @@ int main()
     std::cout << "Write the scene file name : ";
     std::cin >> scene_name;
     scene_name.append(".json");
-    const std::string scene_file_path = "../res/" + scene_name; // Visual studio
-    //const std::string scene_file_path = "../../res/" + scene_name; // Executable
 
-    //std::shared_ptr<Scene> scene = SceneLoader::load("../res/scene.json"); //TODO Modifier pour permettre à l'utilisateur de choisir sa scène
+    const std::string scene_file_path = "../res/" + scene_name;
     std::shared_ptr<Scene> scene = SceneLoader::load(scene_file_path);
 
     //If scene is not loaded
@@ -40,8 +38,7 @@ int main()
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
-                     "Couldn't initialize SDL: %s", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
         return 3;
     }
 
@@ -53,8 +50,7 @@ int main()
 
     std::cout << "Scene is loaded with " << scene->nb_objects() << " objects and " << scene->nb_lights() << " lights\n";
 
-    SDL_Window* window = SDL_CreateWindow("Ray Tracing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scene_size,
-                                          scene_size, 0);
+    SDL_Window* window = SDL_CreateWindow("Ray Tracing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scene_size, scene_size, 0);
     SDL_Renderer* sdl_renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_Texture* texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, scene_size, scene_size);
 
