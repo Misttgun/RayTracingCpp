@@ -14,12 +14,13 @@
 
 #undef main
 
+int sdl_loop(const std::shared_ptr<Scene> &scene);
+
 int main()
 {
-    SDL_Event event;
-
     std::string scene_name;
     std::string file_name;
+    bool do_real_time_display;
 
     std::cout << "Write the scene file name : ";
     std::cin >> scene_name;
@@ -36,10 +37,15 @@ int main()
     std::cin >> file_name;
     file_name.append(".ppm");
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    try
     {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
-        return 3;
+        std::cout << "Do you want real time display? (true/false) ";
+        std::cin >> std::boolalpha >> do_real_time_display;
+    } catch(std::ios_base::failure& error)
+    {
+        std::cout << "Did not understand your choice, assuming false."
+                << std::endl;
+        do_real_time_display = false;
     }
 
     const auto start = std::chrono::steady_clock::now();
@@ -49,9 +55,6 @@ int main()
     scene->output_file = file_name;
 
     std::cout << "Scene is loaded with " << scene->nb_objects() << " objects and " << scene->nb_lights() << " lights\n";
-
-    SDL_Window* window = SDL_CreateWindow("Ray Tracing", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scene_size, scene_size, 0);
-    SDL_Renderer* sdl_renderer = SDL_CreateRenderer(window, -1, 0);
 
     const Renderer renderer;
     const Camera cam = scene->get_camera();
@@ -99,33 +102,14 @@ int main()
         }));
     }
 
-    while (true)
-    {
-        SDL_PollEvent(&event);
-        if (event.type == SDL_QUIT)
-        {
-            std::cout << "Stopping real time rendering." << std::endl;
-            break;
+    if (do_real_time_display) {
+        int sdl_loop_result = sdl_loop(scene);
+
+        if (sdl_loop_result != 0) {
+            std::cerr << "SDL loop failed, returning " << sdl_loop_result
+                    << std::endl;
+            return sdl_loop_result;
         }
-
-        Color** antialiased_image = scene->get_final_image();
-
-        for (int i = 0; i < scene_size; i++)
-        {
-            for (int j = 0; j < scene_size; j++)
-            {
-                const Color color = antialiased_image[i][j];
-                SDL_SetRenderDrawColor(sdl_renderer,
-                                       static_cast<Uint8> (color.r * 255),
-                                       static_cast<Uint8> (color.g * 255),
-                                       static_cast<Uint8> (color.b * 255), 255);
-                SDL_RenderDrawPoint(sdl_renderer, j, i);
-            }
-        }
-
-        SDL_RenderPresent(sdl_renderer);
-
-        SDL_Delay(100);
     }
 
     std::cout << "Now saving antialiased image..." << std::endl;
@@ -154,10 +138,6 @@ int main()
         file_ppm << "\n";
     }
 
-    SDL_DestroyRenderer(sdl_renderer);
-    SDL_Quit();
-
-
     //std::cout << "Res = " << res << std::endl;
     std::cout << "DONE !\n";
 
@@ -165,5 +145,66 @@ int main()
     const auto diff = end - start;
     std::cout << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
     getchar();
+    return 0;
+}
+
+/**
+ * Initializes SDL and displays rendered image in a window
+ * @param scene The scene to display in the window
+ * @return 0 on success, not 0 on error
+ */
+int sdl_loop(const std::shared_ptr<Scene> &scene) {
+    const int scene_size = scene->image_size;
+    SDL_Event event;
+
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                     "Couldn't initialize SDL: %s", SDL_GetError());
+        return 3;
+    }
+
+    SDL_Window* window = SDL_CreateWindow("Ray Tracing",
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          scene_size, scene_size, 0);
+    SDL_Renderer* sdl_renderer = SDL_CreateRenderer(window, -1, 0);
+
+    bool stop = false;
+    while (!stop)
+    {
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT)
+            {
+                std::cout << "Stopping real time rendering." << std::endl;
+                stop = true;
+                break;
+            }
+        }
+
+        Color** antialiased_image = scene->get_final_image();
+
+        for (int i = 0; i < scene_size; i++)
+        {
+            for (int j = 0; j < scene_size; j++)
+            {
+                const Color color = antialiased_image[i][j];
+                SDL_SetRenderDrawColor(sdl_renderer,
+                                       static_cast<Uint8> (color.r * 255),
+                                       static_cast<Uint8> (color.g * 255),
+                                       static_cast<Uint8> (color.b * 255), 255);
+                SDL_RenderDrawPoint(sdl_renderer, j, i);
+            }
+        }
+
+        SDL_RenderPresent(sdl_renderer);
+
+        SDL_Delay(100);
+    }
+
+    SDL_DestroyRenderer(sdl_renderer);
+    SDL_Quit();
+    
     return 0;
 }
