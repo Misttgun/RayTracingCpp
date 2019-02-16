@@ -21,6 +21,11 @@
 
 using json = nlohmann::json;
 
+/**
+ * Loads a scene from passed file path and returns it
+ * @param file The file path from which to load the scene
+ * @return A pointer to the newly allocated and loaded scene
+ */
 std::shared_ptr<Scene> SceneLoader::load(const std::string &file)
 {
     std::ifstream i(file);
@@ -39,7 +44,6 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file)
     {
         std::cerr << e.what() << std::endl;
     }
-    //i >> j;
 
     std::shared_ptr<Scene> scene = loadGlobals(j);
     const std::vector<Material> materials = loadMaterials(j);
@@ -49,6 +53,11 @@ std::shared_ptr<Scene> SceneLoader::load(const std::string &file)
     return scene;
 }
 
+/**
+ * Instantiates the scene and loads scene global settings from JSON
+ * @param json The configuration JSON object
+ * @return A pointer to the newly allocated
+ */
 std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json)
 {
     std::cout << "Loading global settings." << std::endl;
@@ -56,7 +65,9 @@ std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json)
     const int image_size = globals["image_size"];
     const unsigned int sampling_factor = globals["sampling_factor"];
 
-    std::shared_ptr<Scene> scene = std::make_shared<Scene>(Scene(image_size, sampling_factor));
+    std::shared_ptr<Scene> scene =
+            std::make_shared<Scene>(Scene(image_size, sampling_factor));
+
     scene->apply_shadows = globals["apply_shadows"];
 
     auto camera_data = globals["camera"];
@@ -83,6 +94,11 @@ std::shared_ptr<Scene>  SceneLoader::loadGlobals(nlohmann::basic_json<> json)
     return scene;
 }
 
+/**
+ * Loads the materials from the JSON configuration
+ * @param json The JSON configuration object
+ * @return A vector containing all the loaded materials
+ */
 std::vector<Material> SceneLoader::loadMaterials(nlohmann::basic_json<> json)
 {
     std::cout << "Loading materials." << std::endl;
@@ -109,6 +125,12 @@ std::vector<Material> SceneLoader::loadMaterials(nlohmann::basic_json<> json)
     return materials;
 }
 
+/**
+ * Loads the scene objects from JSON configuration
+ * @param scene The scene to populate with the loaded objects
+ * @param json The JSON configuration object
+ * @param materials The materials previously loaded
+ */
 void SceneLoader::loadObjects(const std::shared_ptr<Scene>& scene, nlohmann::basic_json<> json, std::vector<Material> materials)
 {
     std::cout << "Loading objects." << std::endl;
@@ -206,6 +228,11 @@ void SceneLoader::loadObjects(const std::shared_ptr<Scene>& scene, nlohmann::bas
     }
 };
 
+/**
+ * Loads the scene lights from the JSON configuration
+ * @param scene The scene to populate with the loaded lights
+ * @param json The JSON configuration object
+ */
 void SceneLoader::loadLights(const std::shared_ptr<Scene>& scene, nlohmann::basic_json<> json)
 {
     std::cout << "Loading lights." << std::endl;
