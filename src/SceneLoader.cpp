@@ -17,6 +17,7 @@
 #include "FCone.h"
 #include "FCylinder.h"
 #include "Circle.h"
+#include "Triangle.h"
 
 using json = nlohmann::json;
 
@@ -157,6 +158,10 @@ void SceneLoader::loadObjects(std::shared_ptr<Scene> scene, nlohmann::basic_json
         else if (type == "tore")
         {
             object = std::make_shared<Tore>(Tore());
+        }
+        else if (type == "triangle")
+        {
+            object = std::make_shared<Triangle>(Triangle());
         }
         else
         {
