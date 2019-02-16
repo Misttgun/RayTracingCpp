@@ -37,11 +37,8 @@ int main()
     std::cin >> file_name;
     file_name.append(".ppm");
 
-    try
-    {
-        std::cout << "Do you want real time display? (true/false) ";
-        std::cin >> std::boolalpha >> do_real_time_display;
-    } catch(std::ios_base::failure& error)
+    std::cout << "Do you want real time display? (true/false) ";
+    if (not (std::cin >> std::boolalpha >> do_real_time_display))
     {
         std::cout << "Did not understand your choice, assuming false."
                 << std::endl;
