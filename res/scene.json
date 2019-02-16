@@ -195,7 +195,7 @@
                 "z": -1
             },
             "material": 0,
-			"material_2": 3
+			"material_2": 4
         },
         {
             "type": "circle",
@@ -205,7 +205,7 @@
                 "z": -1
             },
             "material": 0,
-			"material_2": 3
+			"material_2": 4
         }
     ],
     "lights": [
