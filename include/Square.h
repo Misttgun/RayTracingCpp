@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef _SQUARE_H_INCLUDED_
-#define _SQURE_H_INLCUDED
+#define _SQUARE_H_INCLUDED_
 
 #include "Plan.h"
 

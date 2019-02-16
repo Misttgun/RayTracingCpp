@@ -4,12 +4,26 @@
 
 #include <utility>
 #include "Color.h"
+#include "json.hpp"
+
+enum class Type
+{
+    Reflection, Refraction, Phong
+};
+
+// map Type values to JSON as strings
+NLOHMANN_JSON_SERIALIZE_ENUM( Type, {
+    {Type::Reflection, nullptr},
+    {Type::Reflection, "reflection"},
+    {Type::Refraction, "refraction"},
+    {Type::Phong, "phong"},
+})
 
 class Material
 {
 public:
 	Material() = default;
-	Material(const Color& v_ka, const Color& v_kd, const Color& v_ks, float v_shininess);
+	Material(const Color& v_color,const float v_kd, const float v_ks, const float v_shininess, const float v_light_influence, Type type);
 	Material(const Material& c);
 	~Material() = default;
 
@@ -18,14 +32,20 @@ public:
 	friend void swap(Material& first, Material& second) noexcept
 	{
 		using std::swap;
-		swap(first.ka, second.ka);
+        swap(first.color, second.color);
 		swap(first.kd, second.kd);
 		swap(first.ks, second.ks);
+        swap(first.shininess, second.shininess);
+        swap(first.light_influence, second.light_influence);
+        swap(first.mat_type, second.mat_type);
 	}
 
-	Color ka;
-	Color kd;
-	Color ks;
+    Color color;
+    const float ka = 0.2f;
+	float kd;
+	float ks;
 	float shininess;
+    float light_influence;
+    Type mat_type;
 };
 #endif

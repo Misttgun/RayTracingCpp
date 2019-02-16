@@ -1,7 +1,5 @@
 #include "Ray.h"
 
-#include <utility>
-
 Ray::Ray(const Vector& p, const Vector& d)
 	:origin(p), direction(d)
 {}

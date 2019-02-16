@@ -1,207 +1,150 @@
 #include "Scene.h"
 #include "Plan.h"
-#include "Square.h"
-#include "Sphere.h"
-#include "Cone.h"
-#include "Cube.h"
-#include "Cylinder.h"
-#include <iostream>
+#include <fstream>
+#include "Renderer.h"
 
-void Scene::render() 
+Scene::Scene(int v_image_size, unsigned int v_sampling_factor) : image_size(v_image_size), _sampling_factor(v_sampling_factor)
 {
+    const int final_size = image_size * _sampling_factor;
+
+    image = new Color*[final_size];
+    for (int i = 0; i < final_size; i++)
+        image[i] = new Color[final_size];
+
+    res = new Color*[image_size];
+    for (int i = 0; i < image_size; i++)
+        res[i] = new Color[image_size];
+
 }
 
-void Scene::load(const std::string& file)
+Scene::~Scene()
 {
-    std::string line;
-    std::ifstream in(file.c_str());
+    const int final_size = image_size * _sampling_factor;
 
-    int line_counter = 0;
-    int nb_obj;
+    for (auto i = 0; i < final_size; i++)
+        delete image[i];
 
-    while (std::getline(in, line))
-    {
-        std::istringstream iss(line);
+    delete[] image;
 
-        if (line_counter == 0)
-            load_globals(iss, nb_obj);
+    for (int i = 0; i < image_size; i++)
+        delete res[i];
 
-        else if (line_counter - 1 < nb_obj)
-            load_object(iss);
-
-        else
-            load_light(iss);
-
-        line_counter++;
-    }
-
-
-    in.close();
+    delete[] res;
 }
 
-void Scene::load_globals(std::istringstream& params, int& nb_obj)
+Scene::Scene(const Scene& copy)
 {
-    float r, g, b, tr_x, tr_y, tr_z, focal;
+    image_size = copy.image_size;
+    _sampling_factor = copy._sampling_factor;
+    const int final_size = image_size * _sampling_factor;
 
-    params >> tr_x;
-    params >> tr_y;
-    params >> tr_z;
-    params >> focal;
+    _camera = copy._camera;
+    _background = copy._background;
+    _ambiant = copy._ambiant;
 
-    _camera = Camera(tr_x, tr_y, tr_z, focal);
+    _lights.clear();
+    for (const auto& light : copy._lights)
+        _lights.push_back(light);
 
-    params >> r;
-    params >> g;
-    params >> b;
+    _objects.clear();
+    for (const auto& object : copy._objects)
+        _objects.push_back(object);
 
-    _background = Color(r, g, b);
+    image = new Color*[final_size];
+    for (int i = 0; i < final_size; i++)
+        image[i] = new Color[final_size];
 
-    params >> r;
-    params >> g;
-    params >> b;
+    for (int i = 0; i < final_size; i++)
+        for (int j = 0; j < final_size; j++)
+            image[i][j] = copy.image[i][j];
 
-    _ambiant = Color(r, g, b);
+    res = new Color*[image_size];
+    for (int i = 0; i < image_size; i++)
+        res[i] = new Color[image_size];
 
-    params >> nb_obj;
-}
-
-
-void Scene::load_object(std::istringstream& params)
-{
-    char object;
-    float tr_x, tr_y, tr_z, r_x, r_y, r_z, s, r, g, b, shininess;
-
-    params >> object;
-
-    // - translation
-    params >> tr_x;
-    params >> tr_y;
-    params >> tr_z;
-
-    // - rotations
-    params >> r_x;
-    params >> r_y;
-    params >> r_z;
-
-    // - scale
-    params >> s;
-
-    // - ka
-    params >> r;
-    params >> g;
-    params >> b;
-    Color ka = Color(r, g, b);
-
-    // - kd
-    params >> r;
-    params >> g;
-    params >> b;
-    Color kd = Color(r, g, b);
-
-    // - ks 
-    params >> r;
-    params >> g;
-    params >> b;
-    Color ks = Color(r, g, b);
-
-    // - shininess
-    params >> shininess;
-
-    Material mat(ka, kd, ks, shininess);
-    std::shared_ptr<Object> o = nullptr;
-
-    switch(object)
-    {
-        case 'P':
-            o = std::make_shared<Plan>(Plan());
-            break;
-        case 'Q':
-            o = std::make_shared<Square>(Square());
-            break;
-        case 'S':
-            o = std::make_shared<Sphere>(Sphere());
-            break;
-        case 'C':
-            o = std::make_shared<Cone>(Cone());
-            break;
-        case 'U':
-            o = std::make_shared<Cube>(Cube());
-            break;
-        case 'Y':
-            o = std::make_shared<Cylinder>(Cylinder());
-            break;
-        default:
-            return;
-    }
-
-    if (tr_x > 0.00001f || tr_x < -0.00001f && tr_y > 0.00001f || tr_y < -0.00001f && tr_z > 0.00001f || tr_z < -0.00001f)
-        o->translate(tr_x, tr_y, tr_z);
-    
-    if (r_x > 0.00001f || r_x < -0.00001f)
-        o->rotate_x(r_x);
-
-    if (r_y > 0.00001f || r_y < -0.00001f)
-        o->rotate_y(r_y);
-
-    if (r_z > 0.00001f || r_z < -0.00001f)
-        o->rotate_z(r_z);
-    o->scale(s);
-    o->set_material(mat);
-    add_object(o);
-}
-
-void Scene::load_light(std::istringstream& params)
-{
-    float tr_x, tr_y, tr_z, r, g, b;
-
-    // - translation
-    params >> tr_x;
-    params >> tr_y;
-    params >> tr_z;
-
-    // - id
-    params >> r;
-    params >> g;
-    params >> b;
-    Color id = Color(r, g, b);
-
-    // - is
-    params >> r;
-    params >> g;
-    params >> b;
-    Color is = Color(r, g, b);
-
-    std::shared_ptr<Light> light = std::make_shared<Light>(Light(tr_x, tr_y, tr_z, id, is));
-    add_light(light);
+    for (int i = 0; i < image_size; i++)
+        for (int j = 0; j < image_size; j++)
+            res[i][j] = copy.res[i][j];
 }
 
 std::shared_ptr<Object> Scene::closer_intersected(const Ray& ray, Vector& impact) const
 {
-    float t = -1.f;
     float current_distance = INFINITY;
 
     Vector tmp_impact;
     std::shared_ptr<Object> tmp_obj = nullptr;
 
-    for (auto object : _objects)
+    for (const auto& object : _objects)
     {
-        // - pas d'intersection
+        // Pas d'intersection
         if (!object->intersect(ray, tmp_impact))
             continue;
 
-        float impact_distance = compute_distance(ray.origin, tmp_impact);
+        const float impact_distance = compute_distance(ray.origin, tmp_impact);
 
-        // - un autre object est déjà plus proche
+        // Un autre object est deja plus proche
         if (impact_distance >= current_distance)
             continue;
 
-        // - on met à jour le pointeur et la distance
+        // On met a jour le pointeur et la distance
         current_distance = impact_distance;
         tmp_obj = object;
-		impact = tmp_impact;
+        impact = tmp_impact;
     }
 
     return tmp_obj;
+}
+
+Color Scene::cast_ray(const Ray& ray, Vector& impact, const Renderer& renderer, int depth) const
+{
+    if (depth >= MAX_DEPTH)
+        return get_background();
+
+    const std::shared_ptr<Object> intersected = closer_intersected(ray, impact);
+
+    if (intersected == nullptr)
+    {
+        return get_background();
+    }
+
+    auto res_color = renderer.get_impact_color(ray, *intersected, impact, *this, depth);
+
+    res_color.r = std::fmin(res_color.r, 1.0f);
+    res_color.g = std::fmin(res_color.g, 1.0f);
+    res_color.b = std::fmin(res_color.b, 1.0f);
+
+    return  res_color;
+}
+
+Color** Scene::get_final_image() const
+{
+    for (int i = 0; i < image_size * _sampling_factor; i += _sampling_factor)
+        for (int j = 0; j < image_size *_sampling_factor; j += _sampling_factor)
+        {
+            const int y = i / _sampling_factor, x = j / _sampling_factor;
+            res[y][x] = get_final_pixel(i, j);
+        }
+    return res;
+}
+
+Color Scene::get_final_pixel(int y, int x) const
+{
+    Color res = image[y][x];
+    int count = 1;
+
+    for (int i = 0, y_offset = -_sampling_factor / 2; i < _sampling_factor; i++, y_offset++)
+    {
+        for (int j = 0, x_offset = -_sampling_factor / 2; j < _sampling_factor; j++)
+        {
+            if (x + x_offset < 0 || y + y_offset < 0 || (x_offset == 0 && y_offset == 0))
+                continue;
+
+            res += image[y + y_offset][x + x_offset];
+            count++;
+        }
+    }
+
+    return res / count;
 }
 
 float Scene::compute_distance(const Vector& a, const Vector& b) const

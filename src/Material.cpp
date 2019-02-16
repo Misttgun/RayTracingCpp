@@ -1,15 +1,17 @@
 #include "Material.h"
 
-Material::Material(const Color& v_ka, const Color& v_kd, const Color& v_ks, const float v_shininess)
-	: ka(v_ka), kd(v_kd), ks(v_ks), shininess(v_shininess)
+Material::Material(const Color& v_color, const float v_kd, const float v_ks, const float v_shininess, const float v_light_influence, Type type)
+	: color(v_color), kd(v_kd), ks(v_ks), shininess(v_shininess), light_influence(v_light_influence), mat_type(type)
 {}
 
 Material::Material(const Material & c)
 {
-	ka = c.ka;
+    color = c.color;
 	kd = c.kd;
 	ks = c.ks;
 	shininess = c.shininess;
+    light_influence = c.light_influence;
+    mat_type = c.mat_type;
 }
 
 Material& Material::operator=(const Material & rhs)
