@@ -15,6 +15,9 @@
 #undef main
 
 int sdl_loop(const std::shared_ptr<Scene> &scene);
+void render_image_sdl(Color **image, SDL_Renderer *sdl_renderer, int size);
+void save_scene_to_ppm(const std::shared_ptr<Scene> &scene);
+void save_scene_to_bmp(const std::shared_ptr<Scene> &scene);
 
 int main()
 {
@@ -35,7 +38,6 @@ int main()
 
     std::cout << "Write the output file name : ";
     std::cin >> file_name;
-    file_name.append(".ppm");
 
     std::cout << "Do you want real time display? (true/false) ";
     if (not (std::cin >> std::boolalpha >> do_real_time_display))
@@ -43,6 +45,13 @@ int main()
         std::cout << "Did not understand your choice, assuming false."
                 << std::endl;
         do_real_time_display = false;
+    }
+
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                     "Couldn't initialize SDL: %s", SDL_GetError());
+        return 3;
     }
 
     const auto start = std::chrono::steady_clock::now();
@@ -118,22 +127,8 @@ int main()
 
     std::cout << "Now saving antialiased image..." << std::endl;
 
-    Color** antialiased_image = scene->get_final_image();
-
-    std::ofstream file_ppm;
-    file_ppm.open(scene->output_file);
-
-    file_ppm << "P3\n" << scene_size << " " << scene_size << "\n255\n";
-
-    for (int i = 0; i < scene_size; i++)
-    {
-        for (int j = 0; j < scene_size; j++)
-        {
-            file_ppm << antialiased_image[i][j].r * 255 << " " << antialiased_image[i][j].g * 255 << " " << antialiased_image[i][j].b * 255 << " ";
-        }
-
-        file_ppm << "\n";
-    }
+    save_scene_to_ppm(scene);
+    save_scene_to_bmp(scene);
 
     //std::cout << "Res = " << res << std::endl;
     std::cout << "DONE !\n";
@@ -153,13 +148,6 @@ int main()
 int sdl_loop(const std::shared_ptr<Scene> &scene) {
     const int scene_size = scene->image_size;
     SDL_Event event;
-
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
-                     "Couldn't initialize SDL: %s", SDL_GetError());
-        return 3;
-    }
 
     SDL_Window* window = SDL_CreateWindow("Ray Tracing",
                                           SDL_WINDOWPOS_UNDEFINED,
@@ -182,20 +170,7 @@ int sdl_loop(const std::shared_ptr<Scene> &scene) {
 
         Color** antialiased_image = scene->get_final_image();
 
-        for (int i = 0; i < scene_size; i++)
-        {
-            for (int j = 0; j < scene_size; j++)
-            {
-                const Color color = antialiased_image[i][j];
-                SDL_SetRenderDrawColor(sdl_renderer,
-                                       static_cast<Uint8> (color.r * 255),
-                                       static_cast<Uint8> (color.g * 255),
-                                       static_cast<Uint8> (color.b * 255), 255);
-                SDL_RenderDrawPoint(sdl_renderer, j, i);
-            }
-        }
-
-        SDL_RenderPresent(sdl_renderer);
+        render_image_sdl(antialiased_image, sdl_renderer, scene_size);
 
         SDL_Delay(100);
     }
@@ -204,4 +179,84 @@ int sdl_loop(const std::shared_ptr<Scene> &scene) {
     SDL_Quit();
     
     return 0;
+}
+
+/**
+ * Renders passed image using passed SDL_Renderer
+ * @param image The image to be rendered
+ * @param sdl_renderer The renderer to use for rendering the image
+ * @param scene_size The size of a side of the image
+ */
+void render_image_sdl(Color **image, SDL_Renderer *sdl_renderer,
+                      const int scene_size) {
+    for (int i = 0; i < scene_size; i++)
+    {
+        for (int j = 0; j < scene_size; j++)
+        {
+            const Color color = image[i][j];
+            SDL_SetRenderDrawColor(sdl_renderer,
+                                   static_cast<Uint8> (color.r * 255),
+                                   static_cast<Uint8> (color.g * 255),
+                                   static_cast<Uint8> (color.b * 255), 255);
+            SDL_RenderDrawPoint(sdl_renderer, j, i);
+        }
+    }
+
+    SDL_RenderPresent(sdl_renderer);
+}
+
+/**
+ * Saves the final image of passed scene in its output file, BMP format
+ * @param scene The scene of which the image should be saved in a BMP file
+ */
+void save_scene_to_bmp(const std::shared_ptr<Scene> &scene) {
+    SDL_Surface *surface;
+    std::string file_name = scene->output_file;
+    Color **image = scene->get_final_image();
+
+    file_name.append(".bmp");
+
+    surface = SDL_CreateRGBSurface(0, scene->image_size, scene->image_size, 32,
+                                   0, 0, 0, 0);
+
+    if (surface == nullptr) {
+        std::cerr << "SDL_CreateRGBSurface() failed: %s" << SDL_GetError()
+                << std::endl;
+        exit(1);
+    }
+
+    SDL_Renderer *sdl_renderer = SDL_CreateSoftwareRenderer(surface);
+
+    render_image_sdl(image, sdl_renderer, scene->image_size);
+
+    SDL_SaveBMP(surface, file_name.c_str());
+}
+
+/**
+ * Saves the final image of passed scene in its output file, PPM format
+ * @param scene The scene of which the image should be saved in a PPM file
+ */
+void save_scene_to_ppm(const std::shared_ptr<Scene> &scene) {
+    const int scene_size = scene->image_size;
+    std::string file_name = scene->output_file;
+    Color** antialiased_image = scene->get_final_image();
+
+    file_name.append(".ppm");
+
+    std::ofstream file_ppm;
+    file_ppm.open(file_name);
+
+    file_ppm << "P3\n" << scene_size << " " << scene_size << "\n255\n";
+
+    for (int i = 0; i < scene_size; i++)
+    {
+        for (int j = 0; j < scene_size; j++)
+        {
+            file_ppm << antialiased_image[i][j].r * 255 << " " << antialiased_image[i][j].g * 255 << " " << antialiased_image[i][j].b * 255 << " ";
+        }
+
+        file_ppm << "\n";
+    }
+
+    file_ppm.close();
 }
