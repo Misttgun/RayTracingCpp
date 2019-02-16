@@ -110,11 +110,13 @@ int main()
             break;
         }
 
+        Color** antialiased_image = scene->get_final_image();
+
         //SDL_SetRenderTarget(sdl_renderer, texture);
 
         for (int i = 0; i < scene_size; i++) {
             for (int j = 0; j < scene_size; j++) {
-                color = scene->image[i * scene->_sampling_factor][j * scene->_sampling_factor];
+                color = antialiased_image[i][j];
                 SDL_SetRenderDrawColor(sdl_renderer,
                                        static_cast<Uint8> (color.r * 255),
                                        static_cast<Uint8> (color.g * 255),
@@ -156,11 +158,6 @@ int main()
 
         file_ppm << "\n";
     }
-
-    for (int i = 0; i < scene_size; i++)
-        delete antialiased_image[i];
-
-    delete[] antialiased_image;
 
     SDL_DestroyRenderer(sdl_renderer);
     SDL_Quit();
