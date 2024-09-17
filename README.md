@@ -1,4 +1,5 @@
-## Projet Ray Tracing 
+## Ray Tracing 
+Small C++ ray tracer
 
 ## How to build the project
 
